@@ -6,8 +6,23 @@
 
 // A bytecode instruction's kind.
 typedef enum {
-	// Load a constant from its index.
+	// Push a constant to the stack from its index.
 	OP_CONSTANT,
+	
+	// Add the top value of the stack to the second top value.
+	OP_ADD,
+	
+	// Subtract the top value of the stack from the second top value.
+	OP_SUBTRACT,
+	
+	// Multiply the second top value of the stack by the top value.
+	OP_MULTIPLY,
+	
+	// Divide the second top value of the stack by the top value.
+	OP_DIVIDE,
+	
+	// Negate the top value of the stack.
+	OP_NEGATE,
 	
 	// Return from the current function.
 	OP_RETURN,
