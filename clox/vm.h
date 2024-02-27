@@ -40,8 +40,8 @@ void initVM();
 // Free the virtual machine.
 void freeVM();
 
-// Interpret a chunk.
-InterpretResult interpret(Chunk *chunk);
+// Interpret source code.
+InterpretResult interpret(const char *source);
 
 // Push a value to the stack.
 void push(Value value);

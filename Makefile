@@ -2,6 +2,9 @@
 CC := gcc
 CFLAGS := -std=c99 -Wall -Wextra -Werror -O3 -flto
 
+# FIXME: Stop allowing unused functions.
+CFLAGS += -Wno-unused-function
+
 # Binaries:
 BIN_DIR := bin
 

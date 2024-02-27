@@ -4,7 +4,7 @@
 #include "common.h"
 #include "value.h"
 
-// A bytecode instruction's kind.
+// A bytecode instruction's type.
 typedef enum {
 	// Push a constant to the stack from its index.
 	OP_CONSTANT,

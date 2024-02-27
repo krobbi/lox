@@ -26,7 +26,7 @@ bytecode interpreter. After this I plan on adding some additional features:
 ## Completed Chapters
 * [x] 14. Chunks of Bytecode
 * [x] 15. A Virtual Machine
-* [ ] 16. Scanning on Demand
+* [x] 16. Scanning on Demand
 * [ ] 17. Compiling Expressions
 * [ ] 18. Types of Values
 * [ ] 19. Strings
