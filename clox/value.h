@@ -3,6 +3,12 @@
 
 #include "common.h"
 
+// A heap object.
+typedef struct Obj Obj;
+
+// A string heap object.
+typedef struct ObjString ObjString;
+
 // A value's type.
 typedef enum {
 	// A boolean type.
@@ -13,6 +19,9 @@ typedef enum {
 	
 	// A floating point number type.
 	VAL_NUMBER,
+	
+	// An object type.
+	VAL_OBJ,
 } ValueType;
 
 // A dynamically-typed value.
@@ -27,6 +36,9 @@ typedef struct {
 		
 		// The value as a floating point number.
 		double number;
+		
+		// The value as an object pointer.
+		Obj *obj;
 	} as;
 } Value;
 
@@ -38,6 +50,12 @@ typedef struct {
 
 // Get whether a value is a number.
 #define IS_NUMBER(value) ((value).type == VAL_NUMBER)
+
+// Get whether the value is an object.
+#define IS_OBJ(value) ((value).type == VAL_OBJ)
+
+// Get the value as an object pointer.
+#define AS_OBJ(value) ((value).as.obj)
 
 // Get a value's boolean.
 #define AS_BOOL(value) ((value).as.boolean)
@@ -53,6 +71,9 @@ typedef struct {
 
 // Make a new number value.
 #define NUMBER_VAL(value) ((Value){ VAL_NUMBER, { .number = value } })
+
+// Make a new object value from an object pointer.
+#define OBJ_VAL(object) ((Value){ VAL_OBJ, { .obj = (Obj*)object } })
 
 // A dynamic array of values.
 typedef struct {

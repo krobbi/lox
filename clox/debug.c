@@ -66,8 +66,8 @@ int disassembleInstruction(Chunk *chunk, int offset) {
 			return simpleInstruction("OP_NEGATE", offset);
 		case OP_RETURN:
 			return simpleInstruction("OP_RETURN", offset);
-		default:
-			printf("Unknown opcode %d\n", instruction);
-			return offset + 1;
 	}
+	
+	printf("Unknown opcode %d\n", instruction);
+	return offset + 1;
 }

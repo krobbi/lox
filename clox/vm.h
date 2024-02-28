@@ -20,6 +20,9 @@ typedef struct {
 	
 	// The pointer to the next top value of the stack.
 	Value *stackTop;
+	
+	// The pointer to the first garbage collected object.
+	Obj *objects;
 } VM;
 
 // A result of interpreting bytecode.
@@ -33,6 +36,9 @@ typedef enum {
 	// An error occurred at runtime.
 	INTERPRET_RUNTIME_ERROR,
 } InterpretResult;
+
+// The global virtual machine instance.
+extern VM vm;
 
 // Initialize the virtual machine.
 void initVM();
