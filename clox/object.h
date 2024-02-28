@@ -39,12 +39,15 @@ struct ObjString {
 	
 	// The string's characters.
 	char *chars;
+	
+	// The string's hash.
+	uint32_t hash;
 };
 
-// Make a new string object from an owned string.
+// Get a string object from an owned string.
 ObjString *takeString(char *chars, int length);
 
-// Make a new string object from a copied slice of a string.
+// Get a string object from a copied slice of a string.
 ObjString *copyString(const char *chars, int length);
 
 // Print an object value.

@@ -14,7 +14,6 @@ VM vm;
 // Reset the stack.
 static void resetStack() {
 	vm.stackTop = vm.stack;
-	vm.objects = NULL;
 }
 
 // Log a runtime error.
@@ -33,9 +32,12 @@ static void runtimeError(const char *format, ...) {
 
 void initVM() {
 	resetStack();
+	vm.objects = NULL;
+	initTable(&vm.strings);
 }
 
 void freeVM() {
+	freeTable(&vm.strings);
 	freeObjects();
 }
 

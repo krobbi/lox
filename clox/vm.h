@@ -2,6 +2,7 @@
 #define clox_vm_h
 
 #include "chunk.h"
+#include "table.h"
 #include "value.h"
 
 // The maximum size of the stack in values.
@@ -20,6 +21,9 @@ typedef struct {
 	
 	// The pointer to the next top value of the stack.
 	Value *stackTop;
+	
+	// The set of interned strings.
+	Table strings;
 	
 	// The pointer to the first garbage collected object.
 	Obj *objects;

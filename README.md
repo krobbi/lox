@@ -30,7 +30,7 @@ bytecode interpreter. After this I plan on adding some additional features:
 * [x] 17. Compiling Expressions
 * [x] 18. Types of Values
 * [x] 19. Strings
-* [ ] 20. Hash Tables
+* [x] 20. Hash Tables
 * [ ] 21. Global Variables
 * [ ] 22. Local Variables
 * [ ] 23. Jumping Back and Forth
