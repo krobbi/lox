@@ -6,8 +6,26 @@
 
 // A bytecode instruction's type.
 typedef enum {
-	// Push a constant to the stack from its index.
+	// Push a constant value to the stack from its index.
 	OP_CONSTANT,
+	
+	// Push a nil value to the stack.
+	OP_NIL,
+	
+	// Push a true boolean value to the stack.
+	OP_TRUE,
+	
+	// Push a false boolean value to the stack.
+	OP_FALSE,
+	
+	// Compare the second top value of the stack as equal to the top value.
+	OP_EQUAL,
+	
+	// Compare the second top value of the stack as greater than the top value.
+	OP_GREATER,
+	
+	// Compare the second top value of the stack as less than the top value.
+	OP_LESS,
 	
 	// Add the top value of the stack to the second top value.
 	OP_ADD,
@@ -21,7 +39,10 @@ typedef enum {
 	// Divide the second top value of the stack by the top value.
 	OP_DIVIDE,
 	
-	// Negate the top value of the stack.
+	// Logically negate the top value of the stack.
+	OP_NOT,
+	
+	// Arithmetically negate the top value of the stack.
 	OP_NEGATE,
 	
 	// Return from the current function.

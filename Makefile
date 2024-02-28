@@ -30,7 +30,7 @@ run: $(CLOX_EXEC)
 # Clean binaries directory:
 .PHONY: clean
 clean:
-	@ echo "Cleaning '$(BIN_DIR)'..."
+	@ echo "Cleaning '$(BIN_DIR)/'..."
 	@ rm -rf -- $(BIN_DIR)
 
 # Make binaries directory:
