@@ -22,6 +22,9 @@ typedef struct {
 	// The pointer to the next top value of the stack.
 	Value *stackTop;
 	
+	// The table of globals.
+	Table globals;
+	
 	// The set of interned strings.
 	Table strings;
 	

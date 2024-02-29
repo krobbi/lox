@@ -18,6 +18,18 @@ typedef enum {
 	// Push a false boolean value to the stack.
 	OP_FALSE,
 	
+	// Pop the top value from the stack.
+	OP_POP,
+	
+	// Push a global to the stack from a constant.
+	OP_GET_GLOBAL,
+	
+	// Pop and define the top value of the stack as a global from a constant.
+	OP_DEFINE_GLOBAL,
+	
+	// Peek the top value of the stack and set a global from a constant.
+	OP_SET_GLOBAL,
+	
 	// Compare the second top value of the stack as equal to the top value.
 	OP_EQUAL,
 	
@@ -44,6 +56,9 @@ typedef enum {
 	
 	// Arithmetically negate the top value of the stack.
 	OP_NEGATE,
+	
+	// Pop and print the top value from the stack.
+	OP_PRINT,
 	
 	// Return from the current function.
 	OP_RETURN,
