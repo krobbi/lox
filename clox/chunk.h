@@ -21,6 +21,12 @@ typedef enum {
 	// Pop the top value from the stack.
 	OP_POP,
 	
+	// Push a local to the stack from a stack slot.
+	OP_GET_LOCAL,
+	
+	// Peek the top value of the stack and set a local from a stack slot.
+	OP_SET_LOCAL,
+	
 	// Push a global to the stack from a constant.
 	OP_GET_GLOBAL,
 	
