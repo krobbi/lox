@@ -66,6 +66,15 @@ typedef enum {
 	// Pop and print the top value from the stack.
 	OP_PRINT,
 	
+	// Jump forwards.
+	OP_JUMP,
+	
+	// Peek the top value of the stack and jump forwards if it is falsey.
+	OP_JUMP_IF_FALSE,
+	
+	// Jump backwards.
+	OP_LOOP,
+	
 	// Return from the current function.
 	OP_RETURN,
 } OpCode;

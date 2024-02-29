@@ -6,10 +6,10 @@
 #include <stdint.h>
 
 // Disassemble bytecode after compilation.
-#define DEBUG_PRINT_CODE
+//#define DEBUG_PRINT_CODE
 
 // Disassemble instructions as they are interpreted.
-#define DEBUG_TRACE_EXECUTION
+//#define DEBUG_TRACE_EXECUTION
 
 // The number of unique 8-bit unsigned integers.
 #define UINT8_COUNT (UINT8_MAX + 1)
