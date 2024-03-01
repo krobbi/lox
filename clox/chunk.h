@@ -75,6 +75,9 @@ typedef enum {
 	// Jump backwards.
 	OP_LOOP,
 	
+	// Call an argument list with a number of arguments.
+	OP_CALL,
+	
 	// Return from the current function.
 	OP_RETURN,
 } OpCode;

@@ -4,7 +4,7 @@
 #include "object.h"
 #include "vm.h"
 
-// Compile source code to a chunk and return whether no errors occurred.
-bool compile(const char *source, Chunk *chunk);
+// Compile a function object from source code.
+ObjFunction *compile(const char *source);
 
 #endif // !clox_compiler_h
