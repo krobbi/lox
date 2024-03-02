@@ -8,6 +8,9 @@
 // Get a value's object type.
 #define OBJ_TYPE(value) (AS_OBJ(value)->type)
 
+// Get whether a value is a closure object.
+#define IS_CLOSURE(value) isObjType(value, OBJ_CLOSURE)
+
 // Get whether a value is a function object.
 #define IS_FUNCTION(value) isObjType(value, OBJ_FUNCTION)
 
@@ -16,6 +19,9 @@
 
 // Get whether a value is a string object.
 #define IS_STRING(value) isObjType(value, OBJ_STRING)
+
+// Get a closure value as a closure object.
+#define AS_CLOSURE(value) ((ObjClosure*)AS_OBJ(value))
 
 // Get a function value as a function object.
 #define AS_FUNCTION(value) ((ObjFunction*)AS_OBJ(value))
@@ -31,6 +37,9 @@
 
 // An object's type.
 typedef enum {
+	// A closure object's type.
+	OBJ_CLOSURE,
+	
 	// A function object's type.
 	OBJ_FUNCTION,
 	
@@ -39,6 +48,9 @@ typedef enum {
 	
 	// A string object's type.
 	OBJ_STRING,
+	
+	// An upvalue object's type.
+	OBJ_UPVALUE,
 } ObjType;
 
 struct Obj {
@@ -56,6 +68,9 @@ typedef struct {
 	
 	// The function's number of parameters.
 	int arity;
+	
+	// The number of upvalues used by the function.
+	int upvalueCount;
 	
 	// The function's bytecode chunk.
 	Chunk chunk;
@@ -90,6 +105,39 @@ struct ObjString {
 	uint32_t hash;
 };
 
+// An upvalue heap object.
+typedef struct ObjUpvalue {
+	// The upvalue's parent object.
+	Obj obj;
+	
+	// The pointer to the upvalue's value.
+	Value *location;
+	
+	// The upvalue's closed value.
+	Value closed;
+	
+	// The pointer to the next upvalue on the stack.
+	struct ObjUpvalue *next;
+} ObjUpvalue;
+
+// A closure heap object.
+typedef struct {
+	// The closure's parent object.
+	Obj obj;
+	
+	// The closure's function.
+	ObjFunction *function;
+	
+	// The closure's upvalues.
+	ObjUpvalue **upvalues;
+	
+	// The number of upvalues used by the closure's function.
+	int upvalueCount;
+} ObjClosure;
+
+// Make a new closure object.
+ObjClosure *newClosure(ObjFunction *function);
+
 // Make a new function object.
 ObjFunction *newFunction();
 
@@ -101,6 +149,9 @@ ObjString *takeString(char *chars, int length);
 
 // Get a string object from a copied slice of a string.
 ObjString *copyString(const char *chars, int length);
+
+// Make a new upvalue object.
+ObjUpvalue *newUpvalue(Value *slot);
 
 // Print an object value.
 void printObject(Value value);

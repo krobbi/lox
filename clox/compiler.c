@@ -83,7 +83,19 @@ typedef struct {
 	
 	// The local's scope depth.
 	int depth;
+	
+	// Whether the local is captured by an upvalue.
+	bool isCaptured;
 } Local;
+
+// An upvalue in the compiling function.
+typedef struct {
+	// The upvalue's slot index.
+	uint8_t index;
+	
+	// Whether the upvalue points to a parent function's local.
+	bool isLocal;
+} Upvalue;
 
 // A compiling function's type.
 typedef enum {
@@ -110,6 +122,9 @@ typedef struct Compiler {
 	
 	// The number of locals in scope.
 	int localCount;
+	
+	// The upvalues used by the compiling function.
+	Upvalue upvalues[UINT8_COUNT];
 	
 	// The current scope depth.
 	int scopeDepth;
@@ -276,6 +291,7 @@ static void initCompiler(Compiler *compiler, FunctionType type) {
 	
 	Local *local = &current->locals[current->localCount++];
 	local->depth = 0;
+	local->isCaptured = false;
 	local->name.start = "";
 	local->name.length = 0;
 }
@@ -308,7 +324,13 @@ static void endScope() {
 	while (
 			current->localCount > 0
 			&& current->locals[current->localCount - 1].depth > current->scopeDepth) {
-		emitByte(OP_POP); // Free local.
+		
+		if (current->locals[current->localCount - 1].isCaptured) {
+			emitByte(OP_CLOSE_UPVALUE); // Move local to heap.
+		} else {
+			emitByte(OP_POP); // Free local.
+		}
+		
 		current->localCount--;
 	}
 }
@@ -342,7 +364,7 @@ static bool identifiersEqual(Token *a, Token *b) {
 	return memcmp(a->start, b->start, a->length) == 0;
 }
 
-// Get a local's stack slot.
+// Resolve a variable's local stack slot.
 static int resolveLocal(Compiler *compiler, Token *name) {
 	for (int i = compiler->localCount - 1; i >= 0; i--) {
 		Local *local = &compiler->locals[i];
@@ -359,6 +381,50 @@ static int resolveLocal(Compiler *compiler, Token *name) {
 	return -1;
 }
 
+// Add an upvalue to a compiling function and return its upvalue slot.
+static int addUpvalue(Compiler *compiler, uint8_t index, bool isLocal) {
+	int upvalueCount = compiler->function->upvalueCount;
+	
+	for (int i = 0; i < upvalueCount; i++) {
+		Upvalue *upvalue = &compiler->upvalues[i];
+		
+		if (upvalue->index == index && upvalue->isLocal == isLocal) {
+			return i; // Share the same upvalue between each use.
+		}
+	}
+	
+	if (upvalueCount == UINT8_COUNT) {
+		error("Too many closure variables in function.");
+		return 0;
+	}
+	
+	compiler->upvalues[upvalueCount].isLocal = isLocal;
+	compiler->upvalues[upvalueCount].index = index;
+	return compiler->function->upvalueCount++;
+}
+
+// Resolve a variable's upvalue slot.
+static int resolveUpvalue(Compiler *compiler, Token *name) {
+	if (compiler->enclosing == NULL) {
+		return -1; // No more parent functions to check.
+	}
+	
+	int local = resolveLocal(compiler->enclosing, name);
+	
+	if (local != -1) {
+		compiler->enclosing->locals[local].isCaptured = true;
+		return addUpvalue(compiler, (uint8_t)local, true);
+	}
+	
+	int upvalue = resolveUpvalue(compiler->enclosing, name);
+	
+	if (upvalue != -1) {
+		return addUpvalue(compiler, (uint8_t)upvalue, false);
+	}
+	
+	return -1;
+}
+
 // Track a local declaration.
 static void addLocal(Token name) {
 	if (current->localCount == UINT8_COUNT) {
@@ -369,6 +435,7 @@ static void addLocal(Token name) {
 	Local *local = &current->locals[current->localCount++];
 	local->name = name;
 	local->depth = -1; // The local has not finished being initialized.
+	local->isCaptured = false;
 }
 
 // Track a variable declaration.
@@ -454,6 +521,9 @@ static void namedVariable(Token name, bool canAssign) {
 	if (arg != -1) {
 		getOp = OP_GET_LOCAL;
 		setOp = OP_SET_LOCAL;
+	} else if ((arg = resolveUpvalue(current, &name)) != -1) {
+		getOp = OP_GET_UPVALUE;
+		setOp = OP_SET_UPVALUE;
 	} else {
 		arg = identifierConstant(&name);
 		getOp = OP_GET_GLOBAL;
@@ -690,7 +760,12 @@ static void function(FunctionType type) {
 	block();
 	
 	ObjFunction *function = endCompiler();
-	emitBytes(OP_CONSTANT, makeConstant(OBJ_VAL(function)));
+	emitBytes(OP_CLOSURE, makeConstant(OBJ_VAL(function)));
+	
+	for (int i = 0; i < function->upvalueCount; i++) {
+		emitByte(compiler.upvalues[i].isLocal ? 1 : 0);
+		emitByte(compiler.upvalues[i].index);
+	}
 }
 
 // Compile a function declaration.

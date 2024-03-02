@@ -35,7 +35,7 @@ bytecode interpreter. After this I plan on adding some additional features:
 * [x] 22. Local Variables
 * [x] 23. Jumping Back and Forth
 * [x] 24. Calls and Functions
-* [ ] 25. Closures
+* [x] 25. Closures
 * [ ] 26. Garbage Collection
 * [ ] 27. Classes and Instances
 * [ ] 28. Methods and Initializers

@@ -14,8 +14,8 @@
 
 // A function call's state.
 typedef struct {
-	// The called function.
-	ObjFunction *function;
+	// The called closure.
+	ObjClosure *closure;
 	
 	// The pointer to the next byte of bytecode in the function.
 	uint8_t *ip;
@@ -43,6 +43,9 @@ typedef struct {
 	
 	// The set of interned strings.
 	Table strings;
+	
+	// The pointer to the top open upvalue on the stack.
+	ObjUpvalue *openUpvalues;
 	
 	// The pointer to the first garbage collected object.
 	Obj *objects;

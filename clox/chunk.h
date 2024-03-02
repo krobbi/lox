@@ -36,6 +36,12 @@ typedef enum {
 	// Peek the top value of the stack and set a global from a constant.
 	OP_SET_GLOBAL,
 	
+	// Push an upvalue to the stack from an upvalue slot.
+	OP_GET_UPVALUE,
+	
+	// Peek the top value of the stack and set an upvalue from an upvalue slot.
+	OP_SET_UPVALUE,
+	
 	// Compare the second top value of the stack as equal to the top value.
 	OP_EQUAL,
 	
@@ -77,6 +83,12 @@ typedef enum {
 	
 	// Call an argument list with a number of arguments.
 	OP_CALL,
+	
+	// Push a closure value to the stack from a function constant and upvalues.
+	OP_CLOSURE,
+	
+	// Pop the top value from the stack and close it in an upvalue.
+	OP_CLOSE_UPVALUE,
 	
 	// Return from the current function.
 	OP_RETURN,
