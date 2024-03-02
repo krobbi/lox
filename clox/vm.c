@@ -63,6 +63,12 @@ static void defineNative(const char *name, NativeFn function) {
 void initVM() {
 	resetStack();
 	vm.objects = NULL;
+	vm.bytesAllocated = 0;
+	vm.nextGC = 1024 * 1024;
+	
+	vm.grayCount = 0;
+	vm.grayCapacity = 0;
+	vm.grayStack = NULL;
 	
 	initTable(&vm.globals);
 	initTable(&vm.strings);
@@ -174,13 +180,22 @@ static void closeUpvalues(Value *last) {
 
 // Get whether a value is false in a boolean context.
 static bool isFalsey(Value value) {
-	return IS_NIL(value) || (IS_BOOL(value) && !AS_BOOL(value));
+	// Using the macro expression from the book here causes the `!` operator to
+	// fail for objects. For some reason this only happens when optimizations
+	// are turned on. I never noticed this bug before, so I am not sure if I
+	// made a mistake somewhere, or if it is a bug with optimizations in a newer
+	// version of GCC. This code feels more efficient anyway.
+	switch (value.type) {
+		case VAL_BOOL: return !value.as.boolean;
+		case VAL_NIL: return true;
+		default: return false;
+	}
 }
 
 // Append the top string of the stack to the second top string.
 static void concatenate() {
-	ObjString *b = AS_STRING(pop());
-	ObjString *a = AS_STRING(pop());
+	ObjString *b = AS_STRING(peek(0));
+	ObjString *a = AS_STRING(peek(1));
 	
 	int length = a->length + b->length;
 	char *chars = ALLOCATE(char, length + 1);
@@ -189,6 +204,8 @@ static void concatenate() {
 	chars[length] = '\0';
 	
 	ObjString *result = takeString(chars, length);
+	pop();
+	pop();
 	push(OBJ_VAL(result));
 }
 

@@ -46,4 +46,10 @@ void tableAddAll(Table *from, Table *to);
 // Find a key in a hash table.
 ObjString *tableFindString(Table *table, const char *chars, int length, uint32_t hash);
 
+// Remove unreachable objects from a hash table.
+void tableRemoveWhite(Table *table);
+
+// Mark a hash table as reachable.
+void markTable(Table *table);
+
 #endif // !clox_table_h

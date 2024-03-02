@@ -57,6 +57,9 @@ struct Obj {
 	// The object's type.
 	ObjType type;
 	
+	// Whether the object is marked as reachable.
+	bool isMarked;
+	
 	// The pointer to the next object for garbage collection.
 	struct Obj *next;
 };

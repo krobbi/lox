@@ -49,6 +49,21 @@ typedef struct {
 	
 	// The pointer to the first garbage collected object.
 	Obj *objects;
+	
+	// The number of managed allocated bytes.
+	size_t bytesAllocated;
+	
+	// The threshold number of bytes for the next garbage collection.
+	size_t nextGC;
+	
+	// The number of objects in the garbage collection worklist.
+	int grayCount;
+	
+	// The current maximum number of objects in the garbage collection worklist.
+	int grayCapacity;
+	
+	// The garbage collection worklist.
+	Obj **grayStack;
 } VM;
 
 // A result of interpreting bytecode.

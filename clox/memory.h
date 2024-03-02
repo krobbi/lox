@@ -23,6 +23,15 @@
 // Reallocate a block of memory from an old size to a new size.
 void *reallocate(void *pointer, size_t oldSize, size_t newSize);
 
+// Mark an object as reachable.
+void markObject(Obj *object);
+
+// Mark a value as reachable.
+void markValue(Value value);
+
+// Run the garbage collector.
+void collectGarbage();
+
 // Free all allocated objects.
 void freeObjects();
 

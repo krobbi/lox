@@ -7,4 +7,7 @@
 // Compile a function object from source code.
 ObjFunction *compile(const char *source);
 
+// Mark all compiler root objects as reachable.
+void markCompilerRoots();
+
 #endif // !clox_compiler_h
