@@ -48,6 +48,9 @@ typedef enum {
 	// Set a field on the second top instance value of the stack to the top.
 	OP_SET_PROPERTY,
 	
+	// Leave a super method value on the stack from an instance and superclass.
+	OP_GET_SUPER,
+	
 	// Compare the second top value of the stack as equal to the top value.
 	OP_EQUAL,
 	
@@ -93,6 +96,9 @@ typedef enum {
 	// Invoke a method call with a name constant and number of arguments.
 	OP_INVOKE,
 	
+	// Invoke a super method with a name constant and number of arguments.
+	OP_SUPER_INVOKE,
+	
 	// Push a closure value to the stack from a function constant and upvalues.
 	OP_CLOSURE,
 	
@@ -104,6 +110,9 @@ typedef enum {
 	
 	// Push a class value to the stack from a name constant.
 	OP_CLASS,
+	
+	// Inherit the top class of the stack from the second top class.
+	OP_INHERIT,
 	
 	// Bind the top method of the stack to the second top class.
 	OP_METHOD,
