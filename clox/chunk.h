@@ -42,6 +42,12 @@ typedef enum {
 	// Peek the top value of the stack and set an upvalue from an upvalue slot.
 	OP_SET_UPVALUE,
 	
+	// Replace the top instance value of the stack with a field from a constant.
+	OP_GET_PROPERTY,
+	
+	// Set a field on the second top instance value of the stack to the top.
+	OP_SET_PROPERTY,
+	
 	// Compare the second top value of the stack as equal to the top value.
 	OP_EQUAL,
 	
@@ -92,6 +98,9 @@ typedef enum {
 	
 	// Return from the current function.
 	OP_RETURN,
+	
+	// Push a class value to the stack from a name constant.
+	OP_CLASS,
 } OpCode;
 
 // A chunk of bytecode for a script.

@@ -575,6 +575,19 @@ static void call(bool canAssign) {
 	emitBytes(OP_CALL, argCount);
 }
 
+// Compile a dot expression.
+static void dot(bool canAssign) {
+	consume(TOKEN_IDENTIFIER, "Expect property name after '.'.");
+	uint8_t name = identifierConstant(&parser.previous);
+	
+	if (canAssign && match(TOKEN_EQUAL)) {
+		expression();
+		emitBytes(OP_SET_PROPERTY, name);
+	} else {
+		emitBytes(OP_GET_PROPERTY, name);
+	}
+}
+
 // Compile a literal expression.
 static void literal(bool canAssign) {
 	(void)canAssign; // Unused parameter.
@@ -658,7 +671,7 @@ ParseRule rules[] = {
 	[TOKEN_LEFT_BRACE]    = { NULL,     NULL,   PREC_NONE },
 	[TOKEN_RIGHT_BRACE]   = { NULL,     NULL,   PREC_NONE },
 	[TOKEN_COMMA]         = { NULL,     NULL,   PREC_NONE },
-	[TOKEN_DOT]           = { NULL,     NULL,   PREC_NONE },
+	[TOKEN_DOT]           = { NULL,     dot,    PREC_CALL },
 	[TOKEN_MINUS]         = { unary,    binary, PREC_TERM },
 	[TOKEN_PLUS]          = { NULL,     binary, PREC_TERM },
 	[TOKEN_SEMICOLON]     = { NULL,     NULL,   PREC_NONE },
@@ -767,6 +780,19 @@ static void function(FunctionType type) {
 		emitByte(compiler.upvalues[i].isLocal ? 1 : 0);
 		emitByte(compiler.upvalues[i].index);
 	}
+}
+
+// Compile a class declaration.
+static void classDeclaration() {
+	consume(TOKEN_IDENTIFIER, "Expect class name.");
+	uint8_t nameConstant = identifierConstant(&parser.previous);
+	declareVariable();
+	
+	emitBytes(OP_CLASS, nameConstant);
+	defineVariable(nameConstant);
+	
+	consume(TOKEN_LEFT_BRACE, "Expect '{' before class body.");
+	consume(TOKEN_RIGHT_BRACE, "Expect '}' after class body.");
 }
 
 // Compile a function declaration.
@@ -932,7 +958,9 @@ static void synchronize() {
 }
 
 static void declaration() {
-	if (match(TOKEN_FUN)) {
+	if (match(TOKEN_CLASS)) {
+		classDeclaration();
+	} else if (match(TOKEN_FUN)) {
 		funDeclaration();
 	} else if (match(TOKEN_VAR)) {
 		varDeclaration();

@@ -3,10 +3,14 @@
 
 #include "common.h"
 #include "chunk.h"
+#include "table.h"
 #include "value.h"
 
 // Get a value's object type.
 #define OBJ_TYPE(value) (AS_OBJ(value)->type)
+
+// Get whether a value is a class object.
+#define IS_CLASS(value) isObjType(value, OBJ_CLASS)
 
 // Get whether a value is a closure object.
 #define IS_CLOSURE(value) isObjType(value, OBJ_CLOSURE)
@@ -14,17 +18,26 @@
 // Get whether a value is a function object.
 #define IS_FUNCTION(value) isObjType(value, OBJ_FUNCTION)
 
+// Get whether a value is an instance object.
+#define IS_INSTANCE(value) isObjType(value, OBJ_INSTANCE)
+
 // Get whether a value is a native object.
 #define IS_NATIVE(value) isObjType(value, OBJ_NATIVE)
 
 // Get whether a value is a string object.
 #define IS_STRING(value) isObjType(value, OBJ_STRING)
 
+// Get a class value as a class object.
+#define AS_CLASS(value) ((ObjClass*)AS_OBJ(value))
+
 // Get a closure value as a closure object.
 #define AS_CLOSURE(value) ((ObjClosure*)AS_OBJ(value))
 
 // Get a function value as a function object.
 #define AS_FUNCTION(value) ((ObjFunction*)AS_OBJ(value))
+
+// Get an instance value as an instance object.
+#define AS_INSTANCE(value) ((ObjInstance*)AS_OBJ(value))
 
 // Get a native value as a native function pointer.
 #define AS_NATIVE(value) (((ObjNative*)AS_OBJ(value))->function)
@@ -37,11 +50,17 @@
 
 // An object's type.
 typedef enum {
+	// A class object's type.
+	OBJ_CLASS,
+	
 	// A closure object's type.
 	OBJ_CLOSURE,
 	
 	// A function object's type.
 	OBJ_FUNCTION,
+	
+	// An instance object's type.
+	OBJ_INSTANCE,
 	
 	// A native object's type.
 	OBJ_NATIVE,
@@ -138,11 +157,38 @@ typedef struct {
 	int upvalueCount;
 } ObjClosure;
 
+// A class heap object.
+typedef struct {
+	// The class' parent object.
+	Obj obj;
+	
+	// The class' name.
+	ObjString *name;
+} ObjClass;
+
+// An instance heap object.
+typedef struct {
+	// The instance's parent object.
+	Obj obj;
+	
+	// The instance's class.
+	ObjClass *klass;
+	
+	// The instance's fields.
+	Table fields;
+} ObjInstance;
+
+// Make a new class object.
+ObjClass *newClass(ObjString *name);
+
 // Make a new closure object.
 ObjClosure *newClosure(ObjFunction *function);
 
 // Make a new function object.
 ObjFunction *newFunction();
+
+// Make a new instance object.
+ObjInstance *newInstance(ObjClass *klass);
 
 // Make a new native object.
 ObjNative *newNative(NativeFn function);
