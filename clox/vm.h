@@ -44,6 +44,9 @@ typedef struct {
 	// The set of interned strings.
 	Table strings;
 	
+	// The identifier string for initializers.
+	ObjString *initString;
+	
 	// The pointer to the top open upvalue on the stack.
 	ObjUpvalue *openUpvalues;
 	

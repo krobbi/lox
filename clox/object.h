@@ -9,6 +9,9 @@
 // Get a value's object type.
 #define OBJ_TYPE(value) (AS_OBJ(value)->type)
 
+// Get whether a value is a bound method object.
+#define IS_BOUND_METHOD(value) isObjType(value, OBJ_BOUND_METHOD)
+
 // Get whether a value is a class object.
 #define IS_CLASS(value) isObjType(value, OBJ_CLASS)
 
@@ -26,6 +29,9 @@
 
 // Get whether a value is a string object.
 #define IS_STRING(value) isObjType(value, OBJ_STRING)
+
+// Get a bound method value as a bound method object.
+#define AS_BOUND_METHOD(value) ((ObjBoundMethod*)AS_OBJ(value))
 
 // Get a class value as a class object.
 #define AS_CLASS(value) ((ObjClass*)AS_OBJ(value))
@@ -50,6 +56,9 @@
 
 // An object's type.
 typedef enum {
+	// A bound method object's type.
+	OBJ_BOUND_METHOD,
+	
 	// A class object's type.
 	OBJ_CLASS,
 	
@@ -164,6 +173,9 @@ typedef struct {
 	
 	// The class' name.
 	ObjString *name;
+	
+	// The class' methods.
+	Table methods;
 } ObjClass;
 
 // An instance heap object.
@@ -177,6 +189,21 @@ typedef struct {
 	// The instance's fields.
 	Table fields;
 } ObjInstance;
+
+// A bound method heap object.
+typedef struct {
+	// The bound method's parent object.
+	Obj obj;
+	
+	// The bound method's receiver instance.
+	Value receiver;
+	
+	// The bound method's method.
+	ObjClosure *method;
+} ObjBoundMethod;
+
+// Make a new bound method.
+ObjBoundMethod *newBoundMethod(Value receiver, ObjClosure *method);
 
 // Make a new class object.
 ObjClass *newClass(ObjString *name);

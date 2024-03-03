@@ -38,7 +38,7 @@ bytecode interpreter. After this I plan on adding some additional features:
 * [x] 25. Closures
 * [x] 26. Garbage Collection
 * [x] 27. Classes and Instances
-* [ ] 28. Methods and Initializers
+* [x] 28. Methods and Initializers
 * [ ] 29. Superclasses
 * [ ] 30. Optimization
 

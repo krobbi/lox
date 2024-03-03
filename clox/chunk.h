@@ -90,6 +90,9 @@ typedef enum {
 	// Call an argument list with a number of arguments.
 	OP_CALL,
 	
+	// Invoke a method call with a name constant and number of arguments.
+	OP_INVOKE,
+	
 	// Push a closure value to the stack from a function constant and upvalues.
 	OP_CLOSURE,
 	
@@ -101,6 +104,9 @@ typedef enum {
 	
 	// Push a class value to the stack from a name constant.
 	OP_CLASS,
+	
+	// Bind the top method of the stack to the second top class.
+	OP_METHOD,
 } OpCode;
 
 // A chunk of bytecode for a script.
