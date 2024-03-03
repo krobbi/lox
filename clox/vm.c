@@ -262,6 +262,9 @@ static void defineMethod(ObjString *name) {
 
 // Get whether a value is false in a boolean context.
 static bool isFalsey(Value value) {
+#ifdef NAN_BOXING
+	return value == NIL_VAL || value == FALSE_VAL;
+#else // NAN_BOXING
 	// Using the macro expression from the book here causes the `!` operator to
 	// fail for objects. For some reason this only happens when optimizations
 	// are turned on. I never noticed this bug before, so I am not sure if I
@@ -272,6 +275,7 @@ static bool isFalsey(Value value) {
 		case VAL_NIL: return true;
 		default: return false;
 	}
+#endif // !NAN_BOXING
 }
 
 // Append the top string of the stack to the second top string.

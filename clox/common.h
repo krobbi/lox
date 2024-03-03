@@ -5,6 +5,9 @@
 #include <stddef.h>
 #include <stdint.h>
 
+// Use a smaller value representation.
+#define NAN_BOXING
+
 // Disassemble bytecode after compilation.
 //#define DEBUG_PRINT_CODE
 
