@@ -25,7 +25,7 @@ all: $(CLOX_EXEC)
 .PHONY: run
 run: $(CLOX_EXEC)
 	@ echo "Running '$<'..."
-	@ $(CLOX_EXEC)
+	@ $(CLOX_EXEC) test/args.lox foo bar baz
 
 # Clean binaries directory:
 .PHONY: clean

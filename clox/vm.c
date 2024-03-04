@@ -10,6 +10,10 @@
 #include "memory.h"
 #include "vm.h"
 
+#ifdef EXTENSIONS
+#include "extension.h"
+#endif // EXTENSIONS
+
 VM vm;
 
 // The native clock function.
@@ -77,6 +81,10 @@ void initVM() {
 	vm.initString = copyString("init", 4);
 	
 	defineNative("clock", clockNative);
+	
+#ifdef EXTENSIONS
+	defineExtensions(defineNative);
+#endif // EXTENSIONS
 }
 
 void freeVM() {

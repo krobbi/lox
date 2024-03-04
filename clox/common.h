@@ -8,6 +8,9 @@
 // Use a smaller value representation.
 #define NAN_BOXING
 
+// Use non-standard native extension functions.
+#define EXTENSIONS
+
 // Disassemble bytecode after compilation.
 //#define DEBUG_PRINT_CODE
 

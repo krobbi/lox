@@ -7,6 +7,10 @@
 #include "debug.h"
 #include "vm.h"
 
+#ifdef EXTENSIONS
+#include "extension.h"
+#endif // EXTENSIONS
+
 // Read and interpret user input in a loop.
 static void repl() {
 	char line[1024];
@@ -73,14 +77,26 @@ static void runFile(const char *path) {
 
 // Interpret a source file from arguments, or run a REPL.
 int main(int argc, const char *argv[]) {
+#ifdef EXTENSIONS
+	initExtensions(argc, argv);
+#endif // EXTENSIONS
+	
 	initVM();
 	
 	if (argc == 1) {
 		repl();
+#ifdef EXTENSIONS
+	} else if (argc > 1) {
+#else // EXTENSIONS
 	} else if (argc == 2) {
+#endif // !EXTENSIONS
 		runFile(argv[1]);
 	} else {
+#ifdef EXTENSIONS
+		fprintf(stderr, "Usage: clox [<path> [<args>...]]\n");
+#else // EXTENSIONS
 		fprintf(stderr, "Usage: clox [path]\n");
+#endif // !EXTENSIONS
 		exit(64);
 	}
 	
