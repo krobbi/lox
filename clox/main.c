@@ -97,9 +97,15 @@ int main(int argc, const char *argv[]) {
 #else // EXTENSIONS
 		fprintf(stderr, "Usage: clox [path]\n");
 #endif // !EXTENSIONS
+		
 		exit(64);
 	}
 	
 	freeVM();
+	
+#ifdef EXTENSIONS
+	freeExtensions();
+#endif // EXTENSIONS
+	
 	return 0;
 }

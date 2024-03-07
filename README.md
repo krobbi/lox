@@ -8,6 +8,15 @@ __Copyright &copy; 2024 Chris Roberts__ (Krobbizoid).
    * [`__argc`](#__argc---int)
    * [`__argv`](#__argvindex-int---string--nil)
    * [`__chrat`](#__chrattext-string-index-int---int--nil)
+   * [`__exit`](#__exitstatus-int)
+   * [`__fclose`](#__fclosestream-int---bool)
+   * [`__fgetc`](#__fgetcstream-int---int--nil)
+   * [`__fopenr`](#__fopenrpath-string---int--nil)
+   * [`__fopenw`](#__fopenwpath-string---int--nil)
+   * [`__fputc`](#__fputcbyte-int-stream-int---int--nil)
+   * [`__stderr`](#__stderr---int)
+   * [`__stdin`](#__stdin---int)
+   * [`__stdout`](#__stdout---int)
    * [`__strlen`](#__strlentext-string---int)
    * [`__strof`](#__strofbyte-int---string--nil)
 3. [License](#license)
@@ -59,6 +68,41 @@ script path. Returns `nil` if `index` is out of bounds.
 ## `__chrat(text: string, index: int) -> int | nil`
 Return the byte at index `index` of `text`, where index `0` is the first byte.
 Returns `nil` if `index` is out of bounds.
+
+## `__exit(status: int) -> !`
+Exit with the status code `status`.
+
+## `__fclose(stream: int) -> bool`
+Close the file with the stream `stream` and return whether a file was
+successfully closed. Files should be closed after opening.
+
+## `__fgetc(stream: int) -> int | nil`
+Read and return the next byte from the input stream `stream`. Returns `nil` if
+an error occurred or if the end-of-file was reached.
+
+## `__fopenr(path: string) -> int | nil`
+Open the file at `path` for reading and return a stream. Returns `nil` if the
+file could not be opened.
+
+## `__fopenw(path: string) -> int | nil`
+Open the file at `path` for writing and return a stream. Returns `nil` if the
+file could not be opened.
+
+## `__fputc(byte: int, stream: int) -> int | nil`
+Write the byte `byte` to the output stream `stream` and return the written
+byte. Returns `nil` if an error occurred.
+
+## `__stderr() -> int`
+Return a constant representing the standard error stream. Returns a value
+unique from the other standard streams and any possible file stream.
+
+## `__stdin() -> int`
+Return a constant representing the standard input stream. Returns a value
+unique from the other standard streams and any possible file stream.
+
+## `__stdout() -> int`
+Return a constant representing the standard output stream. Returns a value
+unique from the other standard streams and any possible file stream.
 
 ## `__strlen(text: string) -> int`
 Return the length of `text` in bytes.

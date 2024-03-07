@@ -13,4 +13,7 @@ void initExtensions(int argc, const char *argv[]);
 // Define native extension functions using a native definition function.
 void defineExtensions(DefineNativeFn defineNative);
 
+// Free extension data.
+void freeExtensions();
+
 #endif // !clox_extension_h
