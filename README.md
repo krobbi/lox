@@ -7,6 +7,9 @@ __Copyright &copy; 2024 Chris Roberts__ (Krobbizoid).
 2. [Extensions](#extensions)
    * [`__argc`](#__argc---int)
    * [`__argv`](#__argvindex-int---string--nil)
+   * [`__chrat`](#__chrattext-string-index-int---int--nil)
+   * [`__strlen`](#__strlentext-string---int)
+   * [`__strof`](#__strofbyte-int---string--nil)
 3. [License](#license)
 
 # About
@@ -52,6 +55,17 @@ mode.
 ## `__argv(index: int) -> string | nil`
 Return the command line argument at index `index`, where index `0` is the
 script path. Returns `nil` if `index` is out of bounds.
+
+## `__chrat(text: string, index: int) -> int | nil`
+Return the byte at index `index` of `text`, where index `0` is the first byte.
+Returns `nil` if `index` is out of bounds.
+
+## `__strlen(text: string) -> int`
+Return the length of `text` in bytes.
+
+## `__strof(byte: int) -> string | nil`
+Return a single-byte string containing the byte `byte`. Returns `nil` if `byte`
+is less than `1` or greater than `255`.
 
 # License
 This implementation of Lox is released under the MIT License:  
