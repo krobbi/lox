@@ -8,7 +8,7 @@ __Copyright &copy; 2024 Chris Roberts__ (Krobbizoid).
    * [`__argc`](#__argc---int)
    * [`__argv`](#__argvindex-int---string--nil)
    * [`__chrat`](#__chrattext-string-index-int---int--nil)
-   * [`__exit`](#__exitstatus-int)
+   * [`__exit`](#__exitstatus-int---)
    * [`__fclose`](#__fclosestream-int---bool)
    * [`__fgetc`](#__fgetcstream-int---int--nil)
    * [`__fopenr`](#__fopenrpath-string---int--nil)
