@@ -1,0 +1,298 @@
+// Lox Merge
+// Merge multiple source files into a single target file from a merge list file.
+
+// An end-of-file character.
+var CHAR_EOF = -1;
+
+// A `'\0'` character.
+var CHAR_NUL = 0;
+
+// A `'\n'` character.
+var CHAR_LF = 10;
+
+// A `' '` character.
+var CHAR_SPACE = __chrat(" ", 0);
+
+// A `'#'` character.
+var CHAR_HASH = __chrat("#", 0);
+
+// A `'/'` character.
+var CHAR_SLASH = __chrat("/", 0);
+
+// A `'<'` character.
+var CHAR_LESS = __chrat("<", 0);
+
+// A `'>'` character.
+var CHAR_GREATER = __chrat(">", 0);
+
+// A `'\\'` character.
+var CHAR_BACKSLASH = __chrat("\", 0);
+
+// Get whether a character is a line ending.
+fun isEndOfLine(char) {
+	return char == CHAR_LF or char == CHAR_HASH or char == CHAR_EOF;
+}
+
+// Get whether a character is a standard library path ending.
+fun isEndOfStd(char) {
+	return char == CHAR_GREATER or isEndOfLine(char);
+}
+
+// Get whether a character is not a slash or a backslash.
+fun isNotSlash(char) {
+	return char != CHAR_SLASH and char != CHAR_BACKSLASH;
+}
+
+// Get whether a character is whitespace.
+fun isWhitespace(char) {
+	return char <= CHAR_SPACE and char >= CHAR_NUL;
+}
+
+// Remove characters from the end of a string that match a predicate.
+fun strip(string, predicate) {
+	var length = __strlen(string);
+	
+	while (length > 0 and predicate(__chrat(string, length - 1))) {
+		length = length - 1;
+	}
+	
+	var result = "";
+	
+	for (var i = 0; i < length; i = i + 1) {
+		result = result + __strof(__chrat(string, i));
+	}
+	
+	return result;
+}
+
+// Print an error message.
+fun printError(message) {
+	var length = __strlen(message);
+	var stderr = __stderr();
+	
+	for (var i = 0; i < length; i = i + 1) {
+		__fputc(__chrat(message, i), stderr);
+	}
+	
+	__fputc(CHAR_LF, stderr);
+}
+
+// A merge list.
+class MergeList {
+	// Initialize the merge list from its path and standard library path.
+	init(path, stdPath) {
+		// The merge list's base path.
+		this._basePath = strip(path, isNotSlash);
+		
+		// The merge list's standard library path.
+		this._stdPath = stdPath;
+		
+		// The merge list's input stream.
+		this._stream = __fopenr(path);
+		
+		// The merge list's next character.
+		this._next = CHAR_EOF;
+		
+		// Whether the merge list contains any errors.
+		this._hasErrors = false;
+		
+		if (!this._stream) {
+			this._logError("Could not open merge list '" + path + "'. File may not exist.");
+		}
+		
+		this._advance();
+	}
+	
+	// Get whether the merge list contains any errors.
+	hasErrors() {
+		return this._hasErrors;
+	}
+	
+	// Scan the next path from the merge list.
+	scanPath() {
+		this._skipWhitespace();
+		
+		if (this._next == CHAR_EOF) {
+			return nil;
+		} else if (this._next == CHAR_LESS) {
+			this._advance(); // Skip opening '<'.
+			this._skipInlineWhitespace();
+			var path = this._buildUntil(isEndOfStd);
+			
+			if (path == "") {
+				this._logError("Standard library path is empty.");
+			}
+			
+			if (this._next == CHAR_GREATER) {
+				this._advance(); // Skip closing '>'.
+			} else {
+				this._logError("Expected closing '>' after standard library path.");
+			}
+			
+			this._skipInlineWhitespace();
+			
+			if (!isEndOfLine(this._next)) {
+				this._logError("Expected line ending after standard library path.");
+			}
+			
+			return this._stdPath + "/" + path + ".lox";
+		} else {
+			return this._basePath + this._buildUntil(isEndOfLine);
+		}
+	}
+	
+	// Close the merge list.
+	close() {
+		if (!this._stream) {
+			return;
+		}
+		
+		if (!__fclose(this._stream)) {
+			this._logError("Could not close merge list.");
+		}
+		
+		this._stream = nil;
+	}
+	
+	// Log an error in the merge list.
+	_logError(message) {
+		printError(message);
+		this._hasErrors = true;
+	}
+	
+	// Advance to the merge list's next character.
+	_advance() {
+		var current = this._next;
+		
+		if (!this._stream) {
+			return current;
+		}
+		
+		this._next = __fgetc(this._stream);
+		
+		while (this._next == CHAR_NUL) {
+			this._logError("Merge list contains a null byte.");
+			this._next = __fgetc(this._stream);
+		}
+		
+		if (!this._next) {
+			this._next = CHAR_EOF;
+			this.close();
+		}
+		
+		return current;
+	}
+	
+	// Skip inline whitespace.
+	_skipInlineWhitespace() {
+		while (isWhitespace(this._next) and this._next != CHAR_LF) {
+			this._advance();
+		}
+	}
+	
+	// Skip whitespace and comments.
+	_skipWhitespace() {
+		for (;;) {
+			if (isWhitespace(this._next)) {
+				this._advance();
+			} else if (this._next == CHAR_HASH) {
+				this._advance();
+				
+				while (!isEndOfLine(this._next)) {
+					this._advance();
+				}
+			} else {
+				return;
+			}
+		}
+	}
+	
+	// Build a stripped string until the next character matches a predicate.
+	_buildUntil(predicate) {
+		var result = "";
+		
+		while (this._next > CHAR_NUL and !predicate(this._next)) {
+			result = result + __strof(this._advance());
+		}
+		
+		return strip(result, isWhitespace);
+	}
+}
+
+// Copy the contents of a source file at a path to a target output stream.
+fun copyFile(sourcePath, targetStream) {
+	var sourceStream = __fopenr(sourcePath);
+	
+	if (!sourceStream) {
+		printError("Could not open source file '" + sourcePath + "'. File may not exist.");
+		return false;
+	}
+	
+	for (var byte; byte = __fgetc(sourceStream);) {
+		if (!__fputc(byte, targetStream)) {
+			printError("Could not write to target file.");
+			__fclose(sourceStream);
+			return false;
+		}
+	}
+	
+	if (!__fclose(sourceStream)) {
+		printError("Could not close source file '" + sourcePath + "'.");
+		return false;
+	}
+	
+	return true;
+}
+
+// Run Lox Merge from a merge list and target file path.
+fun run(list, targetPath) {
+	var targetStream = __fopenw(targetPath);
+	
+	if (!targetStream) {
+		printError("Could not open target file '" + targetPath + "'.");
+		list.close();
+		return false;
+	}
+	
+	for (var sourcePath; sourcePath = list.scanPath();) {
+		if (!copyFile(sourcePath, targetStream)) {
+			__fclose(targetStream);
+			list.close();
+			return false;
+		}
+	}
+	
+	if (!__fclose(targetStream)) {
+		printError("Could not close target file.");
+		list.close();
+		return false;
+	}
+	
+	list.close();
+	return !list.hasErrors();
+}
+
+// Run Lox Merge from arguments and return an exit status code.
+fun main(argc, argv) {
+	if (argc != 4) {
+		printError("Usage: merge.lox <list> <std> <target>");
+		return 1;
+	}
+	
+	var list = MergeList(argv(1), argv(2));
+	var targetPath = argv(3);
+	
+	if (!run(list, targetPath)) {
+		return 1;
+	}
+	
+	return 0;
+}
+
+{
+	var status = main(__argc(), __argv);
+	
+	if (status != 0) {
+		__exit(status);
+	}
+}

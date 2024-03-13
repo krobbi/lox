@@ -1,0 +1,15 @@
+# Lynx Merge List
+# Lynx is preprocessed with itself, but can't be run on a standard Lox
+# interpreter because it is split into multiple modules. This file contains a
+# list of every module used by Lynx in the order they should be included. This
+# allows a usable bootstrap version of Lynx to be built before it is
+# preprocessed.
+
+# Standard library:
+<call_main>
+
+# Temporary modules:
+temp/get_message.lox
+
+# Main:
+main.lox

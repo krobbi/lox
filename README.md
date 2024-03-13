@@ -33,9 +33,9 @@ I have followed this book before, so I started on the second half with the
 bytecode interpreter. All of the original chapters have been completed and I am
 adding some additional features:
 * [x] More native functions to improve Lox's I/O capabilities.
-* [ ] Source merging script for bootstrapping preprocessor.
-* [ ] Preprocessor for basic C-like modularity.
-* [ ] Standard library of useful functions and collections.
+* [x] Source merging script for bootstrapping a preprocessor.
+* [x] Standard library of useful functions and collections.
+* [ ] Preprocessor for C-like modularity.
 * [ ] Implementation of Lox, or another language in Lox.
 
 # Extensions

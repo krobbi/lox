@@ -1,0 +1,10 @@
+// Lynx
+// Lox preprocessor.
+
+// Run Lynx from arguments and return an exit status code.
+fun main(argc, argv) {
+	print getMessage();
+	return 0;
+}
+
+callMain(main);
