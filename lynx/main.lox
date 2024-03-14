@@ -2,7 +2,13 @@
 // Lox preprocessor.
 
 // Run Lynx from arguments and return an exit status code.
-fun main(argc, argv) {
+fun main(args) {
+	print args.getLength();
+	
+	for (var iter = args.iter(); iter.hasNext();) {
+		print iter.getNext();
+	}
+	
 	print getMessage();
 	return 0;
 }

@@ -5,11 +5,14 @@
 # allows a usable bootstrap version of Lynx to be built before it is
 # preprocessed.
 
-# Standard library:
-<call_main>
+# List collection:
+<collections/list/node>
+<collections/list/iterator>
+<collections/list>
 
 # Temporary modules:
 temp/get_message.lox
 
-# Main:
+# Main function:
+<call_main>
 main.lox

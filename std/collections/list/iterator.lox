@@ -1,0 +1,25 @@
+// An iterator for a list.
+class ListIterator {
+	// Initialize the list iterator from its next list node.
+	init(next) {
+		// The list iterator's next list node.
+		this._next = next;
+	}
+	
+	// Get whether the list iterator has a next element.
+	hasNext() {
+		return this._next != nil;
+	}
+	
+	// Get the next element from the list iterator.
+	getNext() {
+		var next = this._next;
+		
+		if (next) {
+			this._next = next.next;
+			return next.elem;
+		} else {
+			return nil;
+		}
+	}
+}

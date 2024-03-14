@@ -1,8 +1,18 @@
 // Call a main function with arguments and exit if a non-zero exit status code
 // was returned.
 fun callMain(main) {
-	// TODO: Implement list collection and call main with an argument list.
-	var status = main(__argc(), __argv);
+	var args = List();
+	
+	{
+		var argc = __argc();
+		var argv = __argv;
+		
+		for (var i = 0; i < argc; i = i + 1) {
+			args.pushBack(argv(i));
+		}
+	}
+	
+	var status = main(args);
 	
 	if (status != 0) {
 		__exit(status);
