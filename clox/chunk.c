@@ -34,6 +34,16 @@ void writeChunk(Chunk *chunk, uint8_t byte, int line) {
 
 int addConstant(Chunk *chunk, Value value) {
 	push(value);
+	
+#ifdef CONSTANT_MERGING
+	for (int i = 0; i < chunk->constants.count; i++) {
+		if (valuesEqual(value, chunk->constants.values[i])) {
+			pop();
+			return i;
+		}
+	}
+#endif // CONSTANT_MERGING
+	
 	writeValueArray(&chunk->constants, value);
 	pop();
 	return chunk->constants.count - 1;

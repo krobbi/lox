@@ -11,6 +11,9 @@
 // Use non-standard native extension functions.
 #define EXTENSIONS
 
+// Merge constant indices for constants with equal values.
+#define CONSTANT_MERGING
+
 // Disassemble bytecode after compilation.
 //#define DEBUG_PRINT_CODE
 
