@@ -1,60 +1,9 @@
 // Lynx
 // Lox preprocessor.
 
-// Print the contents of a map.
-fun dumpMap(map) {
-	for (var iter = map.iter(); iter.hasNext();) {
-		var key = iter.getNext();
-		print "  " + key + ": " + map.get(key);
-	}
-}
-
 // Run Lynx from arguments and return an exit status code.
 fun main(args) {
-	print args.getLength();
-	
-	for (var iter = args.iter(); iter.hasNext();) {
-		print iter.getNext();
-	}
-	
-	var map = Map();
-	print "Created map:";
-	print "Expect 'false's:";
-	print map.has("foo");
-	print map.has("bar");
-	print map.has("baz");
-	print map.has("qux");
-	dumpMap(map);
-	
-	print "Initialized map:";
-	map.set("foo", "Alpha");
-	map.set("bar", "test");
-	map.set("baz", "Charlie");
-	print "Expect 'true's:";
-	print map.has("foo");
-	print map.has("bar");
-	print map.has("baz");
-	print "Expect 'false':";
-	print map.has("qux");
-	dumpMap(map);
-	
-	print "Updated map:";
-	map.set("bar", "Bravo");
-	dumpMap(map);
-	
-	print "Removed middle:";
-	map.remove("bar");
-	print "Expect 'false':";
-	print map.has("bar");
-	dumpMap(map);
-	
-	print "Removed head:";
-	map.remove("baz");
-	print "Expect 'false':";
-	print map.has("baz");
-	dumpMap(map);
-	
-	print getMessage();
+	print "Hello, Lynx!";
 	return 0;
 }
 

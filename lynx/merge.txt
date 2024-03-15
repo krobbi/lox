@@ -15,8 +15,12 @@
 <collections/map/iterator>
 <collections/map>
 
-# Temporary modules:
-temp/get_message.lox
+# Tests:
+# These tests should only be included in the bootstrap version of Lynx. The
+# tests will run before the main function, and may exit with an exit code if any
+# of the tests fail.
+tests/cases/lists.lox
+tests/run.lox
 
 # Main function:
 <call_main>

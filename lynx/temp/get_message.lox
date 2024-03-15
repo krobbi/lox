@@ -1,4 +1,0 @@
-// Get a temporary message for testing Lynx.
-fun getMessage() {
-	return "Hello, Lynx!";
-}

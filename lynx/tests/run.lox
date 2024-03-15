@@ -1,0 +1,131 @@
+{
+	// A test case.
+	class TestCase {
+		// Initialize the test case from its test suite.
+		init(suite) {
+			this._suite = suite;
+		}
+		
+		// Begin a section.
+		begin(name) {
+			this._suite.beginSection(name);
+		}
+		
+		// End a section.
+		end(name) {
+			this._suite.endSection(name);
+		}
+		
+		// Run an equality test.
+		eq(name, left, right) {
+			if (left != right) {
+				this._suite.logTestError(name);
+			}
+		}
+	}
+	
+	// A test suite.
+	class TestSuite {
+		// Initialize the test suite.
+		init(name) {
+			// The test suite's name.
+			this._name = name;
+			
+			// The test suite's section path.
+			this._path = List();
+			
+			// Whether the test suite contains any errors.
+			this._hasErrors = false;
+			
+			this._eprint("Testing " + name + ":");
+		}
+		
+		// Run a test function.
+		run(name, fn) {
+			var hadErrors = this._hasErrors;
+			this._hasErrors = false;
+			this._eprint(" * " + name + ":");
+			
+			this.beginSection(name);
+			fn(TestCase(this));
+			
+			if (this._path.getLength() == 1) {
+				this.endSection(name);
+			} else {
+				this._logError("Unbalanced sections in test function '" + name + "'.");
+				this._path.clear();
+			}
+			
+			if (!this._hasErrors) {
+				this._eprint("      Passed.");
+				
+				if (hadErrors) {
+					this._hasErrors = true;
+				}
+			}
+		}
+		
+		// Finish the test suite.
+		finish() {
+			if (this._hasErrors) {
+				this._eprint("Error!");
+				__exit(1);
+			} else {
+				this._eprint("OK!");
+			}
+		}
+		
+		// Begin a section.
+		beginSection(name) {
+			this._path.pushBack(name);
+		}
+		
+		// End a section.
+		endSection(name) {
+			if (this._path.isEmpty()) {
+				this._logError("Cannot end section '" + name + "' outside of a section.");
+				return;
+			}
+			
+			var expected = this._path.popBack();
+			
+			if (name != expected) {
+				this._logError("Ended section '" + name + "', expected '" + expected + "'.");
+			}
+		}
+		
+		// Log a test error in the test suite.
+		logTestError(name) {
+			this._logError("Test '" + name + "' failed.");
+		}
+		
+		// Print a message to the standard error stream.
+		_eprint(message) {
+			var length = __strlen(message);
+			var stderr = __stderr();
+			
+			for (var i = 0; i < length; i = i + 1) {
+				__fputc(__chrat(message, i), stderr);
+			}
+			
+			__fputc(10, stderr);
+		}
+		
+		// Log an error in the test suite.
+		_logError(message) {
+			var path = this._name;
+			
+			for (var iter = this._path.iter(); iter.hasNext();) {
+				path = path + " > " + iter.getNext();
+			}
+			
+			this._eprint("    * Error at " + path + ":");
+			this._eprint("         " + message);
+			this._hasErrors = true;
+		}
+	}
+	
+	var suite = TestSuite("Lynx");
+	suite.run("Lists", testLists);
+	suite.finish();
+}
