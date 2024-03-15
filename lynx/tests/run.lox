@@ -127,5 +127,6 @@
 	
 	var suite = TestSuite("Lynx");
 	suite.run("Lists", testLists);
+	suite.run("Strings", testStrings);
 	suite.finish();
 }

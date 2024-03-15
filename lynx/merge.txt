@@ -20,6 +20,7 @@
 # tests will run before the main function, and may exit with an exit code if any
 # of the tests fail.
 tests/cases/lists.lox
+tests/cases/strings.lox
 tests/run.lox
 
 # Main function:
