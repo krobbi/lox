@@ -1,0 +1,25 @@
+// An iterator for a map.
+class MapIterator {
+	// Initialize the map iterator from its next map node.
+	init(next) {
+		// The map iterator's next map node.
+		this._next = next;
+	}
+	
+	// Get whether the map iterator has a next key.
+	hasNext() {
+		return this._next != nil;
+	}
+	
+	// Get the next key from the map iterator.
+	getNext() {
+		var next = this._next;
+		
+		if (next) {
+			this._next = next.next;
+			return next.key;
+		} else {
+			return nil;
+		}
+	}
+}

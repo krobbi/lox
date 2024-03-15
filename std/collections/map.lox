@@ -1,0 +1,72 @@
+// A map of keys to values.
+class Map {
+	// Initialize the map.
+	init() {
+		// The most recently created node of the map.
+		this._head = nil;
+	}
+	
+	// Get whether the map contains a key.
+	has(key) {
+		return this._find(key) != nil;
+	}
+	
+	// Get a value from the map from its key.
+	get(key) {
+		var node = this._find(key);
+		
+		if (node) {
+			return node.value;
+		} else {
+			return nil;
+		}
+	}
+	
+	// Set a key-value pair in the map.
+	set(key, value) {
+		var node = this._find(key);
+		
+		if (node) {
+			node.value = value;
+		} else {
+			this._head = MapNode(key, value, this._head);
+		}
+	}
+	
+	// Remove a key from the map.
+	remove(key) {
+		var prev = nil;
+		var node = this._head;
+		
+		while (node) {
+			if (node.key == key) {
+				if (prev) {
+					prev.next = node.next;
+				} else {
+					this._head = node.next;
+				}
+				
+				return;
+			}
+			
+			prev = node;
+			node = node.next;
+		}
+	}
+	
+	// Create an iterator for the map's keys.
+	iter() {
+		return MapIterator(this._head);
+	}
+	
+	// Find a node in the map from its key.
+	_find(key) {
+		for (var node = this._head; node; node = node.next) {
+			if (node.key == key) {
+				return node;
+			}
+		}
+		
+		return nil;
+	}
+}

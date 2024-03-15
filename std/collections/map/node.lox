@@ -1,0 +1,14 @@
+// A node of a map.
+class MapNode {
+	// Initialize the map node from its key, value, and next map node.
+	init(key, value, next) {
+		// The map node's key.
+		this.key = key;
+		
+		// The map node's value.
+		this.value = value;
+		
+		// The map node's next map node.
+		this.next = next;
+	}
+}

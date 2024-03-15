@@ -10,6 +10,11 @@
 <collections/list/iterator>
 <collections/list>
 
+# Map collection:
+<collections/map/node>
+<collections/map/iterator>
+<collections/map>
+
 # Temporary modules:
 temp/get_message.lox
 
