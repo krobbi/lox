@@ -1,0 +1,66 @@
+// Run unit tests for arguments.
+fun testArgs(t) {
+	t.begin("Count");
+		var argc = __argc();
+		t.eq("number", argc > 0, true);
+		
+		t.begin("Invalid Arguments");
+			t.eq("nil", __argc(nil), nil);
+			t.eq("true", __argc(true), nil);
+			t.eq("false", __argc(false), nil);
+			t.eq("number", __argc(123), nil);
+			t.eq("string", __argc("String"), nil);
+			t.eq("object", __argc(testArgs), nil);
+		t.end("Invalid Arguments");
+		
+		t.eq("constant", __argc(), argc);
+	t.end("Count");
+	
+	t.begin("Values");
+		var path = __argv(0);
+		t.eq("string", path + "", path);
+		t.eq("boundary", __argv(argc - 0.0000000001) + "", __argv(argc - 1));
+		
+		t.begin("Fractional");
+			t.eq(".01", __argv(0.01), path);
+			t.eq(".25", __argv(0.25), path);
+			t.eq(".5", __argv(0.5), path);
+			t.eq(".75", __argv(0.75), path);
+			t.eq(".99", __argv(0.99), path);
+		t.end("Fractional");
+		
+		t.begin("Below Bounds");
+			t.begin("Truncated to 0");
+				t.eq("epsilon", __argv(-0.0000000001), path);
+				t.eq(".01", __argv(-0.01), path);
+				t.eq(".25", __argv(-0.25), path);
+				t.eq(".5", __argv(-0.5), path);
+				t.eq(".75", __argv(-0.75), path);
+				t.eq(".99", __argv(-0.99), path);
+				t.eq("lower", __argv(-0.999999999), path);
+			t.end("Truncated to 0");
+			
+			t.eq("1", __argv(-1), nil);
+			t.eq("large", __argv(-1000000000), nil);
+		t.end("Below Bounds");
+		
+		t.begin("Above Bounds");
+			t.eq("0", __argv(argc), nil);
+			t.eq("epsilon", __argv(argc + 0.0000000001), nil);
+			t.eq("1", __argv(argc + 1), nil);
+			t.eq("large", __argv(argc + 1000000000), nil);
+		t.end("Above Bounds");
+		
+		t.begin("Invalid Arguments");
+			t.eq("not enough", __argv(), nil);
+			t.eq("too many", __argv(0, 0), nil);
+			t.eq("nil", __argv(nil), nil);
+			t.eq("true", __argv(true), nil);
+			t.eq("false", __argv(false), nil);
+			t.eq("string", __argv("String"), nil);
+			t.eq("object", __argv(testArgs), nil);
+		t.end("Invalid Arguments");
+		
+		t.eq("constant", __argv(0), path);
+	t.end("Values");
+}

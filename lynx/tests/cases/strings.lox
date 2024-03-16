@@ -105,19 +105,16 @@ fun testStrings(t) {
 		t.end("Empty");
 		
 		t.begin("Below Bounds");
-			// There is a strange edge case here. Integer parameters to
-			// extension functions are truncated, so `-0.x` becomes `0`. This is
-			// technically behaving as documented, but could cause confusion.
-			// This 'feature' caught me out while writing this test.
-			t.eq("epsilon", __chrat("Below", -0.0000000001), 66);
-			t.eq(".01", __chrat("Below", -0.01), 66);
-			t.eq(".25", __chrat("Below", -0.25), 66);
-			t.eq(".5", __chrat("Below", -0.5), 66);
-			t.eq(".75", __chrat("Below", -0.75), 66);
-			t.eq(".99", __chrat("Below", -0.99), 66);
-			t.eq("lower", __chrat("Below", -0.999999999), 66);
+			t.begin("Truncated to 0");
+				t.eq("epsilon", __chrat("Below", -0.0000000001), 66);
+				t.eq(".01", __chrat("Below", -0.01), 66);
+				t.eq(".25", __chrat("Below", -0.25), 66);
+				t.eq(".5", __chrat("Below", -0.5), 66);
+				t.eq(".75", __chrat("Below", -0.75), 66);
+				t.eq(".99", __chrat("Below", -0.99), 66);
+				t.eq("lower", __chrat("Below", -0.999999999), 66);
+			t.end("Truncated to 0");
 			
-			// These indices are below bounds as expected.
 			t.eq("1", __chrat("Below", -1), nil);
 			t.eq("large", __chrat("Below", -1000000000), nil);
 		t.end("Below Bounds");
