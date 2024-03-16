@@ -1,0 +1,48 @@
+// Run unit tests for standard stream constants.
+fun testStreams(t) {
+	var input = __stdin();
+	var output = __stdout();
+	var error = __stderr();
+	
+	t.begin("Input");
+		t.eq("value", __stdin(), 0);
+		
+		t.begin("Unique");
+			t.eq("output", __stdin() == __stdout(), false);
+			t.eq("error", __stdin() == __stderr(), false);
+		t.end("Unique");
+		
+		t.begin("Constant");
+			t.eq("constant", __stdin(), input);
+			t.eq("value", input, 0);
+		t.end("Constant");
+	t.end("Input");
+	
+	t.begin("Output");
+		t.eq("value", __stdout(), 1);
+		
+		t.begin("Unique");
+			t.eq("input", __stdout() == __stdin(), false);
+			t.eq("error", __stdout() == __stderr(), false);
+		t.end("Unique");
+		
+		t.begin("Constant");
+			t.eq("constant", __stdout(), output);
+			t.eq("value", output, 1);
+		t.end("Constant");
+	t.end("Output");
+	
+	t.begin("Error");
+		t.eq("value", __stderr(), 2);
+		
+		t.begin("Unique");
+			t.eq("input", __stderr() == __stdin(), false);
+			t.eq("output", __stderr() == __stdout(), false);
+		t.end("Unique");
+		
+		t.begin("Constant");
+			t.eq("constant", __stderr(), error);
+			t.eq("value", error, 2);
+		t.end("Constant");
+	t.end("Error");
+}
