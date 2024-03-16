@@ -128,6 +128,7 @@
 	var suite = TestSuite("Lynx");
 	suite.run("Args", testArgs);
 	suite.run("Lists", testLists);
+	suite.run("Maps", testMaps);
 	suite.run("Streams", testStreams);
 	suite.run("Strings", testStrings);
 	suite.finish();

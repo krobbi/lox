@@ -1,0 +1,167 @@
+// Run unit tests for maps.
+fun testMaps(t) {
+	// Get whether a map is empty.
+	fun mapEmpty(map) {
+		return !map.iter().hasNext();
+	}
+	
+	// Get the number of keys in a map.
+	fun mapLength(map) {
+		var length = 0;
+		
+		for (var iter = map.iter(); iter.hasNext(); length = length + 1) {
+			iter.getNext();
+		}
+		
+		return length;
+	}
+	
+	t.begin("New");
+		var map = Map();
+		t.eq("empty", mapEmpty(map), true);
+		t.eq("length", mapLength(map), 0);
+	t.end("New");
+	
+	t.begin("Populate");
+		t.begin("Key 0");
+			map.set("Vocals", "Freddie");
+			t.eq("empty", mapEmpty(map), false);
+			t.eq("length", mapLength(map), 1);
+		t.end("Key 0");
+		
+		t.begin("Key 1");
+			map.set("Guitar", "Brian");
+			t.eq("empty", mapEmpty(map), false);
+			t.eq("length", mapLength(map), 2);
+		t.end("Key 1");
+		
+		t.begin("Key 2");
+			map.set("Bass", "Mike");
+			t.eq("empty", mapEmpty(map), false);
+			t.eq("length", mapLength(map), 3);
+		t.end("Key 2");
+		
+		t.begin("Key 3");
+			map.set("Drums", "Roger");
+			t.eq("empty", mapEmpty(map), false);
+			t.eq("length", mapLength(map), 4);
+		t.end("Key 3");
+	t.end("Populate");
+	
+	t.begin("Has");
+		t.eq("key 2", map.has("Bass"), true);
+		t.eq("key 0", map.has("Vocals"), true);
+		t.eq("key 3", map.has("Drums"), true);
+		t.eq("key 1", map.has("Guitar"), true);
+		t.eq("case", map.has("vocals"), false);
+		t.eq("missing", map.has("Kazoo"), false);
+	t.end("Has");
+	
+	t.begin("Get");
+		t.eq("key 1", map.get("Guitar"), "Brian");
+		t.eq("key 0", map.get("Vocals"), "Freddie");
+		t.eq("key 3", map.get("Drums"), "Roger");
+		t.eq("key 2", map.get("Bass"), "Mike");
+		t.eq("case", map.get("vocals"), nil);
+		t.eq("missing", map.get("Kazoo"), nil);
+	t.end("Get");
+	
+	t.begin("Set");
+		map.set("Bass", "Barry");
+		map.set("Bass", "Doug");
+		map.set("Bass", "John");
+		t.eq("empty", mapEmpty(map), false);
+		t.eq("length", mapLength(map), 4);
+		t.eq("value", map.get("Bass"), "John");
+	t.end("Set");
+	
+	// Maps iterate from the newest to the oldest inserted (not necessarily set)
+	// key. This is a because of how maps are implemented and not a documented
+	// feature.
+	t.begin("Iterator");
+		var iter = map.iter();
+		
+		t.begin("Key 3");
+			t.eq("exists", iter.hasNext(), true);
+			t.eq("key", iter.getNext(), "Drums");
+		t.end("Key 3");
+		
+		t.begin("Key 2");
+			t.eq("exists", iter.hasNext(), true);
+			t.eq("key", iter.getNext(), "Bass");
+		t.end("Key 2");
+		
+		t.begin("Key 1");
+			t.eq("exists", iter.hasNext(), true);
+			t.eq("key", iter.getNext(), "Guitar");
+		t.end("Key 1");
+		
+		t.begin("Key 0");
+			t.eq("exists", iter.hasNext(), true);
+			t.eq("key", iter.getNext(), "Vocals");
+		t.end("Key 0");
+		
+		t.begin("Above Bounds");
+			t.eq("exists", iter.hasNext(), false);
+			t.eq("key", iter.getNext(), nil);
+		t.end("Above Bounds");
+	t.end("Iterator");
+	
+	t.begin("Reinsert");
+		t.begin("Before");
+			t.eq("empty", mapEmpty(map), false);
+			t.eq("length", mapLength(map), 4);
+			t.eq("exists", map.has("Vocals"), true);
+			t.eq("order", map.iter().getNext(), "Drums");
+		t.end("Before");
+		
+		t.begin("Remove");
+			map.remove("Vocals");
+			t.eq("empty", mapEmpty(map), false);
+			t.eq("length", mapLength(map), 3);
+		t.end("Remove");
+		
+		t.begin("After");
+			map.set("Vocals", "Freddie");
+			t.eq("empty", mapEmpty(map), false);
+			t.eq("length", mapLength(map), 4);
+			t.eq("order", map.iter().getNext(), "Vocals");
+		t.end("After");
+	t.end("Reinsert");
+	
+	t.begin("Removal");
+		map.remove("Bass");
+		map.remove("Drums");
+		map.remove("Guitar");
+		map.remove("Vocals");
+		t.eq("empty", mapEmpty(map), true);
+		t.eq("length", mapLength(map), 0);
+		t.eq("key 2", map.get("Bass"), nil);
+		t.eq("key 3", map.get("Drums"), nil);
+		t.eq("key 1", map.get("Guitar"), nil);
+		t.eq("key 0", map.get("Vocals"), nil);
+	t.end("Removal");
+	
+	t.begin("Keys");
+		map.set(nil, "Nil");
+		map.set(true, mapLength);
+		map.set(false, mapEmpty);
+		map.set(123, 456);
+		map.set(123.456, 7.89);
+		map.set("123", "321");
+		map.set("", "Empty string");
+		map.set(mapEmpty, "Object");
+		t.eq("empty", mapEmpty(map), false);
+		t.eq("length", mapLength(map), 8);
+		t.eq("nil", map.get(nil), "Nil");
+		t.eq("true", map.get(true), mapLength);
+		t.eq("false", map.get(false), mapEmpty);
+		t.eq("int", map.get(123), 456);
+		t.eq("float", map.get(123.456), 7.89);
+		t.eq("string", map.get("123"), "321");
+		t.eq("blank", map.get(""), "Empty string");
+		t.eq("object", map.get(mapEmpty), "Object");
+		t.eq("missing", map.get(mapLength), nil);
+		t.eq("precision", map.get(123.4560000001), nil);
+	t.end("Keys");
+}

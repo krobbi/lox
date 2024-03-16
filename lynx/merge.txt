@@ -21,6 +21,7 @@
 # of the tests fail.
 tests/cases/args.lox
 tests/cases/lists.lox
+tests/cases/maps.lox
 tests/cases/streams.lox
 tests/cases/strings.lox
 tests/run.lox
