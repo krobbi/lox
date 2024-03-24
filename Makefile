@@ -28,6 +28,7 @@ LYNX_DIR := lynx
 LYNX_SRCS := $(call wild,$(LYNX_DIR),*.lox)
 LYNX_MRGE := $(LYNX_DIR)/merge.txt
 LYNX_STG0 := $(BIN_DIR)/lynx_stage_0.lox
+LYNX_STG1 := $(BIN_DIR)/lynx_stage_1.lox
 
 # Windows executables:
 ifeq ($(OS),Windows_NT)
@@ -36,9 +37,7 @@ endif
 
 # Build Lynx:
 .PHONY: all
-all: $(LYNX_STG0)
-	@ echo "Running '$<'..."
-	@ $(CLOX_EXEC) $<
+all: $(LYNX_STG1)
 
 # Clean binaries directory:
 .PHONY: clean
@@ -66,3 +65,9 @@ $(CLOX_EXEC): $(CLOX_OBJS)
 $(LYNX_STG0): $(CLOX_EXEC) $(MERGE) $(LYNX_MRGE) $(LYNX_SRCS) $(STD_SRCS)
 	@ echo "Merging '$@'..."
 	@ $(CLOX_EXEC) $(MERGE) $(LYNX_MRGE) $(STD_DIR) $@
+
+# Preprocess Lynx stage 1 from Lynx stage 0:
+.DELETE_ON_ERROR: $(LYNX_STG1)
+$(LYNX_STG1): $(LYNX_STG0)
+	@ echo "Preprocessing '$@'..."
+	@ $(CLOX_EXEC) $<
