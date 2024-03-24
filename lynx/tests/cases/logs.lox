@@ -1,0 +1,113 @@
+// Run unit tests for logs.
+fun testLogs(t) {
+	// A log adapted for unit testing.
+	class TestLog < Log {
+		// Initialize the test log.
+		init() {
+			super.init();
+			
+			// The test log's printed messages.
+			this._testMessages = List();
+		}
+		
+		// Expose the test log's records.
+		testGetRecords() {
+			return this._records;
+		}
+		
+		// Expose the test log's printed messages.
+		testGetMessages() {
+			return this._testMessages;
+		}
+		
+		// Override to capture output.
+		_eprint(message) {
+			this._testMessages.pushBack(message);
+		}
+	}
+	
+	t.begin("New");
+		var log = TestLog();
+		t.eq("error", log.hasErrors(), false);
+		
+		t.begin("Records");
+			var records = log.testGetRecords();
+			t.eq("empty", records.isEmpty(), true);
+			t.eq("length", records.getLength(), 0);
+		t.end("Records");
+		
+		t.begin("Messages");
+			var messages = log.testGetMessages();
+			t.eq("empty", messages.isEmpty(), true);
+			t.eq("length", messages.getLength(), 0);
+		t.end("Messages");
+	t.end("New");
+	
+	t.begin("Log");
+		t.begin("Message 0");
+			log.logError("Message 0");
+			t.eq("error", log.hasErrors(), true);
+			
+			t.begin("Records");
+				t.eq("empty", records.isEmpty(), false);
+				t.eq("length", records.getLength(), 1);
+				t.eq("message", records.get(0).getMessage(), "Message 0");
+			t.end("Records");
+			
+			t.begin("Messages");
+				t.eq("empty", messages.isEmpty(), true);
+				t.eq("length", messages.getLength(), 0);
+			t.end("Messages");
+		t.end("Message 0");
+		
+		t.begin("Message 1");
+			log.logError("Message 1");
+			t.eq("error", log.hasErrors(), true);
+			
+			t.begin("Records");
+				t.eq("empty", records.isEmpty(), false);
+				t.eq("length", records.getLength(), 2);
+				t.eq("message", records.get(1).getMessage(), "Message 1");
+			t.end("Records");
+			
+			t.begin("Messages");
+				t.eq("empty", messages.isEmpty(), true);
+				t.eq("length", messages.getLength(), 0);
+			t.end("Messages");
+		t.end("Message 1");
+		
+		t.begin("Message 2");
+			log.logError("Message 2");
+			t.eq("error", log.hasErrors(), true);
+			
+			t.begin("Records");
+				t.eq("empty", records.isEmpty(), false);
+				t.eq("length", records.getLength(), 3);
+				t.eq("message", records.get(2).getMessage(), "Message 2");
+			t.end("Records");
+			
+			t.begin("Messages");
+				t.eq("empty", messages.isEmpty(), true);
+				t.eq("length", messages.getLength(), 0);
+			t.end("Messages");
+		t.end("Message 2");
+	t.end("Log");
+	
+	t.begin("Flush");
+		log.flush();
+		t.eq("error", log.hasErrors(), true);
+		
+		t.begin("Records");
+			t.eq("empty", records.isEmpty(), true);
+			t.eq("length", records.getLength(), 0);
+		t.end("Records");
+		
+		t.begin("Messages");
+			t.eq("empty", messages.isEmpty(), false);
+			t.eq("length", messages.getLength(), 3);
+			t.eq("message 0", messages.get(0), "[Error] Message 0");
+			t.eq("message 1", messages.get(1), "[Error] Message 1");
+			t.eq("message 2", messages.get(2), "[Error] Message 2");
+		t.end("Messages");
+	t.end("Flush");
+}

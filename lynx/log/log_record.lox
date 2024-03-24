@@ -1,0 +1,13 @@
+// A record of a log.
+class LogRecord {
+	// Initialize the log record from its message.
+	init(message) {
+		// The log record's message.
+		this._message = message;
+	}
+	
+	// Get the log record's message.
+	getMessage() {
+		return this._message;
+	}
+}

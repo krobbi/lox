@@ -15,12 +15,17 @@
 <collections/map/iterator>
 <collections/map>
 
+# Log:
+log/log_record.lox
+log/log.lox
+
 # Tests:
 # These tests should only be included in the bootstrap version of Lynx. The
 # tests will run before the main function, and may exit with an exit code if any
 # of the tests fail.
 tests/cases/args.lox
 tests/cases/lists.lox
+tests/cases/logs.lox
 tests/cases/maps.lox
 tests/cases/streams.lox
 tests/cases/strings.lox

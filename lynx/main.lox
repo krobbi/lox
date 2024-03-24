@@ -3,7 +3,14 @@
 
 // Run Lynx from arguments and return an exit status code.
 fun main(args) {
-	print "Hello, Lynx!";
+	var log = Log();
+	log.logError("Hello, Lynx!");
+	
+	if (log.hasErrors()) {
+		log.flush();
+		//return 1; // TODO: Uncomment when errors are no longer expected.
+	}
+	
 	return 0;
 }
 

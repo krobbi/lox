@@ -1,0 +1,43 @@
+// A log of messages.
+class Log {
+	// Initialize the log.
+	init() {
+		// The log's records.
+		this._records = List();
+		
+		// Whether the log contains any errors.
+		this._hasErrors = false;
+	}
+	
+	// Get whether the log contains any errors.
+	hasErrors() {
+		return this._hasErrors;
+	}
+	
+	// Log an error message.
+	logError(message) {
+		this._records.pushBack(LogRecord(message));
+		this._hasErrors = true;
+	}
+	
+	// Clear and print the log's messages.
+	flush() {
+		for (var iter = this._records.iter(); iter.hasNext();) {
+			this._eprint("[Error] " + iter.getNext().getMessage());
+		}
+		
+		this._records.clear();
+	}
+	
+	// Print a message to the standard error stream.
+	_eprint(message) {
+		var length = __strlen(message);
+		var stderr = __stderr();
+		
+		for (var i = 0; i < length; i = i + 1) {
+			__fputc(__chrat(message, i), stderr);
+		}
+		
+		__fputc(10, stderr);
+	}
+}
