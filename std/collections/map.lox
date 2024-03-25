@@ -13,12 +13,17 @@ class Map {
 	
 	// Get a value from the map from its key.
 	get(key) {
+		return this.getDefault(key, nil);
+	}
+	
+	// Get a value from the map from its key, or return a default value.
+	getDefault(key, default) {
 		var node = this._find(key);
 		
 		if (node) {
 			return node.value;
 		} else {
-			return nil;
+			return default;
 		}
 	}
 	

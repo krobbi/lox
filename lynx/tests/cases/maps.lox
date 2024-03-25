@@ -64,6 +64,15 @@ fun testMaps(t) {
 		t.eq("key 2", map.get("Bass"), "Mike");
 		t.eq("case", map.get("vocals"), nil);
 		t.eq("missing", map.get("Kazoo"), nil);
+		
+		t.begin("Default");
+			t.eq("key 1", map.getDefault("Guitar", "George"), "Brian");
+			t.eq("key 0", map.getDefault("Vocals", "John"), "Freddie");
+			t.eq("key 3", map.getDefault("Drums", "Ringo"), "Roger");
+			t.eq("key 2", map.getDefault("Bass", "Paul"), "Mike");
+			t.eq("case", map.getDefault("vocals", "freddie"), "freddie");
+			t.eq("missing", map.getDefault("Kazoo", "Bob"), "Bob");
+		t.end("Default");
 	t.end("Get");
 	
 	t.begin("Set");
