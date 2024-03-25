@@ -1,0 +1,175 @@
+// An enumeration of token types.
+class TokenType {
+	// Initialize the token type enumeration.
+	init() {
+		// A map of token types to names.
+		this._typeNames = Map();
+		
+		// A map of characters to token types.
+		this._charTypes = Map();
+		
+		// A map of keyword lexemes to token types.
+		this._keywordTypes = Map();
+		
+		var count = 0;
+		
+		// Define a token type from its name.
+		fun defineToken(name) {
+			var type = (count = count + 1) - 1;
+			this._typeNames.set(type, name);
+			return type;
+		}
+		
+		// Define a single-character token type from its lexeme.
+		fun defineChar(lexeme) {
+			var type = defineToken("'" + lexeme + "'");
+			this._charTypes.set(__chrat(lexeme, 0), type);
+			return type;
+		}
+		
+		// Define a keyword token type from its lexeme.
+		fun defineKeyword(lexeme) {
+			var type = defineToken("'" + lexeme + "'");
+			this._keywordTypes.set(lexeme, type);
+			return type;
+		}
+		
+		// A `(` token's type.
+		this.LEFT_PAREN = defineChar("(");
+		
+		// A `)` token's type.
+		this.RIGHT_PAREN = defineChar(")");
+		
+		// A `{` token's type.
+		this.LEFT_BRACE = defineChar("{");
+		
+		// A `}` token's type.
+		this.RIGHT_BRACE = defineChar("}");
+		
+		// A `,` token's type.
+		this.COMMA = defineChar(",");
+		
+		// A `.` token's type.
+		this.DOT = defineChar(".");
+		
+		// A `-` token's type.
+		this.MINUS = defineChar("-");
+		
+		// A `+` token's type.
+		this.PLUS = defineChar("+");
+		
+		// A `;` token's type.
+		this.SEMICOLON = defineChar(";");
+		
+		// A `/` token's type.
+		this.SLASH = defineToken("'/'"); // May be scanned before a comment.
+		
+		// A `*` token's type.
+		this.STAR = defineChar("*");
+		
+		// A `!` token's type.
+		this.BANG = defineToken("'!'"); // May be scanned before `!=`.
+		
+		// A `!=` token's type.
+		this.BANG_EQUAL = defineToken("'!='");
+		
+		// An `=` token's type.
+		this.EQUAL = defineToken("'='"); // May be scanned before `==`.
+		
+		// An `==` token's type.
+		this.EQUAL_EQUAL = defineToken("'=='");
+		
+		// A `>` token's type.
+		this.GREATER = defineToken("'>'"); // May be scanned before `>=`.
+		
+		// A `>=` token's type.
+		this.GREATER_EQUAL = defineToken("'>='");
+		
+		// A `<` token's type.
+		this.LESS = defineToken("'<'"); // May be scanned before `<=`.
+		
+		// A `<=` token's type.
+		this.LESS_EQUAL = defineToken("'<='");
+		
+		// An identifier token's type.
+		this.IDENTIFIER = defineToken("identifier");
+		
+		// A string token's type.
+		this.STRING = defineToken("string");
+		
+		// A number token's type.
+		this.NUMBER = defineToken("number");
+		
+		// An `and` token's type.
+		this.AND = defineKeyword("and");
+		
+		// A `class` token's type.
+		this.CLASS = defineKeyword("class");
+		
+		// An `else` token's type.
+		this.ELSE = defineKeyword("else");
+		
+		// A `false` token's type.
+		this.FALSE = defineKeyword("false");
+		
+		// A `for` token's type.
+		this.FOR = defineKeyword("for");
+		
+		// A `fun` token's type.
+		this.FUN = defineKeyword("fun");
+		
+		// An `if` token's type.
+		this.IF = defineKeyword("if");
+		
+		// A `nil` token's type.
+		this.NIL = defineKeyword("nil");
+		
+		// An `or` token's type.
+		this.OR = defineKeyword("or");
+		
+		// A `print` token's type.
+		this.PRINT = defineKeyword("print");
+		
+		// A `return` token's type.
+		this.RETURN = defineKeyword("return");
+		
+		// A `super` token's type.
+		this.SUPER = defineKeyword("super");
+		
+		// A `this` token's type.
+		this.THIS = defineKeyword("this");
+		
+		// A `true` token's type.
+		this.TRUE = defineKeyword("true");
+		
+		// A `var` token's type.
+		this.VAR = defineKeyword("var");
+		
+		// A `while` token's type.
+		this.WHILE = defineKeyword("while");
+		
+		// A whitespace, comment, or syntax error token's type.
+		this.ERROR = defineToken("error");
+		
+		// An end-of-file token's type.
+		this.EOF = defineToken("end-of-file");
+	}
+	
+	// Get a token type from a character.
+	fromChar(char) {
+		return this._charTypes.get(char);
+	}
+	
+	// Get a token type from a keyword lexeme.
+	fromKeyword(lexeme) {
+		return this._keywordTypes.get(lexeme);
+	}
+	
+	// Get a token type's name.
+	getName(type) {
+		return this._typeNames.getDefault(type, "unknown");
+	}
+}
+
+// The enumeration of token types.
+var TokenType = TokenType();

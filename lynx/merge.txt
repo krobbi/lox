@@ -19,6 +19,9 @@
 log/log_record.lox
 log/log.lox
 
+# Token:
+token/token_type.lox
+
 # Tests:
 # These tests should only be included in the bootstrap version of Lynx. The
 # tests will run before the main function, and may exit with an exit code if any
@@ -29,6 +32,7 @@ tests/cases/logs.lox
 tests/cases/maps.lox
 tests/cases/streams.lox
 tests/cases/strings.lox
+tests/cases/tokens.lox
 tests/run.lox
 
 # Main function:

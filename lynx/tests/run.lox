@@ -132,5 +132,6 @@
 	suite.run("Maps", testMaps);
 	suite.run("Streams", testStreams);
 	suite.run("Strings", testStrings);
+	suite.run("Tokens", testTokens);
 	suite.finish();
 }
