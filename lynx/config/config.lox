@@ -1,0 +1,81 @@
+// Configuration for Lynx.
+class Config {
+	// Initialize the configuration from arguments.
+	init(args) {
+		var iter = args.iter();
+		iter.getNext(); // Skip script path.
+		
+		var minus = __chrat("-", 0);
+		var isParsingOptions = true;
+		
+		var log = Log();
+		var options = Map();
+		var arguments = List();
+		
+		while (iter.hasNext()) {
+			var arg = iter.getNext();
+			
+			if (isParsingOptions and __chrat(arg, 0) == minus and __chrat(arg, 1) == minus) {
+				if (arg == "--") {
+					isParsingOptions = false;
+				} else {
+					if (arg != "--std" and arg != "--output") {
+						log.logError("Unexpected optional argument '" + arg + "'.");
+					}
+					
+					if (options.has(arg)) {
+						log.logError("Optional argument '" + arg + "' is already defined.");
+					}
+					
+					if (iter.hasNext()) {
+						options.set(arg, iter.getNext());
+					} else {
+						log.logError("Expected a value for optional argument '" + arg + "'.");
+					}
+				}
+			} else {
+				arguments.pushBack(arg);
+			}
+		}
+		
+		if (arguments.getLength() != 1) {
+			log.logError("Expected 1 positional argument.");
+		}
+		
+		if (log.hasErrors()) {
+			log.logError("Usage: lynx.lox [--std <dir>] [--output <file>] [--] <main>");
+		}
+		
+		// The configuration's log.
+		this._log = log;
+		
+		// The configuration's main path.
+		this._mainPath = arguments.get(0);
+		
+		// The configuration's standard library path.
+		this._stdPath = options.get("--std");
+		
+		// The configuration's output path.
+		this._outputPath = options.get("--output");
+	}
+	
+	// Get the configuration's log.
+	getLog() {
+		return this._log;
+	}
+	
+	// Get the configuration's main path.
+	getMainPath() {
+		return this._mainPath;
+	}
+	
+	// Get the configuration's standard library path.
+	getStdPath() {
+		return this._stdPath;
+	}
+	
+	// Get the configuration's output path.
+	getOutputPath() {
+		return this._outputPath;
+	}
+}

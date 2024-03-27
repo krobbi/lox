@@ -19,6 +19,9 @@
 log/log_record.lox
 log/log.lox
 
+# Config:
+config/config.lox
+
 # Token:
 token/token_type.lox
 
@@ -27,6 +30,7 @@ token/token_type.lox
 # tests will run before the main function, and may exit with an exit code if any
 # of the tests fail.
 tests/cases/args.lox
+tests/cases/config.lox
 tests/cases/lists.lox
 tests/cases/logs.lox
 tests/cases/maps.lox

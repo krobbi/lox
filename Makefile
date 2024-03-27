@@ -26,6 +26,7 @@ STD_SRCS := $(call wild,$(STD_DIR),*.lox)
 # Lynx:
 LYNX_DIR := lynx
 LYNX_SRCS := $(call wild,$(LYNX_DIR),*.lox)
+LYNX_MAIN := $(LYNX_DIR)/main.lox
 LYNX_MRGE := $(LYNX_DIR)/merge.txt
 LYNX_STG0 := $(BIN_DIR)/lynx_stage_0.lox
 LYNX_STG1 := $(BIN_DIR)/lynx_stage_1.lox
@@ -70,4 +71,4 @@ $(LYNX_STG0): $(CLOX_EXEC) $(MERGE) $(LYNX_MRGE) $(LYNX_SRCS) $(STD_SRCS)
 .DELETE_ON_ERROR: $(LYNX_STG1)
 $(LYNX_STG1): $(LYNX_STG0)
 	@ echo "Preprocessing '$@'..."
-	@ $(CLOX_EXEC) $<
+	@ $(CLOX_EXEC) $< --std $(STD_DIR) --output $@ -- $(LYNX_MAIN)

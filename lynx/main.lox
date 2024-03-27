@@ -3,12 +3,24 @@
 
 // Run Lynx from arguments and return an exit status code.
 fun main(args) {
-	var log = Log();
-	log.logError("Hello, Lynx!");
+	var config = Config(args);
+	var log = config.getLog();
 	
 	if (log.hasErrors()) {
 		log.flush();
-		//return 1; // TODO: Uncomment when errors are no longer expected.
+		return 1;
+	}
+	
+	print "Main path:";
+	print config.getMainPath();
+	print "Standard library path:";
+	print config.getStdPath();
+	print "Output path:";
+	print config.getOutputPath();
+	
+	if (log.hasErrors()) {
+		log.flush();
+		return 1;
 	}
 	
 	return 0;

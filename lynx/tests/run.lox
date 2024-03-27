@@ -44,7 +44,7 @@
 		run(name, fn) {
 			var hadErrors = this._hasErrors;
 			this._hasErrors = false;
-			this._eprint(" * " + name + ":");
+			this._eput(" * " + name + " - ");
 			
 			this.beginSection(name);
 			fn(TestCase(this));
@@ -57,7 +57,7 @@
 			}
 			
 			if (!this._hasErrors) {
-				this._eprint("      Passed.");
+				this._eprint("Passed.");
 				
 				if (hadErrors) {
 					this._hasErrors = true;
@@ -99,20 +99,28 @@
 			this._logError("Test '" + name + "' failed.");
 		}
 		
-		// Print a message to the standard error stream.
-		_eprint(message) {
+		// Put a message to the standard error stream.
+		_eput(message) {
 			var length = __strlen(message);
 			var stderr = __stderr();
 			
 			for (var i = 0; i < length; i = i + 1) {
 				__fputc(__chrat(message, i), stderr);
 			}
-			
-			__fputc(10, stderr);
+		}
+		
+		// Print a message to the standard error stream.
+		_eprint(message) {
+			this._eput(message);
+			__fputc(10, __stderr());
 		}
 		
 		// Log an error in the test suite.
 		_logError(message) {
+			if (!this._hasErrors) {
+				this._eprint("Failed:");
+			}
+			
 			var path = this._name;
 			
 			for (var iter = this._path.iter(); iter.hasNext();) {
@@ -127,6 +135,7 @@
 	
 	var suite = TestSuite("Lynx");
 	suite.run("Args", testArgs);
+	suite.run("Config", testConfig);
 	suite.run("Lists", testLists);
 	suite.run("Logs", testLogs);
 	suite.run("Maps", testMaps);
