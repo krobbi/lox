@@ -80,6 +80,15 @@ class Scanner {
 			return makeValue(type, nil);
 		}
 		
+		// Make a new digraph token from its short and long token types.
+		fun makeDigraph(short, long) {
+			if (accept(Char.EQUAL)) {
+				return make(long);
+			} else {
+				return make(short);
+			}
+		}
+		
 		// Make a new non-token.
 		fun makeNone() {
 			return make(TokenType.ERROR);
@@ -88,7 +97,7 @@ class Scanner {
 		// Make a new error token from an error message.
 		fun makeError(message) {
 			this._log.logError(message);
-			return make(TokenType.ERROR);
+			return makeNone();
 		}
 		
 		if (is(Char.EOF)) {
@@ -155,6 +164,14 @@ class Scanner {
 			}
 			
 			return makeValue(TokenType.STRING, value);
+		} else if (accept(Char.BANG)) {
+			return makeDigraph(TokenType.BANG, TokenType.BANG_EQUAL);
+		} else if (accept(Char.EQUAL)) {
+			return makeDigraph(TokenType.EQUAL, TokenType.EQUAL_EQUAL);
+		} else if (accept(Char.LESS)) {
+			return makeDigraph(TokenType.LESS, TokenType.LESS_EQUAL);
+		} else if (accept(Char.GREATER)) {
+			return makeDigraph(TokenType.GREATER, TokenType.GREATER_EQUAL);
 		} else {
 			var char = advance();
 			var type = TokenType.fromChar(char);

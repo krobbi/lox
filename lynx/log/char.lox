@@ -20,6 +20,9 @@ class Char {
 		// A `' '` character.
 		this.SPACE = __chrat(" ", 0);
 		
+		// A `'!'` character.
+		this.BANG = __chrat("!", 0);
+		
 		// A `'"'` character.
 		this.QUOTE = 34;
 		
@@ -37,6 +40,15 @@ class Char {
 		
 		// A `'9'` character.
 		this.DIGIT_9 = __chrat("9", 0);
+		
+		// A `'<'` character.
+		this.LESS = __chrat("<", 0);
+		
+		// An `'='` character.
+		this.EQUAL = __chrat("=", 0);
+		
+		// A `'>'` character.
+		this.GREATER = __chrat(">", 0);
 		
 		// An `'A'` character.
 		this.A_UPPER = __chrat("A", 0);
