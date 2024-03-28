@@ -70,9 +70,14 @@ class Scanner {
 			}
 		}
 		
+		// Make a new token from its token type and value.
+		fun makeValue(type, value) {
+			return Token(type, value);
+		}
+		
 		// Make a new token from its token type.
 		fun make(type) {
-			return Token(type, nil);
+			return makeValue(type, nil);
 		}
 		
 		// Make a new non-token.
@@ -104,6 +109,20 @@ class Scanner {
 			}
 			
 			return makeNone();
+		} else if (matches(Char.isAlpha)) {
+			var value = "";
+			
+			while (matches(Char.isAlpha) or matches(Char.isDigit)) {
+				value = value + __strof(advance());
+			}
+			
+			var type = TokenType.fromKeyword(value);
+			
+			if (type) {
+				return make(type);
+			}
+			
+			return makeValue(TokenType.IDENTIFIER, value);
 		} else {
 			var char = advance();
 			var type = TokenType.fromChar(char);
