@@ -5,6 +5,9 @@ class TokenType {
 		// A map of token types to names.
 		this._typeNames = Map();
 		
+		// A map of token types to lexemes.
+		this._typeLexemes = Map();
+		
 		// A map of characters to token types.
 		this._charTypes = Map();
 		
@@ -13,23 +16,41 @@ class TokenType {
 		
 		var count = 0;
 		
-		// Define a token type from its name.
-		fun defineToken(name) {
+		// Define a token type from its name and lexeme.
+		fun defineToken(name, lexeme) {
 			var type = (count = count + 1) - 1;
-			this._typeNames.set(type, name);
+			
+			if (name) {
+				this._typeNames.set(type, name);
+			}
+			
+			if (lexeme) {
+				this._typeLexemes.set(type, lexeme);
+			}
+			
 			return type;
+		}
+		
+		// Define a literal token type from its name.
+		fun defineLiteral(name) {
+			return defineToken(name, nil);
+		}
+		
+		// Define a fixed-lexeme token type from its lexeme.
+		fun defineFixed(lexeme) {
+			return defineToken(nil, lexeme);
 		}
 		
 		// Define a single-character token type from its lexeme.
 		fun defineChar(lexeme) {
-			var type = defineToken("'" + lexeme + "'");
+			var type = defineFixed(lexeme);
 			this._charTypes.set(__chrat(lexeme, 0), type);
 			return type;
 		}
 		
 		// Define a keyword token type from its lexeme.
 		fun defineKeyword(lexeme) {
-			var type = defineToken("'" + lexeme + "'");
+			var type = defineFixed(lexeme);
 			this._keywordTypes.set(lexeme, type);
 			return type;
 		}
@@ -62,43 +83,43 @@ class TokenType {
 		this.SEMICOLON = defineChar(";");
 		
 		// A `/` token's type.
-		this.SLASH = defineToken("'/'"); // May be scanned before a comment.
+		this.SLASH = defineFixed("/"); // May be scanned before a comment.
 		
 		// A `*` token's type.
 		this.STAR = defineChar("*");
 		
 		// A `!` token's type.
-		this.BANG = defineToken("'!'"); // May be scanned before `!=`.
+		this.BANG = defineFixed("!"); // May be scanned before `!=`.
 		
 		// A `!=` token's type.
-		this.BANG_EQUAL = defineToken("'!='");
+		this.BANG_EQUAL = defineFixed("!=");
 		
 		// An `=` token's type.
-		this.EQUAL = defineToken("'='"); // May be scanned before `==`.
+		this.EQUAL = defineFixed("="); // May be scanned before `==`.
 		
 		// An `==` token's type.
-		this.EQUAL_EQUAL = defineToken("'=='");
+		this.EQUAL_EQUAL = defineFixed("==");
 		
 		// A `>` token's type.
-		this.GREATER = defineToken("'>'"); // May be scanned before `>=`.
+		this.GREATER = defineFixed(">"); // May be scanned before `>=`.
 		
 		// A `>=` token's type.
-		this.GREATER_EQUAL = defineToken("'>='");
+		this.GREATER_EQUAL = defineFixed(">=");
 		
 		// A `<` token's type.
-		this.LESS = defineToken("'<'"); // May be scanned before `<=`.
+		this.LESS = defineFixed("<"); // May be scanned before `<=`.
 		
 		// A `<=` token's type.
-		this.LESS_EQUAL = defineToken("'<='");
+		this.LESS_EQUAL = defineFixed("<=");
 		
 		// An identifier token's type.
-		this.IDENTIFIER = defineToken("identifier");
+		this.IDENTIFIER = defineLiteral("identifier");
 		
 		// A string token's type.
-		this.STRING = defineToken("string");
+		this.STRING = defineLiteral("string");
 		
 		// A number token's type.
-		this.NUMBER = defineToken("number");
+		this.NUMBER = defineLiteral("number");
 		
 		// An `and` token's type.
 		this.AND = defineKeyword("and");
@@ -149,10 +170,10 @@ class TokenType {
 		this.WHILE = defineKeyword("while");
 		
 		// A whitespace, comment, or syntax error token's type.
-		this.ERROR = defineToken("error");
+		this.ERROR = defineLiteral("error");
 		
 		// An end-of-file token's type.
-		this.EOF = defineToken("end-of-file");
+		this.EOF = defineLiteral("end-of-file");
 	}
 	
 	// Get a token type from a character.
@@ -167,7 +188,18 @@ class TokenType {
 	
 	// Get a token type's name.
 	getName(type) {
-		return this._typeNames.getDefault(type, "unknown");
+		var lexeme = this.getLexeme(type);
+		
+		if (lexeme) {
+			return "'" + lexeme + "'";
+		} else {
+			return this._typeNames.getDefault(type, "unknown");
+		}
+	}
+	
+	// Get a token type's lexeme.
+	getLexeme(type) {
+		return this._typeLexemes.get(type);
 	}
 }
 

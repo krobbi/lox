@@ -1,0 +1,118 @@
+// Scans tokens from an input stream.
+class Scanner {
+	// Initialize the scanner from its configuration and input stream.
+	init(config, stream) {
+		// The scanner's log.
+		this._log = config.getLog();
+		
+		// The scanner's input stream.
+		this._stream = stream;
+		
+		// The scanner's next character.
+		this._next = Char.EOF;
+		
+		this._advance();
+	}
+	
+	// Scan the next token from the input stream.
+	scanToken() {
+		var token = this._scanRawToken();
+		
+		while (token.getType() == TokenType.ERROR) {
+			token = this._scanRawToken();
+		}
+		
+		return token;
+	}
+	
+	// Advance to the scanner's next character.
+	_advance() {
+		if (!this._stream) {
+			return;
+		}
+		
+		if (!(this._next = __fgetc(this._stream))) {
+			if (!__fclose(this._stream)) {
+				this._log.logError("Could not close input stream after scanning.");
+			}
+			
+			this._stream = nil;
+			this._next = Char.EOF;
+		}
+	}
+	
+	// Scan the next token or error token from the input stream.
+	_scanRawToken() {
+		// Get whether the scanner's next character is a character.
+		fun is(char) {
+			return this._next == char;
+		}
+		
+		// Get whether the scanner's next character matches a predicate.
+		fun matches(predicate) {
+			return predicate(this._next);
+		}
+		
+		// Advance to the scanner's next character.
+		fun advance() {
+			var current = this._next;
+			this._advance();
+			return current;
+		}
+		
+		// Advance if the scanners next character is a character.
+		fun accept(char) {
+			if (is(char)) {
+				advance();
+				return true;
+			} else {
+				return false;
+			}
+		}
+		
+		// Make a new token from its token type.
+		fun make(type) {
+			return Token(type, nil);
+		}
+		
+		// Make a new non-token.
+		fun makeNone() {
+			return make(TokenType.ERROR);
+		}
+		
+		// Make a new error token from an error message.
+		fun makeError(message) {
+			this._log.logError(message);
+			return make(TokenType.ERROR);
+		}
+		
+		if (is(Char.EOF)) {
+			return make(TokenType.EOF);
+		} else if (matches(Char.isWhitespace)) {
+			while (matches(Char.isWhitespace)) {
+				advance();
+			}
+			
+			return makeNone();
+		} else if (accept(Char.SLASH)) {
+			if (!accept(Char.SLASH)) {
+				return make(TokenType.SLASH);
+			}
+			
+			while (!is(Char.LF) and !is(Char.EOF)) {
+				advance();
+			}
+			
+			return makeNone();
+		} else {
+			var char = advance();
+			var type = TokenType.fromChar(char);
+			
+			if (!type) {
+				return makeError("Unexpected character '" + Char.escape(char) + "'.");
+			}
+			
+			return make(type);
+		}
+	}
+}

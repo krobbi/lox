@@ -16,6 +16,7 @@
 <collections/map>
 
 # Log:
+log/char.lox
 log/log_record.lox
 log/log.lox
 
@@ -24,6 +25,10 @@ config/config.lox
 
 # Token:
 token/token_type.lox
+token/token.lox
+
+# Scanner:
+scanner/scanner.lox
 
 # Tests:
 # These tests should only be included in the bootstrap version of Lynx. The

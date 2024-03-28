@@ -1,6 +1,30 @@
 // Lynx
 // Lox preprocessor.
 
+// Print the lexemes from a configuration's main path.
+fun printMainLexemes(config) {
+	var log = config.getLog();
+	var mainPath = config.getMainPath();
+	var stream = __fopenr(mainPath);
+	
+	if (!stream) {
+		log.logError("Could not open '" + mainPath + "' for reading. File may not exist.");
+		return;
+	}
+	
+	var scanner = Scanner(config, stream);
+	var token = scanner.scanToken();
+	
+	while (token.getType() != TokenType.EOF) {
+		print token.getLexeme();
+		token = scanner.scanToken();
+	}
+	
+	if (__fclose(stream)) {
+		log.logError("Scanner did not close '" + mainPath + "' after scanning.");
+	}
+}
+
 // Run Lynx from arguments and return an exit status code.
 fun main(args) {
 	var config = Config(args);
@@ -11,12 +35,7 @@ fun main(args) {
 		return 1;
 	}
 	
-	print "Main path:";
-	print config.getMainPath();
-	print "Standard library path:";
-	print config.getStdPath();
-	print "Output path:";
-	print config.getOutputPath();
+	printMainLexemes(config);
 	
 	if (log.hasErrors()) {
 		log.flush();

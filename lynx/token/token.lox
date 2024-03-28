@@ -1,0 +1,30 @@
+// A token of Lox code.
+class Token {
+	// Initialize the token's token type and value.
+	init(type, value) {
+		// The token's token type.
+		this._type = type;
+		
+		// The token's value.
+		this._value = value;
+	}
+	
+	// Get the token's token type.
+	getType() {
+		return this._type;
+	}
+	
+	// Get the token's lexeme.
+	getLexeme() {
+		if (this._type == TokenType.IDENTIFIER) {
+			return this._value;
+		} else if (this._type == TokenType.STRING) {
+			var quote = __strof(Char.QUOTE);
+			return quote + this._value + quote;
+		} else if (this._type == TokenType.NUMBER) {
+			return this._value;
+		} else {
+			return TokenType.getLexeme(this._type);
+		}
+	}
+}

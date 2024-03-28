@@ -38,6 +38,6 @@ class Log {
 			__fputc(__chrat(message, i), stderr);
 		}
 		
-		__fputc(10, stderr);
+		__fputc(Char.LF, stderr);
 	}
 }

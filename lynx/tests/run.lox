@@ -112,7 +112,7 @@
 		// Print a message to the standard error stream.
 		_eprint(message) {
 			this._eput(message);
-			__fputc(10, __stderr());
+			__fputc(Char.LF, __stderr());
 		}
 		
 		// Log an error in the test suite.
