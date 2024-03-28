@@ -9,6 +9,11 @@
 //// Uncomment to run tests:
 //// #import "tests/run.lox"
 
+// Dump a token's information.
+fun dumpToken(token) {
+	print "[Token] " + token.getName() + ".";
+}
+
 // Dump the tokens from a configuration's main path.
 fun dumpMainTokens(config) {
 	var log = config.getLog();
@@ -22,10 +27,11 @@ fun dumpMainTokens(config) {
 	
 	var scanner = Scanner(config, stream);
 	var token = scanner.scanToken();
+	dumpToken(token);
 	
 	while (token.getType() != TokenType.EOF) {
-		print token.getLexeme();
 		token = scanner.scanToken();
+		dumpToken(token);
 	}
 	
 	if (__fclose(stream)) {

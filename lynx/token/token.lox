@@ -14,6 +14,29 @@ class Token {
 		return this._type;
 	}
 	
+	// Get the token's name.
+	getName() {
+		var name = TokenType.getName(this._type);
+		
+		if (this._type == TokenType.IDENTIFIER) {
+			name = name + " '" + this._value + "'";
+		} else if (this._type == TokenType.STRING) {
+			var length = __strlen(this._value);
+			var quote = __strof(Char.QUOTE);
+			name = name + " '" + quote;
+			
+			for (var i = 0; i < length; i = i + 1) {
+				name = name + Char.escape(__chrat(this._value, i));
+			}
+			
+			name = name + quote + "'";
+		} else if (this._type == TokenType.NUMBER) {
+			name = name + " '" + this._value + "'";
+		}
+		
+		return name;
+	}
+	
 	// Get the token's lexeme.
 	getLexeme() {
 		if (this._type == TokenType.IDENTIFIER) {
