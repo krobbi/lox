@@ -123,6 +123,18 @@ class Scanner {
 			}
 			
 			return makeValue(TokenType.IDENTIFIER, value);
+		} else if (accept(Char.QUOTE)) {
+			var value = "";
+			
+			while (!is(Char.QUOTE) and !is(Char.EOF)) {
+				value = value + __strof(advance());
+			}
+			
+			if (!accept(Char.QUOTE)) {
+				return makeError("Unterminated string.");
+			}
+			
+			return makeValue(TokenType.STRING, value);
 		} else {
 			var char = advance();
 			var type = TokenType.fromChar(char);
