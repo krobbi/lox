@@ -26,6 +26,9 @@ class Char {
 		// A `'\''` character.
 		this.APOSTROPHE = __chrat("'", 0);
 		
+		// A `'.'` character.
+		this.DOT = __chrat(".", 0);
+		
 		// A `'/'` character.
 		this.SLASH = __chrat("/", 0);
 		

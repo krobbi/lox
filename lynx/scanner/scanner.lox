@@ -123,6 +123,26 @@ class Scanner {
 			}
 			
 			return makeValue(TokenType.IDENTIFIER, value);
+		} else if (matches(Char.isDigit)) {
+			var value = "";
+			
+			while (matches(Char.isDigit)) {
+				value = value + __strof(advance());
+			}
+			
+			if (accept(Char.DOT)) {
+				if (!matches(Char.isDigit)) {
+					return makeError("No digits after decimal point.");
+				}
+				
+				value = value + ".";
+				
+				while (matches(Char.isDigit)) {
+					value = value + __strof(advance());
+				}
+			}
+			
+			return makeValue(TokenType.NUMBER, value);
 		} else if (accept(Char.QUOTE)) {
 			var value = "";
 			
