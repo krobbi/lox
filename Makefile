@@ -43,32 +43,32 @@ all: $(LYNX_STG1)
 # Clean binaries directory:
 .PHONY: clean
 clean:
-	@ echo "Cleaning '$(BIN_DIR)/'..."
+	@ echo "Cleaning '$(BIN_DIR)/'..." 1>&2
 	@ rm -rf -- $(BIN_DIR)
 
 # Make binaries directory:
 $(BIN_DIR):
-	@ echo "Making '$@/'..."
+	@ echo "Making '$@/'..." 1>&2
 	@ mkdir $@
 
 # Compile Clox objects from Clox sources:
 $(BIN_DIR)/clox_%.o: $(CLOX_DIR)/%.c $(CLOX_HDRS) | $(BIN_DIR)
-	@ echo "Compiling '$<'..."
+	@ echo "Compiling '$<'..." 1>&2
 	@ $(CC) $(CFLAGS) -c $< -o $@
 
 # Link Clox executable from Clox objects:
 $(CLOX_EXEC): $(CLOX_OBJS)
-	@ echo "Linking '$@'..."
+	@ echo "Linking '$@'..." 1>&2
 	@ $(CC) $(CFLAGS) $^ -o $@
 
 # Merge Lynx stage 0 from Lynx sources:
 .DELETE_ON_ERROR: $(LYNX_STG0)
 $(LYNX_STG0): $(CLOX_EXEC) $(MERGE) $(LYNX_MRGE) $(LYNX_SRCS) $(STD_SRCS)
-	@ echo "Merging '$@'..."
+	@ echo "Merging '$@'..." 1>&2
 	@ $(CLOX_EXEC) $(MERGE) $(LYNX_MRGE) $(STD_DIR) $@
 
 # Preprocess Lynx stage 1 from Lynx stage 0:
 .DELETE_ON_ERROR: $(LYNX_STG1)
 $(LYNX_STG1): $(LYNX_STG0)
-	@ echo "Preprocessing '$@'..."
+	@ echo "Preprocessing '$@'..." 1>&2
 	@ $(CLOX_EXEC) $< --std $(STD_DIR) --output $@ -- $(LYNX_MAIN)
