@@ -14,6 +14,9 @@ class TokenType {
 		// A map of keyword lexemes to token types.
 		this._keywordTypes = Map();
 		
+		// A map of directive keywords to token types.
+		this._directiveTypes = Map();
+		
 		var count = 0;
 		
 		// Define a token type from its name and lexeme.
@@ -52,6 +55,13 @@ class TokenType {
 		fun defineKeyword(lexeme) {
 			var type = defineFixed(lexeme);
 			this._keywordTypes.set(lexeme, type);
+			return type;
+		}
+		
+		// Define a directive token type from its keyword.
+		fun defineDirective(keyword) {
+			var type = defineFixed("#" + keyword);
+			this._directiveTypes.set(keyword, type);
 			return type;
 		}
 		
@@ -174,6 +184,9 @@ class TokenType {
 		
 		// An end-of-file token's type.
 		this.EOF = defineLiteral("end-of-file");
+		
+		// A `#import` token's type.
+		this.HASH_IMPORT = defineDirective("import");
 	}
 	
 	// Get a token type from a character.
@@ -184,6 +197,11 @@ class TokenType {
 	// Get a token type from a keyword lexeme.
 	fromKeyword(lexeme) {
 		return this._keywordTypes.get(lexeme);
+	}
+	
+	// Get a token type from a directive keyword.
+	fromDirective(keyword) {
+		return this._directiveTypes.get(keyword);
 	}
 	
 	// Get a token type's name.

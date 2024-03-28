@@ -26,6 +26,9 @@ class Char {
 		// A `'"'` character.
 		this.QUOTE = 34;
 		
+		// A `'#'` character.
+		this.HASH = __chrat("#", 0);
+		
 		// A `'\''` character.
 		this.APOSTROPHE = __chrat("'", 0);
 		

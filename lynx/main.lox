@@ -1,8 +1,16 @@
 // Lynx
 // Lox preprocessor.
 
-// Print the lexemes from a configuration's main path.
-fun printMainLexemes(config) {
+// #import <call_main>
+// #import "config/config.lox"
+// #import "scanner/scanner.lox"
+// #import "token/token_type.lox"
+
+//// Uncomment to run tests:
+//// #import "tests/run.lox"
+
+// Dump the tokens from a configuration's main path.
+fun dumpMainTokens(config) {
 	var log = config.getLog();
 	var mainPath = config.getMainPath();
 	var stream = __fopenr(mainPath);
@@ -35,7 +43,7 @@ fun main(args) {
 		return 1;
 	}
 	
-	printMainLexemes(config);
+	dumpMainTokens(config);
 	
 	if (log.hasErrors()) {
 		log.flush();

@@ -113,11 +113,37 @@ class Scanner {
 				return make(TokenType.SLASH);
 			}
 			
+			while (matches(Char.isWhitespace) and !is(Char.LF)) {
+				advance();
+			}
+			
+			if (is(Char.HASH)) {
+				return makeNone();
+			}
+			
 			while (!is(Char.LF) and !is(Char.EOF)) {
 				advance();
 			}
 			
 			return makeNone();
+		} else if (accept(Char.HASH)) {
+			if (!matches(Char.isAlpha)) {
+				return makeError("No keyword for directive.");
+			}
+			
+			var keyword = "";
+			
+			while (matches(Char.isAlpha) or matches(Char.isDigit)) {
+				keyword = keyword + __strof(advance());
+			}
+			
+			var type = TokenType.fromDirective(keyword);
+			
+			if (!type) {
+				return makeError("No directive named '" + keyword + "'.");
+			}
+			
+			return make(type);
 		} else if (matches(Char.isAlpha)) {
 			var value = "";
 			

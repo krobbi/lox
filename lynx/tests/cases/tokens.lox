@@ -41,6 +41,7 @@ fun testTokens(t) {
 		t.eq("'while'", TokenType.getName(TokenType.WHILE), "'while'");
 		t.eq("error", TokenType.getName(TokenType.ERROR), "error");
 		t.eq("end-of-file", TokenType.getName(TokenType.EOF), "end-of-file");
+		t.eq("'#import'", TokenType.getName(TokenType.HASH_IMPORT), "'#import'");
 		t.eq("unknown", TokenType.getName(-1), "unknown");
 	t.end("Names");
 	
@@ -85,6 +86,7 @@ fun testTokens(t) {
 		t.eq("'while'", TokenType.getLexeme(TokenType.WHILE), "while");
 		t.eq("error", TokenType.getLexeme(TokenType.ERROR), nil);
 		t.eq("end-of-file", TokenType.getLexeme(TokenType.EOF), nil);
+		t.eq("'#import'", TokenType.getLexeme(TokenType.HASH_IMPORT), "#import");
 		t.eq("unknown", TokenType.getLexeme(-1), nil);
 	t.end("Lexemes");
 	
@@ -129,6 +131,7 @@ fun testTokens(t) {
 		t.eq("'while'", TokenType.WHILE, 37);
 		t.eq("error", TokenType.ERROR, 38);
 		t.eq("end-of-file", TokenType.EOF, 39);
+		t.eq("'#import'", TokenType.HASH_IMPORT, 40);
 	t.end("Values");
 	
 	t.begin("Characters");
