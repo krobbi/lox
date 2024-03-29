@@ -159,10 +159,10 @@ class Scanner {
 			
 			return makeValue(TokenType.IDENTIFIER, value);
 		} else if (matches(Char.isDigit)) {
-			var value = "";
+			var value = 0;
 			
 			while (matches(Char.isDigit)) {
-				value = value + __strof(advance());
+				value = value * 10 + (advance() - Char.DIGIT_0);
 			}
 			
 			if (accept(Char.DOT)) {
@@ -170,10 +170,11 @@ class Scanner {
 					return makeError("No digits after decimal point.");
 				}
 				
-				value = value + ".";
+				var magnitude = 1;
 				
 				while (matches(Char.isDigit)) {
-					value = value + __strof(advance());
+					magnitude = magnitude / 10;
+					value = value + (advance() - Char.DIGIT_0) * magnitude;
 				}
 			}
 			

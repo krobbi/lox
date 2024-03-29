@@ -31,7 +31,7 @@ class Token {
 			
 			name = name + quote + "'";
 		} else if (this._type == TokenType.NUMBER) {
-			name = name + " '" + this._value + "'";
+			name = name + " '" + __ftoa(this._value) + "'";
 		}
 		
 		return name;
@@ -45,7 +45,7 @@ class Token {
 			var quote = __strof(Char.QUOTE);
 			return quote + this._value + quote;
 		} else if (this._type == TokenType.NUMBER) {
-			return this._value;
+			return __ftoa(this._value);
 		} else {
 			return TokenType.getLexeme(this._type);
 		}
