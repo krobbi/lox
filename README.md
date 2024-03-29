@@ -14,6 +14,7 @@ __Copyright &copy; 2024 Chris Roberts__ (Krobbizoid).
    * [`__fopenr`](#__fopenrpath-string---int--nil)
    * [`__fopenw`](#__fopenwpath-string---int--nil)
    * [`__fputc`](#__fputcbyte-int-stream-int---int--nil)
+   * [`__ftoa`](#__ftoanumber-float---string)
    * [`__stderr`](#__stderr---int)
    * [`__stdin`](#__stdin---int)
    * [`__stdout`](#__stdout---int)
@@ -91,6 +92,9 @@ file could not be opened.
 ## `__fputc(byte: int, stream: int) -> int | nil`
 Write the byte `byte` to the output stream `stream` and return the written
 byte. Returns `nil` if an error occurred.
+
+## `__ftoa(number: float) -> string`
+Return a string representing the number `number`.
 
 ## `__stderr() -> int`
 Return a constant representing the standard error stream. Returns a value

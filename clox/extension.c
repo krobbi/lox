@@ -20,6 +20,9 @@
 // The maximum index of a user's file stream.
 #define USER_FILE_MAX 7
 
+// The buffer size for the native ftoa extension function.
+#define FTOA_SIZE 64
+
 // The number of command line arguments available to the user.
 static int userArgc = 0;
 
@@ -210,6 +213,46 @@ static Value fputcExtension(int argCount, Value *args) {
 	return NUMBER_VAL((double)result);
 }
 
+// The native ftoa extension function.
+static Value ftoaExtension(int argCount, Value *args) {
+	PARAMS_1(IS_NUMBER);
+	double number = AS_NUMBER(args[0]);
+	char *chars = ALLOCATE(char, FTOA_SIZE);
+	int length = snprintf(chars, FTOA_SIZE, "%f", number);
+	
+	if (length >= FTOA_SIZE) {
+		length = FTOA_SIZE - 1;
+	}
+	
+	char *point = strchr(chars, '.');
+	
+	if (point != NULL) {
+		char *tail = &chars[length - 1];
+		
+		// Strip trailing zeroes.
+		while (tail > point && *tail == '0') {
+			*tail-- = '\0';
+			length--;
+		}
+		
+		// Strip trailing decimal point.
+		if (tail == point) {
+			*point = '\0';
+			length--;
+		}
+	}
+	
+	// Don't return negative zero.
+	if (length == 2 && chars[0] == '-' && chars[1] == '0') {
+		chars[0] = '0';
+		chars[1] = '\0';
+		length = 1;
+	}
+	
+	chars = GROW_ARRAY(char, chars, FTOA_SIZE, length + 1);
+	return OBJ_VAL(takeString(chars, length));
+}
+
 // The native stderr extension function.
 static Value stderrExtension(int argCount, Value *args) {
 	PARAMS_0();
@@ -275,6 +318,7 @@ void defineExtensions(DefineNativeFn defineNative) {
 	defineNative("__fopenr", fopenrExtension);
 	defineNative("__fopenw", fopenwExtension);
 	defineNative("__fputc", fputcExtension);
+	defineNative("__ftoa", ftoaExtension);
 	defineNative("__stderr", stderrExtension);
 	defineNative("__stdin", stdinExtension);
 	defineNative("__stdout", stdoutExtension);
