@@ -83,7 +83,7 @@
 		// End a section.
 		endSection(name) {
 			if (this._path.isEmpty()) {
-				this._logError("Cannot end section '" + name + "' outside of a section.");
+				this._logError("Can't end section '" + name + "' outside of a section.");
 				return;
 			}
 			
