@@ -70,6 +70,11 @@ class Scanner {
 			}
 		}
 		
+		// Log an error message.
+		fun logError(message) {
+			this._log.logError(message);
+		}
+		
 		// Make a new token from its token type and value.
 		fun makeValue(type, value) {
 			return Token(type, value);
@@ -96,7 +101,7 @@ class Scanner {
 		
 		// Make a new error token from an error message.
 		fun makeError(message) {
-			this._log.logError(message);
+			logError(message);
 			return makeNone();
 		}
 		
@@ -183,7 +188,11 @@ class Scanner {
 			var value = "";
 			
 			while (!is(Char.QUOTE) and !is(Char.EOF)) {
-				value = value + __strof(advance());
+				if (is(Char.NUL)) {
+					logError("Can't use character '" + Char.escape(advance()) + "' in a string.");
+				} else {
+					value = value + __strof(advance());
+				}
 			}
 			
 			if (!accept(Char.QUOTE)) {
