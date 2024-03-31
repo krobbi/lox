@@ -16,7 +16,16 @@ class Log {
 	
 	// Log an error message.
 	logError(message) {
-		this._records.pushBack(LogRecord(message));
+		this.logErrorAt(message, nil);
+	}
+	
+	// Log an error message at a span.
+	logErrorAt(message, span) {
+		if (span) {
+			span = span.clone();
+		}
+		
+		this._records.pushBack(LogRecord(message, span));
 		this._hasErrors = true;
 	}
 	

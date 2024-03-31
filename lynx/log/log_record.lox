@@ -1,13 +1,22 @@
 // A record of a log.
 class LogRecord {
-	// Initialize the log record from its message.
-	init(message) {
+	// Initialize the log record from its message and span.
+	init(message, span) {
 		// The log record's message.
 		this._message = message;
+		
+		// The log record's span.
+		this._span = span;
 	}
 	
 	// Represent the log record as a string.
 	toString() {
-		return "[Error] " + this._message;
+		var prefix = "[Error]";
+		
+		if (this._span) {
+			prefix = prefix + this._span.toString();
+		}
+		
+		return prefix + " " + this._message;
 	}
 }

@@ -17,6 +17,7 @@
 
 # Log:
 log/char.lox
+log/span.lox
 log/log_record.lox
 log/log.lox
 

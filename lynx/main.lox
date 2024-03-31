@@ -11,7 +11,7 @@
 
 // Dump a token's information.
 fun dumpToken(token) {
-	print "[Token] " + token.toString() + ".";
+	print token.getSpan().toString() + " " + token.toString() + ".";
 }
 
 // Dump the tokens from a configuration's main path.
@@ -25,7 +25,7 @@ fun dumpMainTokens(config) {
 		return;
 	}
 	
-	var scanner = Scanner(config, stream);
+	var scanner = Scanner(config, mainPath, stream);
 	var token = scanner.scanToken();
 	dumpToken(token);
 	

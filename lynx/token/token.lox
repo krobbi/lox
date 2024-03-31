@@ -1,17 +1,30 @@
 // A token of Lox code.
 class Token {
-	// Initialize the token's token type and value.
-	init(type, value) {
+	// Initialize the token from its token type, value, and span.
+	init(type, value, span) {
 		// The token's token type.
 		this._type = type;
 		
 		// The token's value.
 		this._value = value;
+		
+		// The token's span.
+		this._span = span;
 	}
 	
 	// Get the token's token type.
 	getType() {
 		return this._type;
+	}
+	
+	// Get the token's value.
+	getValue() {
+		return this._value;
+	}
+	
+	// Get the token's span.
+	getSpan() {
+		return this._span;
 	}
 	
 	// Get the token's lexeme.

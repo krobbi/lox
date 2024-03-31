@@ -1,9 +1,13 @@
 // Scans tokens from an input stream.
 class Scanner {
-	// Initialize the scanner from its configuration and input stream.
-	init(config, stream) {
+	// Initialize the scanner from its configuration, file name, and input
+	// stream.
+	init(config, name, stream) {
 		// The scanner's log.
 		this._log = config.getLog();
+		
+		// The scanner's current span.
+		this._span = Span(name);
 		
 		// The scanner's input stream.
 		this._stream = stream;
@@ -33,7 +37,7 @@ class Scanner {
 		
 		if (!(this._next = __fgetc(this._stream))) {
 			if (!__fclose(this._stream)) {
-				this._log.logError("Could not close input stream after scanning.");
+				this._log.logErrorAt("Could not close input stream after scanning.", this._span);
 			}
 			
 			this._stream = nil;
@@ -43,6 +47,9 @@ class Scanner {
 	
 	// Scan the next token or error token from the input stream.
 	_scanRawToken() {
+		this._span.shrinkToEnd();
+		var errorSpan = this._span.clone();
+		
 		// Get whether the scanner's next character is a character.
 		fun is(char) {
 			return this._next == char;
@@ -56,6 +63,8 @@ class Scanner {
 		// Advance to the scanner's next character.
 		fun advance() {
 			var current = this._next;
+			this._span.extend(current);
+			errorSpan.extend(current);
 			this._advance();
 			return current;
 		}
@@ -70,14 +79,14 @@ class Scanner {
 			}
 		}
 		
-		// Log an error message.
+		// Log an error message at the error span.
 		fun logError(message) {
-			this._log.logError(message);
+			this._log.logErrorAt(message, errorSpan);
 		}
 		
 		// Make a new token from its token type and value.
 		fun makeValue(type, value) {
-			return Token(type, value);
+			return Token(type, value, this._span.clone());
 		}
 		
 		// Make a new token from its token type.
@@ -132,6 +141,8 @@ class Scanner {
 			
 			return makeNone();
 		} else if (accept(Char.HASH)) {
+			errorSpan.shrinkToEnd();
+			
 			if (!matches(Char.isAlpha)) {
 				return makeError("No keyword for directive.");
 			}
@@ -172,7 +183,8 @@ class Scanner {
 			
 			if (accept(Char.DOT)) {
 				if (!matches(Char.isDigit)) {
-					return makeError("No digits after decimal point.");
+					errorSpan.shrinkToEnd();
+					logError("No digits after decimal point.");
 				}
 				
 				var magnitude = 1;
@@ -189,6 +201,7 @@ class Scanner {
 			
 			while (!is(Char.QUOTE) and !is(Char.EOF)) {
 				if (is(Char.NUL)) {
+					errorSpan.shrinkToEnd();
 					logError("Can't use character '" + Char.escape(advance()) + "' in a string.");
 				} else {
 					value = value + __strof(advance());
@@ -196,7 +209,8 @@ class Scanner {
 			}
 			
 			if (!accept(Char.QUOTE)) {
-				return makeError("Unterminated string.");
+				errorSpan.copy(this._span);
+				logError("Unterminated string.");
 			}
 			
 			return makeValue(TokenType.STRING, value);

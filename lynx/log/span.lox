@@ -1,0 +1,86 @@
+// A span between two position in source code.
+class Span {
+	// Initialize the span from its file name.
+	init(name) {
+		// The span's file name.
+		this._name = name;
+		
+		// The line number of the span's start position.
+		this._startLine = 1;
+		
+		// The column number of the span's start position.
+		this._startColumn = 1;
+		
+		// The line number of the span's end position.
+		this._endLine = 1;
+		
+		// The column number of the span's end position.
+		this._endColumn = 1;
+	}
+	
+	// Get the line number of the span's start position.
+	getStartLine() {
+		return this._startLine;
+	}
+	
+	// Get the column number of the span's start position.
+	getStartColumn() {
+		return this._startColumn;
+	}
+	
+	// Get the line number of the span's end position.
+	getEndLine() {
+		return this._endLine;
+	}
+	
+	// Get the column number of the span's end position.
+	getEndColumn() {
+		return this._endColumn;
+	}
+	
+	// Extend the span by a character.
+	extend(char) {
+		if (char == Char.TAB) {
+			this._endColumn = this._endColumn + 4;
+		} else if (char == Char.LF) {
+			this._endLine = this._endLine + 1;
+			this._endColumn = 1;
+		} else if (char != Char.EOF) {
+			this._endColumn = this._endColumn + 1;
+		}
+	}
+	
+	// Shrink the span to its end position.
+	shrinkToEnd() {
+		this._startLine = this._endLine;
+		this._startColumn = this._endColumn;
+	}
+	
+	// Copy another span's positions.
+	copy(other) {
+		this._startLine = other.getStartLine();
+		this._startColumn = other.getStartColumn();
+		this._endLine = other.getEndLine();
+		this._endColumn = other.getEndColumn();
+	}
+	
+	// Copy the span by value.
+	clone() {
+		var copy = Span(this._name);
+		copy.copy(this);
+		return copy;
+	}
+	
+	// Represent the span as a string.
+	toString() {
+		var string = this._name + ":" + __ftoa(this._startLine) + ":" + __ftoa(this._startColumn);
+		
+		if (this._endLine > this._startLine) {
+			string = string + " - " + __ftoa(this._endLine) + ":" + __ftoa(this._endColumn);
+		} else if (this._endColumn > this._startColumn + 1) {
+			string = string + "-" + __ftoa(this._endColumn);
+		}
+		
+		return "[" + string + "]";
+	}
+}
