@@ -110,7 +110,23 @@ class Char {
 		} else if (char >= this.SPACE and char <= this.TILDE) {
 			return __strof(char);
 		} else {
-			return "\x??"; // Hex encoding is not implemented.
+			// Convert a digit to a character.
+			fun digitToChar(digit) {
+				if (digit < 10) {
+					return digit + this.DIGIT_0;
+				} else {
+					return digit - 10 + this.A_LOWER;
+				}
+			}
+			
+			var high = 0;
+			
+			while (char >= 16) {
+				char = char - 16;
+				high = high + 1;
+			}
+			
+			return "\x" + __strof(digitToChar(high)) + __strof(digitToChar(char));
 		}
 	}
 }
