@@ -7,22 +7,12 @@ fun testLogs(t) {
 			super.init();
 			
 			// The test log's printed messages.
-			this._testMessages = List();
-		}
-		
-		// Expose the test log's records.
-		testGetRecords() {
-			return this._records;
-		}
-		
-		// Expose the test log's printed messages.
-		testGetMessages() {
-			return this._testMessages;
+			this.testMessages = List();
 		}
 		
 		// Override to capture output.
 		_eprint(message) {
-			this._testMessages.pushBack(message);
+			this.testMessages.pushBack(message);
 		}
 	}
 	
@@ -31,13 +21,13 @@ fun testLogs(t) {
 		t.eq("error", log.hasErrors(), false);
 		
 		t.begin("Records");
-			var records = log.testGetRecords();
+			var records = log._records;
 			t.eq("empty", records.isEmpty(), true);
 			t.eq("length", records.getLength(), 0);
 		t.end("Records");
 		
 		t.begin("Messages");
-			var messages = log.testGetMessages();
+			var messages = log.testMessages;
 			t.eq("empty", messages.isEmpty(), true);
 			t.eq("length", messages.getLength(), 0);
 		t.end("Messages");
@@ -51,7 +41,7 @@ fun testLogs(t) {
 			t.begin("Records");
 				t.eq("empty", records.isEmpty(), false);
 				t.eq("length", records.getLength(), 1);
-				t.eq("message", records.get(0).getMessage(), "Message 0");
+				t.eq("message", records.get(0)._message, "Message 0");
 			t.end("Records");
 			
 			t.begin("Messages");
@@ -67,7 +57,7 @@ fun testLogs(t) {
 			t.begin("Records");
 				t.eq("empty", records.isEmpty(), false);
 				t.eq("length", records.getLength(), 2);
-				t.eq("message", records.get(1).getMessage(), "Message 1");
+				t.eq("message", records.get(1)._message, "Message 1");
 			t.end("Records");
 			
 			t.begin("Messages");
@@ -83,7 +73,7 @@ fun testLogs(t) {
 			t.begin("Records");
 				t.eq("empty", records.isEmpty(), false);
 				t.eq("length", records.getLength(), 3);
-				t.eq("message", records.get(2).getMessage(), "Message 2");
+				t.eq("message", records.get(2)._message, "Message 2");
 			t.end("Records");
 			
 			t.begin("Messages");

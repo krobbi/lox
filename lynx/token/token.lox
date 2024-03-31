@@ -14,40 +14,47 @@ class Token {
 		return this._type;
 	}
 	
-	// Get the token's name.
-	getName() {
-		var name = TokenType.getName(this._type);
-		
-		if (this._type == TokenType.IDENTIFIER) {
-			name = name + " '" + this._value + "'";
-		} else if (this._type == TokenType.STRING) {
-			var length = __strlen(this._value);
-			var quote = __strof(Char.QUOTE);
-			name = name + " '" + quote;
-			
-			for (var i = 0; i < length; i = i + 1) {
-				name = name + Char.escape(__chrat(this._value, i));
-			}
-			
-			name = name + quote + "'";
-		} else if (this._type == TokenType.NUMBER) {
-			name = name + " '" + __ftoa(this._value) + "'";
-		}
-		
-		return name;
-	}
-	
 	// Get the token's lexeme.
 	getLexeme() {
-		if (this._type == TokenType.IDENTIFIER) {
+		var type = this._type;
+		
+		if (type == TokenType.IDENTIFIER) {
 			return this._value;
-		} else if (this._type == TokenType.STRING) {
+		} else if (type == TokenType.STRING) {
 			var quote = __strof(Char.QUOTE);
 			return quote + this._value + quote;
-		} else if (this._type == TokenType.NUMBER) {
+		} else if (type == TokenType.NUMBER) {
 			return __ftoa(this._value);
 		} else {
-			return TokenType.getLexeme(this._type);
+			return TokenType.getLexeme(type);
+		}
+	}
+	
+	// Represent the token as a string.
+	toString() {
+		var type = this._type;
+		var value = this._value;
+		
+		if (type == TokenType.STRING) {
+			var length = __strlen(value);
+			var escaped = "";
+			
+			for (var i = 0; i < length; i = i + 1) {
+				escaped = escaped + Char.escape(__chrat(value, i));
+			}
+			
+			var quote = __strof(Char.QUOTE);
+			value = quote + escaped + quote;
+		} else if (type == TokenType.NUMBER) {
+			value = __ftoa(value);
+		}
+		
+		type = TokenType.toString(type);
+		
+		if (value) {
+			return type + " '" + value + "'";
+		} else {
+			return type;
 		}
 	}
 }

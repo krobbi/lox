@@ -23,7 +23,7 @@ class Log {
 	// Clear and print the log's messages.
 	flush() {
 		for (var iter = this._records.iter(); iter.hasNext();) {
-			this._eprint("[Error] " + iter.getNext().getMessage());
+			this._eprint(iter.getNext().toString());
 		}
 		
 		this._records.clear();

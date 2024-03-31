@@ -204,20 +204,20 @@ class TokenType {
 		return this._directiveTypes.get(keyword);
 	}
 	
-	// Get a token type's name.
-	getName(type) {
-		var lexeme = this.getLexeme(type);
+	// Get a token type's lexeme.
+	getLexeme(type) {
+		return this._typeLexemes.get(type);
+	}
+	
+	// Represent a token type as a string.
+	toString(type) {
+		var lexeme = this._typeLexemes.get(type);
 		
 		if (lexeme) {
 			return "'" + lexeme + "'";
 		} else {
 			return this._typeNames.getDefault(type, "unknown");
 		}
-	}
-	
-	// Get a token type's lexeme.
-	getLexeme(type) {
-		return this._typeLexemes.get(type);
 	}
 }
 

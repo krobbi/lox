@@ -11,7 +11,7 @@
 
 // Dump a token's information.
 fun dumpToken(token) {
-	print "[Token] " + token.getName() + ".";
+	print "[Token] " + token.toString() + ".";
 }
 
 // Dump the tokens from a configuration's main path.

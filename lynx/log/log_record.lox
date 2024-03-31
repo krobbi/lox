@@ -6,8 +6,8 @@ class LogRecord {
 		this._message = message;
 	}
 	
-	// Get the log record's message.
-	getMessage() {
-		return this._message;
+	// Represent the log record as a string.
+	toString() {
+		return "[Error] " + this._message;
 	}
 }
