@@ -11,6 +11,9 @@ class Parser {
 		
 		// The parser's next token.
 		this._next = this._scanner.scanToken();
+		
+		// Whether the parser is throwing an error.
+		this._isThrowing = false;
 	}
 	
 	// Parse a module.
@@ -22,7 +25,13 @@ class Parser {
 	
 	// Parse a declaration.
 	_parseDeclaration() {
-		return this._parseStatement();
+		var declaration = this._parseStatement();
+		
+		if (this._catchError()) {
+			return nil;
+		}
+		
+		return declaration;
 	}
 	
 	// Parse a statement.
@@ -58,7 +67,6 @@ class Parser {
 			return nil; // TODO: Implement string literal expression node.
 		} else {
 			this._expected("an expression");
-			this._advance(); // TODO: Implement error recovery.
 			return nil;
 		}
 	}
@@ -88,11 +96,47 @@ class Parser {
 		}
 	}
 	
-	// Log an expectation error.
+	// Throw an error with a message at the parser's next token.
+	_throwError(message) {
+		if (!this._isThrowing) {
+			this._isThrowing = true;
+			this._log.logErrorAt(message, this._next.getSpan());
+		}
+	}
+	
+	// Catch an error.
+	_catchError() {
+		if (!this._isThrowing) {
+			return false;
+		}
+		
+		this._isThrowing = false;
+		var current = this._advance();
+		
+		while (!this._is(TokenType.EOF)) {
+			if (
+					current.getType() == TokenType.SEMICOLON
+					or this._is(TokenType.CLASS)
+					or this._is(TokenType.FOR)
+					or this._is(TokenType.FUN)
+					or this._is(TokenType.IF)
+					or this._is(TokenType.PRINT)
+					or this._is(TokenType.RETURN)
+					or this._is(TokenType.VAR)
+					or this._is(TokenType.WHILE)
+					or this._is(TokenType.HASH_IMPORT)) {
+				return true;
+			}
+			
+			current = this._advance();
+		}
+		
+		return true;
+	}
+	
+	// Throw an expectation error.
 	_expected(what) {
-		this._log.logErrorAt(
-				"Expected " + what + ", found " + this._next.toString() + ".",
-				this._next.getSpan());
+		this._throwError("Expected " + what + ", found " + this._next.toString() + ".");
 	}
 	
 	// Advance to the parser's next token if it is an expected token type.
