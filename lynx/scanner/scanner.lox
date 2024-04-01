@@ -37,6 +37,7 @@ class Scanner {
 		
 		if (!(this._next = __fgetc(this._stream))) {
 			if (!__fclose(this._stream)) {
+				this._span.shrinkToEnd();
 				this._log.logErrorAt("Could not close input stream after scanning.", this._span);
 			}
 			
