@@ -3,19 +3,14 @@
 
 // #import <call_main>
 // #import "config/config.lox"
-// #import "scanner/scanner.lox"
+// #import "parser/parser.lox"
 // #import "token/token_type.lox"
 
 //// Uncomment to run tests:
 //// #import "tests/run.lox"
 
-// Dump a token's information.
-fun dumpToken(token) {
-	print token.getSpan().toString() + " " + token.toString() + ".";
-}
-
-// Dump the tokens from a configuration's main path.
-fun dumpMainTokens(config) {
+// Parse the module at a configuration's main path.
+fun parseMainModule(config) {
 	var log = config.getLog();
 	var mainPath = config.getMainPath();
 	var stream = __fopenr(mainPath);
@@ -25,17 +20,11 @@ fun dumpMainTokens(config) {
 		return;
 	}
 	
-	var scanner = Scanner(config, mainPath, stream);
-	var token = scanner.scanToken();
-	dumpToken(token);
-	
-	while (token.getType() != TokenType.EOF) {
-		token = scanner.scanToken();
-		dumpToken(token);
-	}
+	var parser = Parser(config, mainPath, stream);
+	parser.parseModule();
 	
 	if (__fclose(stream)) {
-		log.logError("Scanner did not close '" + mainPath + "' after scanning.");
+		log.logError("Parser did not close '" + mainPath + "' after parsing.");
 	}
 }
 
@@ -49,7 +38,7 @@ fun main(args) {
 		return 1;
 	}
 	
-	dumpMainTokens(config);
+	parseMainModule(config);
 	
 	if (log.hasErrors()) {
 		log.flush();

@@ -1,0 +1,36 @@
+// Parses a module AST from an input stream.
+class Parser {
+	// Initialize the parser from its configuration, file name, and input
+	// stream.
+	init(config, name, stream) {
+		// The parser's scanner.
+		this._scanner = Scanner(config, name, stream);
+		
+		// The parser's next token.
+		this._next = this._scanner.scanToken();
+	}
+	
+	// Parse a module.
+	parseModule() {
+		while (!this._is(TokenType.EOF)) {
+			var token = this._advance();
+			print token.getSpan().toString() + " " + token.toString();
+		}
+	}
+	
+	// Get whether the parser's next token is a type.
+	_is(type) {
+		return this._next.getType() == type;
+	}
+	
+	// Advance to the parser's next token.
+	_advance() {
+		var current = this._next;
+		
+		if (current.getType() != TokenType.EOF) {
+			this._next = this._scanner.scanToken();
+		}
+		
+		return current;
+	}
+}

@@ -28,8 +28,9 @@ config/config.lox
 token/token_type.lox
 token/token.lox
 
-# Scanner:
-scanner/scanner.lox
+# Parser:
+parser/scanner.lox
+parser/parser.lox
 
 # Tests:
 # These tests should only be included in the bootstrap version of Lynx. The
