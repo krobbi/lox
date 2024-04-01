@@ -1,0 +1,11 @@
+// Temporary End-to-end Parser Test
+// Lynx will eventually parse itself, but this temporary test will be used while
+// the parser is being implemented.
+
+// Literal expression statements.
+nil;
+true;
+false;
+123;
+3.141592654;
+"Hello, Lynx!";
