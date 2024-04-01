@@ -3,6 +3,9 @@ class Parser {
 	// Initialize the parser from its configuration, file name, and input
 	// stream.
 	init(config, name, stream) {
+		// The parser's log.
+		this._log = config.getLog();
+		
 		// The parser's scanner.
 		this._scanner = Scanner(config, name, stream);
 		
@@ -13,12 +16,54 @@ class Parser {
 	// Parse a module.
 	parseModule() {
 		while (!this._is(TokenType.EOF)) {
-			var token = this._advance();
-			print token.getSpan().toString() + " " + token.toString();
+			this._parseDeclaration();
 		}
 	}
 	
-	// Get whether the parser's next token is a type.
+	// Parse a declaration.
+	_parseDeclaration() {
+		return this._parseStatement();
+	}
+	
+	// Parse a statement.
+	_parseStatement() {
+		return this._parseExprStmt();
+	}
+	
+	// Parse an expression statement.
+	_parseExprStmt() {
+		this._parseExpression();
+		this._expect(TokenType.SEMICOLON, "after expression");
+		return nil; // TODO: Implement expression statement node.
+	}
+	
+	// Parse an expression.
+	_parseExpression() {
+		return this._parsePrimaryExpr();
+	}
+	
+	// Parse a primary expression.
+	_parsePrimaryExpr() {
+		if (this._accept(TokenType.NIL)) {
+			return nil; // TODO: Implement nil literal expression node.
+		} else if (this._accept(TokenType.TRUE)) {
+			return nil; // TODO: Implement true literal expression node.
+		} else if (this._accept(TokenType.FALSE)) {
+			return nil; // TODO: Implement false literal expression node.
+		} else if (this._is(TokenType.NUMBER)) {
+			this._advance();
+			return nil; // TODO: Implement number literal expression node.
+		} else if (this._is(TokenType.STRING)) {
+			this._advance();
+			return nil; // TODO: Implement string literal expression node.
+		} else {
+			this._expected("an expression");
+			this._advance(); // TODO: Implement error recovery.
+			return nil;
+		}
+	}
+	
+	// Get whether the parser's next token is a token type.
 	_is(type) {
 		return this._next.getType() == type;
 	}
@@ -29,6 +74,33 @@ class Parser {
 		
 		if (current.getType() != TokenType.EOF) {
 			this._next = this._scanner.scanToken();
+		}
+		
+		return current;
+	}
+	
+	// Advance to the parser's next token if it is a token type.
+	_accept(type) {
+		if (this._is(type)) {
+			return this._advance();
+		} else {
+			return nil;
+		}
+	}
+	
+	// Log an expectation error.
+	_expected(what) {
+		this._log.logErrorAt(
+				"Expected " + what + ", found " + this._next.toString() + ".",
+				this._next.getSpan());
+	}
+	
+	// Advance to the parser's next token if it is an expected token type.
+	_expect(type, where) {
+		var current = this._accept(type);
+		
+		if (!current) {
+			this._expected(TokenType.toString(type) + " " + where);
 		}
 		
 		return current;
