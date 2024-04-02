@@ -1,0 +1,15 @@
+// A module node of an AST.
+class ModuleNode < Node {
+	// Initialize the module node from its statements.
+	init(statements) {
+		super.init();
+		
+		// The module node's statements.
+		this._statements = statements;
+	}
+	
+	// Get the module node's statements.
+	getStatements() {
+		return this._statements;
+	}
+}

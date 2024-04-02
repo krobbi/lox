@@ -1,0 +1,5 @@
+// A node of an AST.
+class Node {
+	// Initialize the node.
+	init() {}
+}

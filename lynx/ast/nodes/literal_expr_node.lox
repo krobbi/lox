@@ -1,0 +1,15 @@
+// A literal expression node of an AST.
+class LiteralExprNode < Node {
+	// Initialize the literal expression node from its literal.
+	init(literal) {
+		super.init();
+		
+		// The literal expression node's literal.
+		this._literal = literal;
+	}
+	
+	// Get the literal expression node's literal.
+	getLiteral() {
+		return this._literal;
+	}
+}

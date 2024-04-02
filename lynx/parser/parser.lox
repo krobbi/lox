@@ -18,20 +18,28 @@ class Parser {
 	
 	// Parse a module.
 	parseModule() {
+		var statements = List();
+		
 		while (!this._is(TokenType.EOF)) {
-			this._parseDeclaration();
+			var statement = this._parseDeclaration();
+			
+			if (statement) {
+				statements.pushBack(statement);
+			}
 		}
+		
+		return ModuleNode(statements);
 	}
 	
 	// Parse a declaration.
 	_parseDeclaration() {
-		var declaration = this._parseStatement();
+		var statement = this._parseStatement();
 		
 		if (this._catchError()) {
 			return nil;
 		}
 		
-		return declaration;
+		return statement;
 	}
 	
 	// Parse a statement.
@@ -41,9 +49,17 @@ class Parser {
 	
 	// Parse an expression statement.
 	_parseExprStmt() {
-		this._parseExpression();
-		this._expect(TokenType.SEMICOLON, "after expression");
-		return nil; // TODO: Implement expression statement node.
+		var expression = this._parseExpression();
+		
+		if (!expression) {
+			return nil;
+		}
+		
+		if (!this._expect(TokenType.SEMICOLON, "after expression")) {
+			return nil;
+		}
+		
+		return ExprStmtNode(expression);
 	}
 	
 	// Parse an expression.
@@ -54,17 +70,17 @@ class Parser {
 	// Parse a primary expression.
 	_parsePrimaryExpr() {
 		if (this._accept(TokenType.NIL)) {
-			return nil; // TODO: Implement nil literal expression node.
+			return LiteralExprNode(Literal(LiteralType.NIL, nil));
 		} else if (this._accept(TokenType.TRUE)) {
-			return nil; // TODO: Implement true literal expression node.
+			return LiteralExprNode(Literal(LiteralType.BOOL, true));
 		} else if (this._accept(TokenType.FALSE)) {
-			return nil; // TODO: Implement false literal expression node.
+			return LiteralExprNode(Literal(LiteralType.BOOL, false));
 		} else if (this._is(TokenType.NUMBER)) {
-			this._advance();
-			return nil; // TODO: Implement number literal expression node.
+			var token = this._advance();
+			return LiteralExprNode(Literal(LiteralType.NUMBER, token.getValue()));
 		} else if (this._is(TokenType.STRING)) {
-			this._advance();
-			return nil; // TODO: Implement string literal expression node.
+			var token = this._advance();
+			return LiteralExprNode(Literal(LiteralType.STRING, token.getValue()));
 		} else {
 			this._expected("an expression");
 			return nil;

@@ -1,0 +1,20 @@
+// An enumeration of literal types.
+class LiteralType {
+	// Initialize the literal type enumeration.
+	init() {
+		// A nil type.
+		this.NIL = 0;
+		
+		// A boolean type.
+		this.BOOL = 1;
+		
+		// A number type.
+		this.NUMBER = 2;
+		
+		// A string type.
+		this.STRING = 3;
+	}
+}
+
+// The enumeration of literal types.
+var LiteralType = LiteralType();

@@ -28,6 +28,16 @@ config/config.lox
 token/token_type.lox
 token/token.lox
 
+# AST boilerplate:
+ast/literal/literal_type.lox
+ast/literal/literal.lox
+ast/node.lox
+
+# AST nodes:
+ast/nodes/expr_stmt_node.lox
+ast/nodes/literal_expr_node.lox
+ast/nodes/module_node.lox
+
 # Parser:
 parser/scanner.lox
 parser/parser.lox

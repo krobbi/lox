@@ -21,7 +21,8 @@ fun parseMainModule(config) {
 	}
 	
 	var parser = Parser(config, mainPath, stream);
-	parser.parseModule();
+	var module = parser.parseModule();
+	print "Parsed " + __ftoa(module.getStatements().getLength()) + " top-level statements.";
 	
 	if (__fclose(stream)) {
 		log.logError("Parser did not close '" + mainPath + "' after parsing.");

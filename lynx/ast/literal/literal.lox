@@ -1,0 +1,46 @@
+// A value that can be represented by a literal token.
+class Literal {
+	// Initialize the literal from its type and value.
+	init(type, value) {
+		// The literal's type.
+		this._type = type;
+		
+		// The literal's value.
+		this._value = value;
+	}
+	
+	// Get the literal's type.
+	getType() {
+		return this._type;
+	}
+	
+	// Get the literal's value.
+	getValue() {
+		return this._value;
+	}
+	
+	// Represent the literal as a string.
+	toString() {
+		if (this._type == LiteralType.NIL) {
+			return "nil";
+		} else if (this._type == LiteralType.BOOL) {
+			if (this._value) {
+				return "true";
+			} else {
+				return "false";
+			}
+		} else if (this._type == LiteralType.NUMBER) {
+			return __ftoa(this._value);
+		} else if (this._type == LiteralType.STRING) {
+			var length = __strlen(this._value);
+			var escaped = "";
+			
+			for (var i = 0; i < length; i = i + 1) {
+				escaped = escaped + Char.escape(__chrat(this._value, i));
+			}
+			
+			var quote = __strof(Char.QUOTE);
+			return quote + escaped + quote;
+		}
+	}
+}

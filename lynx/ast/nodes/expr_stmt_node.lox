@@ -1,0 +1,15 @@
+// An expression statement node of an AST.
+class ExprStmtNode < Node {
+	// Initialize the expression statement node from its expression.
+	init(expression) {
+		super.init();
+		
+		// The expression statement node's expression.
+		this._expression = expression;
+	}
+	
+	// Get the expression statement node's expression.
+	getExpression() {
+		return this._expression;
+	}
+}
