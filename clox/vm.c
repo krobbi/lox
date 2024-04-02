@@ -309,8 +309,17 @@ static void concatenate() {
 // Read the next short of bytecode.
 #define READ_SHORT() (frame->ip += 2, (uint16_t)((frame->ip[-2] << 8) | frame->ip[-1]))
 
+#ifdef LONG_CONSTANTS
+
+// Read the next short of bytecode as a constant.
+#define READ_CONSTANT() (frame->closure->function->chunk.constants.values[READ_SHORT()])
+
+#else // LONG_CONSTANTS
+
 // Read the next byte of bytecode as a constant.
 #define READ_CONSTANT() (frame->closure->function->chunk.constants.values[READ_BYTE()])
+
+#endif // !LONG_CONSTANTS
 
 // Read the next byte of bytecode as a constant string object.
 #define READ_STRING() AS_STRING(READ_CONSTANT())

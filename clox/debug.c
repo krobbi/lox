@@ -43,7 +43,11 @@ static uint16_t cursorFetchU16(Cursor *cursor) {
 
 // Fetch a constant index from a cursor.
 static ConstantIndex cursorFetchConstant(Cursor *cursor) {
+#ifdef LONG_CONSTANTS
+	return (ConstantIndex)cursorFetchU16(cursor);
+#else // LONG_CONSTANTS
 	return (ConstantIndex)cursorFetchU8(cursor);
+#endif // !LONG_CONSTANTS
 }
 
 // Disassemble an instruction with no operands.

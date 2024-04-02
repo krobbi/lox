@@ -4,8 +4,23 @@
 #include "common.h"
 #include "value.h"
 
+#ifdef LONG_CONSTANTS
+
+// The maximum 16-bit constant index.
+#define CONSTANT_INDEX_MAX UINT16_MAX
+
+// A 16-bit constant index.
+typedef uint16_t ConstantIndex;
+
+#else // LONG_CONSTANTS
+
+// The maximum 8-bit constant index.
+#define CONSTANT_INDEX_MAX UINT8_COUNT
+
 // An 8-bit constant index.
 typedef uint8_t ConstantIndex;
+
+#endif // !LONG_CONSTANTS
 
 // A bytecode instruction's type.
 typedef enum {

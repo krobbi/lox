@@ -14,8 +14,11 @@
 // Merge constant indices for constants with equal values.
 #define CONSTANT_MERGING
 
+// Use 16-bit constant indices
+#define LONG_CONSTANTS
+
 // Disassemble bytecode after compilation.
-#define DEBUG_PRINT_CODE
+//#define DEBUG_PRINT_CODE
 
 // Disassemble instructions as they are interpreted.
 //#define DEBUG_TRACE_EXECUTION
