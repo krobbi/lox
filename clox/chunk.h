@@ -4,6 +4,9 @@
 #include "common.h"
 #include "value.h"
 
+// An 8-bit constant index.
+typedef uint8_t ConstantIndex;
+
 // A bytecode instruction's type.
 typedef enum {
 	// Push a constant value to the stack from its index.

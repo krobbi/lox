@@ -15,7 +15,7 @@
 #define CONSTANT_MERGING
 
 // Disassemble bytecode after compilation.
-//#define DEBUG_PRINT_CODE
+#define DEBUG_PRINT_CODE
 
 // Disassemble instructions as they are interpreted.
 //#define DEBUG_TRACE_EXECUTION
