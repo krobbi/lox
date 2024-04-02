@@ -1,0 +1,30 @@
+// Visits AST nodes.
+class Visitor {
+	// Initialize the visitor.
+	init() {}
+	
+	// Visit a node.
+	visit(node) {
+		return node.visit(this);
+	}
+	
+	// Visit a node with no defined visitor behavior.
+	visitDefault(node) {
+		return nil;
+	}
+	
+	// Visit an expression statement node.
+	visitExprStmt(node) {
+		return this.visitDefault(node);
+	}
+	
+	// Visit a literal expression node.
+	visitLiteralExpr(node) {
+		return this.visitDefault(node);
+	}
+	
+	// Visit a module node.
+	visitModule(node) {
+		return this.visitDefault(node);
+	}
+}

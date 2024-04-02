@@ -1,0 +1,24 @@
+// Visits AST nodes and returns their children as lists.
+class GetChildrenVisitor < Visitor {
+	// Initialize the get children visitor.
+	init() {
+		super.init();
+	}
+	
+	// Get a node's children.
+	visitDefault(node) {
+		return List();
+	}
+	
+	// Get an expression statement node's children.
+	visitExprStmt(node) {
+		var children = List();
+		children.pushBack(node.getExpression());
+		return children;
+	}
+	
+	// Get a module node's children.
+	visitModule(node) {
+		return node.getStatements();
+	}
+}

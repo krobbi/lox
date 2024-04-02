@@ -12,4 +12,9 @@ class ModuleNode < Node {
 	getStatements() {
 		return this._statements;
 	}
+	
+	// Visit the module node with a visitor.
+	visit(visitor) {
+		return visitor.visitModule(this);
+	}
 }

@@ -12,4 +12,9 @@ class ExprStmtNode < Node {
 	getExpression() {
 		return this._expression;
 	}
+	
+	// Visit the expression statement node with a visitor.
+	visit(visitor) {
+		return visitor.visitExprStmt(this);
+	}
 }

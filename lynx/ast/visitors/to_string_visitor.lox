@@ -1,0 +1,22 @@
+// Visits AST nodes and returns their string representations.
+class ToStringVisitor < Visitor {
+	// Initialize the to string visitor.
+	init() {
+		super.init();
+	}
+	
+	// Get an expression statement node's string representation.
+	visitExprStmt(node) {
+		return "ExprStmt";
+	}
+	
+	// Get a literal expression node's string representation.
+	visitLiteralExpr(node) {
+		return "LiteralExpr '" + node.getLiteral().toString() + "'";
+	}
+	
+	// Get a module node's string representation.
+	visitModule(node) {
+		return "Module";
+	}
+}

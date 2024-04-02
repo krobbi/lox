@@ -12,4 +12,9 @@ class LiteralExprNode < Node {
 	getLiteral() {
 		return this._literal;
 	}
+	
+	// Visit the literal expression node with a visitor.
+	visit(visitor) {
+		return visitor.visitLiteralExpr(this);
+	}
 }

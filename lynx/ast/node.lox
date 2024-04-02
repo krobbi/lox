@@ -2,4 +2,9 @@
 class Node {
 	// Initialize the node.
 	init() {}
+	
+	// Visit the node with a visitor.
+	visit(visitor) {
+		return visitor.visitDefault(this);
+	}
 }

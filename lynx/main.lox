@@ -9,6 +9,56 @@
 //// Uncomment to run tests:
 //// #import "tests/run.lox"
 
+// Get a node's children.
+fun getNodeChildren(node) {
+	return GetChildrenVisitor().visit(node);
+}
+
+// Represent a node as a string.
+fun nodeToString(node) {
+	return "[" + ToStringVisitor().visit(node) + "]";
+}
+
+// Dump a node's information.
+fun dumpNode(node, flags) {
+	var prefix = " ";
+	
+	for (var iter = flags.iter(); iter.hasNext();) {
+		var hasMoreVertical = iter.getNext();
+		var hasMoreHorizontal = iter.hasNext();
+		
+		if (hasMoreVertical) {
+			if (hasMoreHorizontal) {
+				prefix = prefix + "| ";
+			} else {
+				prefix = prefix + "|-";
+			}
+		} else {
+			if (hasMoreHorizontal) {
+				prefix = prefix + "  ";
+			} else {
+				prefix = prefix + "|_";
+			}
+		}
+	}
+	
+	print prefix + nodeToString(node);
+	var children = getNodeChildren(node);
+	
+	for (var iter = children.iter(); iter.hasNext();) {
+		var child = iter.getNext();
+		flags.pushBack(iter.hasNext());
+		dumpNode(child, flags);
+		flags.popBack();
+	}
+}
+
+// Dump an AST's information.
+fun dumpTree(node) {
+	print "AST:";
+	dumpNode(node, List());
+}
+
 // Parse the module at a configuration's main path.
 fun parseMainModule(config) {
 	var log = config.getLog();
@@ -22,7 +72,7 @@ fun parseMainModule(config) {
 	
 	var parser = Parser(config, mainPath, stream);
 	var module = parser.parseModule();
-	print "Parsed " + __ftoa(module.getStatements().getLength()) + " top-level statements.";
+	dumpTree(module);
 	
 	if (__fclose(stream)) {
 		log.logError("Parser did not close '" + mainPath + "' after parsing.");
