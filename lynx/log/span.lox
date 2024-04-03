@@ -50,6 +50,27 @@ class Span {
 		}
 	}
 	
+	// Expand the span to include another span.
+	include(other) {
+		var startLine = other.getStartLine();
+		var startColumn = other.getStartColumn();
+		
+		if (
+				startLine < this._startLine
+				or startLine == this._startLine and startColumn < this._startColumn) {
+			this._startLine = startLine;
+			this._startColumn = startColumn;
+		}
+		
+		var endLine = other.getEndLine();
+		var endColumn = other.getEndColumn();
+		
+		if (endLine > this._endLine or endLine == this._endLine and endColumn > this._endColumn) {
+			this._endLine = endLine;
+			this._endColumn = endColumn;
+		}
+	}
+	
 	// Shrink the span to its end position.
 	shrinkToEnd() {
 		this._startLine = this._endLine;

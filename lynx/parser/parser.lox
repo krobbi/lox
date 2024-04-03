@@ -9,6 +9,12 @@ class Parser {
 		// The parser's scanner.
 		this._scanner = Scanner(config, name, stream);
 		
+		// The parser's current span.
+		this._span = Span(name);
+		
+		// The parser's stack of node spans.
+		this._spanStack = List();
+		
 		// The parser's next token.
 		this._next = this._scanner.scanToken();
 		
@@ -18,6 +24,7 @@ class Parser {
 	
 	// Parse a module.
 	parseModule() {
+		this._begin();
 		var statements = List();
 		
 		while (!this._is(TokenType.EOF)) {
@@ -28,7 +35,7 @@ class Parser {
 			}
 		}
 		
-		return ModuleNode(nil, statements);
+		return ModuleNode(this._end(), statements);
 	}
 	
 	// Parse a declaration.
@@ -49,17 +56,18 @@ class Parser {
 	
 	// Parse an expression statement.
 	_parseExprStmt() {
+		this._begin();
 		var expression = this._parseExpression();
 		
 		if (!expression) {
-			return nil;
+			return this._unwind();
 		}
 		
 		if (!this._expect(TokenType.SEMICOLON, "after expression")) {
-			return nil;
+			return this._unwind();
 		}
 		
-		return ExprStmtNode(nil, expression);
+		return ExprStmtNode(this._end(), expression);
 	}
 	
 	// Parse an expression.
@@ -69,21 +77,23 @@ class Parser {
 	
 	// Parse a primary expression.
 	_parsePrimaryExpr() {
+		this._begin();
+		
 		if (this._accept(TokenType.NIL)) {
-			return LiteralExprNode(nil, Literal(LiteralType.NIL, nil));
+			return LiteralExprNode(this._end(), Literal(LiteralType.NIL, nil));
 		} else if (this._accept(TokenType.TRUE)) {
-			return LiteralExprNode(nil, Literal(LiteralType.BOOL, true));
+			return LiteralExprNode(this._end(), Literal(LiteralType.BOOL, true));
 		} else if (this._accept(TokenType.FALSE)) {
-			return LiteralExprNode(nil, Literal(LiteralType.BOOL, false));
+			return LiteralExprNode(this._end(), Literal(LiteralType.BOOL, false));
 		} else if (this._is(TokenType.NUMBER)) {
 			var token = this._advance();
-			return LiteralExprNode(nil, Literal(LiteralType.NUMBER, token.getValue()));
+			return LiteralExprNode(this._end(), Literal(LiteralType.NUMBER, token.getValue()));
 		} else if (this._is(TokenType.STRING)) {
 			var token = this._advance();
-			return LiteralExprNode(nil, Literal(LiteralType.STRING, token.getValue()));
+			return LiteralExprNode(this._end(), Literal(LiteralType.STRING, token.getValue()));
 		} else {
 			this._expected("an expression");
-			return nil;
+			return this._unwind();
 		}
 	}
 	
@@ -97,6 +107,7 @@ class Parser {
 		var current = this._next;
 		
 		if (current.getType() != TokenType.EOF) {
+			this._span = current.getSpan();
 			this._next = this._scanner.scanToken();
 		}
 		
@@ -112,12 +123,32 @@ class Parser {
 		}
 	}
 	
+	// Begin a new node span at the parser's next token.
+	_begin() {
+		this._spanStack.pushBack(this._next.getSpan());
+	}
+	
+	// End the current node span at the parser's current span.
+	_end() {
+		var span = this._spanStack.popBack().clone();
+		span.include(this._span);
+		return span;
+	}
+	
+	// Unwind the current node span.
+	_unwind() {
+		this._spanStack.popBack();
+		return nil;
+	}
+	
 	// Throw an error with a message at the parser's next token.
 	_throwError(message) {
-		if (!this._isThrowing) {
-			this._isThrowing = true;
-			this._log.logErrorAt(message, this._next.getSpan());
+		if (this._isThrowing) {
+			return;
 		}
+		
+		this._isThrowing = true;
+		this._log.logErrorAt(message, this._next.getSpan());
 	}
 	
 	// Catch an error.

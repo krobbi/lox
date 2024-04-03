@@ -16,14 +16,14 @@ fun getNodeChildren(node) {
 
 // Represent a node as a string.
 fun nodeToString(node) {
-	var string = ToStringVisitor().visit(node);
+	var string = "(" + ToStringVisitor().visit(node) + ")";
 	var span = node.getSpan();
 	
 	if (span) {
-		string = string + " " + span.toString();
+		string = string + " @ " + span.toString();
 	}
 	
-	return "(" + string + ")";
+	return string;
 }
 
 // Dump a node's information.
