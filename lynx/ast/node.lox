@@ -1,7 +1,15 @@
 // A node of an AST.
 class Node {
-	// Initialize the node.
-	init() {}
+	// Initialize the node from its span.
+	init(span) {
+		// The node's span.
+		this._span = span;
+	}
+	
+	// Get the node's span.
+	getSpan() {
+		return this._span;
+	}
 	
 	// Visit the node with a visitor.
 	visit(visitor) {

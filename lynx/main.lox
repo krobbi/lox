@@ -16,12 +16,19 @@ fun getNodeChildren(node) {
 
 // Represent a node as a string.
 fun nodeToString(node) {
-	return "[" + ToStringVisitor().visit(node) + "]";
+	var string = ToStringVisitor().visit(node);
+	var span = node.getSpan();
+	
+	if (span) {
+		string = string + " " + span.toString();
+	}
+	
+	return "(" + string + ")";
 }
 
 // Dump a node's information.
 fun dumpNode(node, flags) {
-	var prefix = " ";
+	var prefix = "";
 	
 	for (var iter = flags.iter(); iter.hasNext();) {
 		var hasMoreVertical = iter.getNext();
@@ -55,7 +62,6 @@ fun dumpNode(node, flags) {
 
 // Dump an AST's information.
 fun dumpTree(node) {
-	print "AST:";
 	dumpNode(node, List());
 }
 

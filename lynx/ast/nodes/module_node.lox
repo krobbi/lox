@@ -1,8 +1,8 @@
 // A module node of an AST.
 class ModuleNode < Node {
-	// Initialize the module node from its statements.
-	init(statements) {
-		super.init();
+	// Initialize the module node from its span and statements.
+	init(span, statements) {
+		super.init(span);
 		
 		// The module node's statements.
 		this._statements = statements;

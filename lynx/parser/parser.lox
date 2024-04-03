@@ -28,7 +28,7 @@ class Parser {
 			}
 		}
 		
-		return ModuleNode(statements);
+		return ModuleNode(nil, statements);
 	}
 	
 	// Parse a declaration.
@@ -59,7 +59,7 @@ class Parser {
 			return nil;
 		}
 		
-		return ExprStmtNode(expression);
+		return ExprStmtNode(nil, expression);
 	}
 	
 	// Parse an expression.
@@ -70,17 +70,17 @@ class Parser {
 	// Parse a primary expression.
 	_parsePrimaryExpr() {
 		if (this._accept(TokenType.NIL)) {
-			return LiteralExprNode(Literal(LiteralType.NIL, nil));
+			return LiteralExprNode(nil, Literal(LiteralType.NIL, nil));
 		} else if (this._accept(TokenType.TRUE)) {
-			return LiteralExprNode(Literal(LiteralType.BOOL, true));
+			return LiteralExprNode(nil, Literal(LiteralType.BOOL, true));
 		} else if (this._accept(TokenType.FALSE)) {
-			return LiteralExprNode(Literal(LiteralType.BOOL, false));
+			return LiteralExprNode(nil, Literal(LiteralType.BOOL, false));
 		} else if (this._is(TokenType.NUMBER)) {
 			var token = this._advance();
-			return LiteralExprNode(Literal(LiteralType.NUMBER, token.getValue()));
+			return LiteralExprNode(nil, Literal(LiteralType.NUMBER, token.getValue()));
 		} else if (this._is(TokenType.STRING)) {
 			var token = this._advance();
-			return LiteralExprNode(Literal(LiteralType.STRING, token.getValue()));
+			return LiteralExprNode(nil, Literal(LiteralType.STRING, token.getValue()));
 		} else {
 			this._expected("an expression");
 			return nil;
