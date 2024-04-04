@@ -73,7 +73,9 @@ class Parser {
 	
 	// Parse a statement.
 	_parseStatement() {
-		if (this._accept(TokenType.PRINT)) {
+		if (this._accept(TokenType.IF)) {
+			return this._parseIfStmt();
+		} else if (this._accept(TokenType.PRINT)) {
 			return this._parsePrintStmt();
 		} else if (this._accept(TokenType.RETURN)) {
 			return this._parseReturnStmt();
@@ -82,6 +84,43 @@ class Parser {
 		} else {
 			return this._parseExprStmt();	
 		}
+	}
+	
+	// Parse an if statement.
+	_parseIfStmt() {
+		this._pushSpan();
+		
+		if (!this._expect(TokenType.LEFT_PAREN, "after 'if'")) {
+			return this._dropSpan();
+		}
+		
+		var condition = this._parseExpression();
+		
+		if (!condition) {
+			return this._dropSpan();
+		}
+		
+		if (!this._expect(TokenType.RIGHT_PAREN, "after if condition")) {
+			return this._dropSpan();
+		}
+		
+		var thenBranch = this._parseStatement();
+		
+		if (!thenBranch) {
+			return this._dropSpan();
+		}
+		
+		var elseBranch = nil;
+		
+		if (this._accept(TokenType.ELSE)) {
+			elseBranch = this._parseStatement();
+			
+			if (!elseBranch) {
+				return this._dropSpan();
+			}
+		}
+		
+		return IfStmtNode(this._popSpan(), condition, thenBranch, elseBranch);
 	}
 	
 	// Parse a print statement.

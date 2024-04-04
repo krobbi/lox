@@ -25,6 +25,18 @@ class GetChildrenVisitor < Visitor {
 		return List().pushBack(node.getExpression());
 	}
 	
+	// Get an if statement node's children.
+	visitIfStmt(node) {
+		var children = List().pushBack(node.getCondition()).pushBack(node.getThenBranch());
+		var elseBranch = node.getElseBranch();
+		
+		if (elseBranch) {
+			children.pushBack(elseBranch);
+		}
+		
+		return children;
+	}
+	
 	// Get a print statement node's children.
 	visitPrintStmt(node) {
 		return List().pushBack(node.getExpression());

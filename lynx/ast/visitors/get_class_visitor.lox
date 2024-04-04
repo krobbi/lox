@@ -20,6 +20,11 @@ class GetClassVisitor < Visitor {
 		return ExprStmtNode;
 	}
 	
+	// Get an if statement node's class.
+	visitIfStmt(node) {
+		return IfStmtNode;
+	}
+	
 	// Get a print statement node's class.
 	visitPrintStmt(node) {
 		return PrintStmtNode;

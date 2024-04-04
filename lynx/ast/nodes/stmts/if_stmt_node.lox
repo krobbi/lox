@@ -1,0 +1,37 @@
+// An if statement node of an AST.
+class IfStmtNode < Node {
+	// Initialize the if statement node from its span, condition expression,
+	// then branch statement, and optional else branch statement.
+	init(span, condition, thenBranch, elseBranch) {
+		super.init(span);
+		
+		// The if statement node's condition expression.
+		this._condition = condition;
+		
+		// The if statement node's then branch statement.
+		this._thenBranch = thenBranch;
+		
+		// The if statement node's optional else branch statement.
+		this._elseBranch = elseBranch;
+	}
+	
+	// Get the if statement node's condition expression.
+	getCondition() {
+		return this._condition;
+	}
+	
+	// Get the if statement node's then branch statement.
+	getThenBranch() {
+		return this._thenBranch;
+	}
+	
+	// Get the if statement node's optional else branch statement.
+	getElseBranch() {
+		return this._elseBranch;
+	}
+	
+	// Visit the if statement node with a visitor.
+	visit(visitor) {
+		return visitor.visitIfStmt(this);
+	}
+}

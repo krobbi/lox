@@ -20,6 +20,11 @@ class ToStringVisitor < Visitor {
 		return "ExprStmt";
 	}
 	
+	// Get an if statement node's string representation.
+	visitIfStmt(node) {
+		return "IfStmt";
+	}
+	
 	// Get a print statement node's string representation.
 	visitPrintStmt(node) {
 		return "PrintStmt";

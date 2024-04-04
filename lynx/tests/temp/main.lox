@@ -2,6 +2,27 @@
 // Lynx will eventually parse itself, but this temporary test will be used while
 // the parser is being implemented.
 
-return;
-return nil;
-return 0;
+if ("Condition Expr 1") {
+	print "Then Stmt 1";
+}
+
+if ("Condition Expr 2") {
+	print "Then Stmt 2";
+} else {
+	print "Else Stmt 2";
+}
+
+if ("Case Expr 1") {
+	print "Case Stmt 1";
+} else if ("Case Expr 2") {
+	print "Case Stmt 2";
+} else {
+	print "Case Stmt 3";
+}
+
+if ("Inline Expr 1") print "Inline Stmt 1";
+if ("Inline Expr 2") print "Inline Stmt 2"; else print "Inline Else Stmt 2";
+
+if ("Inline Case Expr 1") print "Inline Case Stmt 1";
+else if ("Inline Case Expr 2") print "Inline Case Stmt 2";
+else print "Inline Case Stmt 3";
