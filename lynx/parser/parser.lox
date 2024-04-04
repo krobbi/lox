@@ -85,7 +85,36 @@ class Parser {
 		}
 		
 		for (var isLooping = true; isLooping;) {
-			if (this._accept(TokenType.DOT)) {
+			if (this._accept(TokenType.LEFT_PAREN)) {
+				var arguments = List();
+				
+				if (!this._is(TokenType.RIGHT_PAREN)) {
+					for (var isLooping = true; isLooping;) {
+						if (arguments.getLength() >= 255) {
+							this._throwError("Can't have more than 255 arguments.");
+							return this._dropSpan();
+						}
+						
+						var expr = this._parseExpression();
+						
+						if (!expr) {
+							return this._dropSpan();
+						}
+						
+						arguments.pushBack(expr);
+						
+						if (!this._accept(TokenType.COMMA)) {
+							isLooping = false;
+						}
+					}
+				}
+				
+				if (!this._expect(TokenType.RIGHT_PAREN, "after arguments")) {
+					return this._dropSpan();
+				}
+				
+				expr = CallExprNode(this._peekSpan(), expr, arguments);
+			} else if (this._accept(TokenType.DOT)) {
 				var token = this._expect(TokenType.IDENTIFIER, "for property name");
 				
 				if (!token) {

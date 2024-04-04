@@ -13,6 +13,11 @@ class Visitor {
 		return nil;
 	}
 	
+	// Visit a call expression node.
+	visitCallExpr(node) {
+		return this.visitDefault(node);
+	}
+	
 	// Visit an expression statement node.
 	visitExprStmt(node) {
 		return this.visitDefault(node);

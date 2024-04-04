@@ -35,6 +35,7 @@ ast/node.lox
 ast/visitor.lox
 
 # AST nodes:
+ast/nodes/call_expr_node.lox
 ast/nodes/expr_stmt_node.lox
 ast/nodes/get_expr_node.lox
 ast/nodes/grouping_expr_node.lox

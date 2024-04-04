@@ -26,3 +26,13 @@ foo;
 // Get expression statements.
 object.property;
 object.property.nested.deep;
+
+// Call expression statements.
+procedure();
+add(9, 10);
+getDoubler()(5);
+
+// Mixed get and call expression statements.
+object.method(argument);
+ConfigBuilder().inSection("Graphics").setKey("width", 1920).setKey("height", 1080).status;
+dumpVec2(vec.getX(), vec.getY());

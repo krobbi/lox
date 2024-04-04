@@ -1,4 +1,4 @@
-// A variable expression node.
+// A variable expression node of an AST.
 class VariableExprNode < Node {
 	// Initialize the variable expression node from its span and name.
 	init(span, name) {

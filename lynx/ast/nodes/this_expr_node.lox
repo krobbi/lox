@@ -1,4 +1,4 @@
-// A this expression node.
+// A this expression node of an AST.
 class ThisExprNode < Node {
 	// Initialize the this expression node from its span.
 	init(span) {

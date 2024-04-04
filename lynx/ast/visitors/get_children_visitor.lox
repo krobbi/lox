@@ -10,6 +10,18 @@ class GetChildrenVisitor < Visitor {
 		return List();
 	}
 	
+	// Get a call expression node's children.
+	visitCallExpr(node) {
+		var children = List();
+		children.pushBack(node.getCallee());
+		
+		for (var iter = node.getArguments().iter(); iter.hasNext();) {
+			children.pushBack(iter.getNext());
+		}
+		
+		return children;
+	}
+	
 	// Get a get expression node's children.
 	visitGetExpr(node) {
 		return this._createUnary(node.getObject());

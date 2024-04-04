@@ -1,4 +1,4 @@
-// A get expression node.
+// A get expression node of an AST.
 class GetExprNode < Node {
 	// Initialize the get expression node from its span, object, and name.
 	init(span, object, name) {
