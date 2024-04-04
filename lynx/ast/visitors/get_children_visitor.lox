@@ -10,6 +10,14 @@ class GetChildrenVisitor < Visitor {
 		return List();
 	}
 	
+	// Get a binary expression node's children.
+	visitBinaryExpr(node) {
+		var children = List();
+		children.pushBack(node.getLeft());
+		children.pushBack(node.getRight());
+		return children;
+	}
+	
 	// Get a call expression node's children.
 	visitCallExpr(node) {
 		var children = List();

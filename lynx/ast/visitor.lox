@@ -13,6 +13,11 @@ class Visitor {
 		return nil;
 	}
 	
+	// Visit a binary expression node.
+	visitBinaryExpr(node) {
+		return this.visitDefault(node);
+	}
+	
 	// Visit a call expression node.
 	visitCallExpr(node) {
 		return this.visitDefault(node);

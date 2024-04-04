@@ -1,0 +1,37 @@
+// A binary expression node of an AST.
+class BinaryExprNode < Node {
+	// Initialize the binary expression node from its span, left-hand
+	// expression, operator, and right-hand expression.
+	init(span, left, operator, right) {
+		super.init(span);
+		
+		// The binary expression node's left-hand expression.
+		this._left = left;
+		
+		// The binary expression node's operator.
+		this._operator = operator;
+		
+		// The binary expression node's right-hand expression.
+		this._right = right;
+	}
+	
+	// Get the binary expression node's left-hand expression.
+	getLeft() {
+		return this._left;
+	}
+	
+	// Get the binary expression node's operator.
+	getOperator() {
+		return this._operator;
+	}
+	
+	// Get the binary expression node's right-hand expression.
+	getRight() {
+		return this._right;
+	}
+	
+	// Visit the binary expression node with a visitor.
+	visit(visitor) {
+		return visitor.visitBinaryExpr(this);
+	}
+}

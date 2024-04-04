@@ -20,6 +20,28 @@ class Parser {
 		
 		// Whether the parser is throwing an error.
 		this._isThrowing = false;
+		
+		// The parser's equality operators.
+		this._equalityOperators = List();
+		this._equalityOperators.pushBack(TokenType.BANG_EQUAL);
+		this._equalityOperators.pushBack(TokenType.EQUAL_EQUAL);
+		
+		// The parser's comparison operators.
+		this._comparisonOperators = List();
+		this._comparisonOperators.pushBack(TokenType.GREATER);
+		this._comparisonOperators.pushBack(TokenType.GREATER_EQUAL);
+		this._comparisonOperators.pushBack(TokenType.LESS);
+		this._comparisonOperators.pushBack(TokenType.LESS_EQUAL);
+		
+		// The parser's term operators.
+		this._termOperators = List();
+		this._termOperators.pushBack(TokenType.MINUS);
+		this._termOperators.pushBack(TokenType.PLUS);
+		
+		// The parser's factor operators.
+		this._factorOperators = List();
+		this._factorOperators.pushBack(TokenType.SLASH);
+		this._factorOperators.pushBack(TokenType.STAR);
 	}
 	
 	// Parse a module.
@@ -72,7 +94,51 @@ class Parser {
 	
 	// Parse an expression.
 	_parseExpression() {
-		return this._parseUnaryExpr();
+		return this._parseEqualityExpr();
+	}
+	
+	// Parse a binary expression.
+	_parseBinaryExpr(operators, parser) {
+		this._pushSpan();
+		var expr = parser();
+		
+		if (!expr) {
+			return this._dropSpan();
+		}
+		
+		while (operators.has(this._next.getType())) {
+			var operator = this._advance().getType();
+			var right = parser();
+			
+			if (!right) {
+				return this._dropSpan();
+			}
+			
+			expr = BinaryExprNode(this._peekSpan(), expr, operator, right);
+		}
+		
+		this._dropSpan();
+		return expr;
+	}
+	
+	// Parse an equality expression.
+	_parseEqualityExpr() {
+		return this._parseBinaryExpr(this._equalityOperators, this._parseComparisonExpr);
+	}
+	
+	// Parse a comparison expression.
+	_parseComparisonExpr() {
+		return this._parseBinaryExpr(this._comparisonOperators, this._parseTermExpr);
+	}
+	
+	// Parse a term expression.
+	_parseTermExpr() {
+		return this._parseBinaryExpr(this._termOperators, this._parseFactorExpr);
+	}
+	
+	// Parse a factor expression.
+	_parseFactorExpr() {
+		return this._parseBinaryExpr(this._factorOperators, this._parseUnaryExpr);
 	}
 	
 	// Parse a unary expression.

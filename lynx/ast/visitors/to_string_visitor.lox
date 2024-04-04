@@ -5,6 +5,11 @@ class ToStringVisitor < Visitor {
 		super.init();
 	}
 	
+	// Get a binary expression node's string representation.
+	visitBinaryExpr(node) {
+		return "BinaryExpr " + TokenType.toString(node.getOperator());
+	}
+	
 	// Get a call expression node's string representation.
 	visitCallExpr(node) {
 		return "CallExpr";
