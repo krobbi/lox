@@ -25,6 +25,11 @@ class ToStringVisitor < Visitor {
 		return "Module";
 	}
 	
+	// Get a super expression node's string representation.
+	visitSuperExpr(node) {
+		return "SuperExpr '" + node.getMethod() + "'";
+	}
+	
 	// Get a this expression node's string representation.
 	visitThisExpr(node) {
 		return "ThisExpr";

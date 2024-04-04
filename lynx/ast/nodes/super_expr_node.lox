@@ -1,0 +1,20 @@
+// A super expression node.
+class SuperExprNode < Node {
+	// Initialize the super expression node from its span and method.
+	init(span, method) {
+		super.init(span);
+		
+		// The super expression node's method.
+		this._method = method;
+	}
+	
+	// Get the super expression node's method.
+	getMethod() {
+		return this._method;
+	}
+	
+	// Visit the super expression node with a visitor.
+	visit(visitor) {
+		return visitor.visitSuperExpr(this);
+	}
+}

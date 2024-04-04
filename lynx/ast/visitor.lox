@@ -33,6 +33,11 @@ class Visitor {
 		return this.visitDefault(node);
 	}
 	
+	// Visit a super expression node.
+	visitSuperExpr(node) {
+		return this.visitDefault(node);
+	}
+	
 	// Visit a this expression node.
 	visitThisExpr(node) {
 		return this.visitDefault(node);

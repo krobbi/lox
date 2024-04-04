@@ -39,6 +39,7 @@ ast/nodes/expr_stmt_node.lox
 ast/nodes/grouping_expr_node.lox
 ast/nodes/literal_expr_node.lox
 ast/nodes/module_node.lox
+ast/nodes/super_expr_node.lox
 ast/nodes/this_expr_node.lox
 ast/nodes/variable_expr_node.lox
 

@@ -91,6 +91,18 @@ class Parser {
 		} else if (this._is(TokenType.STRING)) {
 			var token = this._advance();
 			return LiteralExprNode(this._end(), Literal(LiteralType.STRING, token.getValue()));
+		} else if (this._accept(TokenType.SUPER)) {
+			if (!this._expect(TokenType.DOT, "after 'super'")) {
+				return this._unwind();
+			}
+			
+			var token = this._expect(TokenType.IDENTIFIER, "for superclass method");
+			
+			if (!token) {
+				return this._unwind();
+			}
+			
+			return SuperExprNode(this._end(), token.getValue());
 		} else if (this._accept(TokenType.THIS)) {
 			return ThisExprNode(this._end());
 		} else if (this._is(TokenType.IDENTIFIER)) {
