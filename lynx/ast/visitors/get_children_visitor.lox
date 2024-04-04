@@ -30,6 +30,18 @@ class GetChildrenVisitor < Visitor {
 		return List().pushBack(node.getExpression());
 	}
 	
+	// Get a return statement node's children.
+	visitReturnStmt(node) {
+		var children = List();
+		var value = node.getValue();
+		
+		if (value) {
+			children.pushBack(value);
+		}
+		
+		return children;
+	}
+	
 	// Get an assign expression node's children.
 	visitAssignExpr(node) {
 		return List().pushBack(node.getValue());

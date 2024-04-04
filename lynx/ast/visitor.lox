@@ -32,6 +32,11 @@ class Visitor {
 		return this.visitDefault(node);
 	}
 	
+	// Visit a return statement node.
+	visitReturnStmt(node) {
+		return this.visitDefault(node);
+	}
+	
 	// Visit an assign expression node.
 	visitAssignExpr(node) {
 		return this.visitDefault(node);

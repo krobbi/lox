@@ -52,6 +52,7 @@ ast/nodes/exprs/variable_expr_node.lox
 ast/nodes/stmts/block_stmt_node.lox
 ast/nodes/stmts/expr_stmt_node.lox
 ast/nodes/stmts/print_stmt_node.lox
+ast/nodes/stmts/return_stmt_node.lox
 
 # Special AST nodes:
 ast/nodes/module_node.lox

@@ -75,6 +75,8 @@ class Parser {
 	_parseStatement() {
 		if (this._accept(TokenType.PRINT)) {
 			return this._parsePrintStmt();
+		} else if (this._accept(TokenType.RETURN)) {
+			return this._parseReturnStmt();
 		} else if (this._accept(TokenType.LEFT_BRACE)) {
 			return this._parseBlockStmt();
 		} else {
@@ -96,6 +98,26 @@ class Parser {
 		}
 		
 		return PrintStmtNode(this._popSpan(), expression);
+	}
+	
+	// Parse a return statement.
+	_parseReturnStmt() {
+		this._pushSpan();
+		var value = nil;
+		
+		if (!this._is(TokenType.SEMICOLON)) {
+			value = this._parseExpression();
+			
+			if (!value) {
+				return this._dropSpan();
+			}
+		}
+		
+		if (!this._expect(TokenType.SEMICOLON, "after return value")) {
+			return this._dropSpan();
+		}
+		
+		return ReturnStmtNode(this._popSpan(), value);
 	}
 	
 	// Parse a block statement.

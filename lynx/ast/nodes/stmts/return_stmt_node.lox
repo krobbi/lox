@@ -1,0 +1,21 @@
+// A return statement node of an AST.
+class ReturnStmtNode < Node {
+	// Initialize the return statement node from its span and optional value
+	// expression.
+	init(span, value) {
+		super.init(span);
+		
+		// The return statement node's optional value expression.
+		this._value = value;
+	}
+	
+	// Get the return statement node's optional value expression.
+	getValue() {
+		return this._value;
+	}
+	
+	// Visit the return statement node with a visitor.
+	visit(visitor) {
+		return visitor.visitReturnStmt(this);
+	}
+}

@@ -25,6 +25,11 @@ class ToStringVisitor < Visitor {
 		return "PrintStmt";
 	}
 	
+	// Get a return statement node's string representation.
+	visitReturnStmt(node) {
+		return "ReturnStmt";
+	}
+	
 	// Get an assign expression node's string representation.
 	visitAssignExpr(node) {
 		return "AssignExpr '" + node.getName() + "'";

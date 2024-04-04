@@ -2,4 +2,6 @@
 // Lynx will eventually parse itself, but this temporary test will be used while
 // the parser is being implemented.
 
-print "Hello, Lynx!";
+return;
+return nil;
+return 0;
