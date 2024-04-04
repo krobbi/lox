@@ -56,6 +56,11 @@ class GetChildrenVisitor < Visitor {
 		return node.getStatements();
 	}
 	
+	// Get a set expression node's children.
+	visitSetExpr(node) {
+		return List().pushBack(node.getObject()).pushBack(node.getValue());
+	}
+	
 	// Get a unary expression node's children.
 	visitUnaryExpr(node) {
 		return List().pushBack(node.getRight());

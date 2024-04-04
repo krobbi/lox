@@ -58,6 +58,11 @@ class Visitor {
 		return this.visitDefault(node);
 	}
 	
+	// Visit a set expression node.
+	visitSetExpr(node) {
+		return this.visitDefault(node);
+	}
+	
 	// Visit a super expression node.
 	visitSuperExpr(node) {
 		return this.visitDefault(node);

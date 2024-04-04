@@ -50,6 +50,11 @@ class ToStringVisitor < Visitor {
 		return "Module";
 	}
 	
+	// Get a set expression node's string representation.
+	visitSetExpr(node) {
+		return "SetExpr '" + node.getName() + "'";
+	}
+	
 	// Get a super expression node's string representation.
 	visitSuperExpr(node) {
 		return "SuperExpr '" + node.getMethod() + "'";

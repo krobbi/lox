@@ -2,6 +2,7 @@
 // Lynx will eventually parse itself, but this temporary test will be used while
 // the parser is being implemented.
 
-variable = "Value.";
-a = b = c;
-id = (count = count + 1) - 1;
+object.field;
+object.field = value;
+object.subobject.field = value;
+object.method().field = value;

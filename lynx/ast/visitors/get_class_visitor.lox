@@ -5,67 +5,72 @@ class GetClassVisitor < Visitor {
 		super.init();
 	}
 	
-	// Visit an assign expression node.
+	// Get an assign expression node's class.
 	visitAssignExpr(node) {
 		return AssignExprNode;
 	}
 	
-	// Visit a binary expression node.
+	// Get a binary expression node's class.
 	visitBinaryExpr(node) {
 		return BinaryExprNode;
 	}
 	
-	// Visit a call expression node.
+	// Get a call expression node's class.
 	visitCallExpr(node) {
 		return CallExprNode;
 	}
 	
-	// Visit an expression statement node.
+	// Get an expression statement node's class.
 	visitExprStmt(node) {
 		return ExprStmtNode;
 	}
 	
-	// Visit a get expression node.
+	// Get a get expression node's class.
 	visitGetExpr(node) {
 		return GetExprNode;
 	}
 	
-	// Visit a grouping expression node.
+	// Get a grouping expression node's class.
 	visitGroupingExpr(node) {
 		return GroupingExprNode;
 	}
 	
-	// Visit a literal expression node.
+	// Get a literal expression node's class.
 	visitLiteralExpr(node) {
 		return LiteralExprNode;
 	}
 	
-	// Visit a logical expression node.
+	// Get a logical expression node's class.
 	visitLogicalExpr(node) {
 		return LogicalExprNode;
 	}
 	
-	// Visit a module node.
+	// Get a module node's class.
 	visitModule(node) {
 		return ModuleNode;
 	}
 	
-	// Visit a super expression node.
+	// Get a set expression node's class.
+	visitSetExpr(node) {
+		return SetExprNode;
+	}
+	
+	// Get a super expression node's class.
 	visitSuperExpr(node) {
 		return SuperExprNode;
 	}
 	
-	// Visit a this expression node.
+	// Get a this expression node's class.
 	visitThisExpr(node) {
 		return ThisExprNode;
 	}
 	
-	// Visit a unary expression node.
+	// Get a unary expression node's class.
 	visitUnaryExpr(node) {
 		return UnaryExprNode;
 	}
 	
-	// Visit a variable expression node.
+	// Get a variable expression node's class.
 	visitVariableExpr(node) {
 		return VariableExprNode;
 	}

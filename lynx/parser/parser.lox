@@ -117,6 +117,8 @@ class Parser {
 			
 			if (exprClass == VariableExprNode) {
 				return AssignExprNode(this._popSpan(), expr.getName(), value);
+			} else if (exprClass == GetExprNode) {
+				return SetExprNode(this._popSpan(), expr.getObject(), expr.getName(), value);
 			}
 			
 			this._logError("Invalid assignment target.", expr);

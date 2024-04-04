@@ -1,0 +1,37 @@
+// A set expression node of an AST.
+class SetExprNode < Node {
+	// Initialize the set expression node from its span, object expression,
+	// name, and value expression.
+	init(span, object, name, value) {
+		super.init(span);
+		
+		// The set expression node's object expression.
+		this._object = object;
+		
+		// The set expression node's name.
+		this._name = name;
+		
+		// The set expression node's value expression.
+		this._value = value;
+	}
+	
+	// Get the set expression node's object expression.
+	getObject() {
+		return this._object;
+	}
+	
+	// Get the set expression node's name.
+	getName() {
+		return this._name;
+	}
+	
+	// Get the set expression node's value expression.
+	getValue() {
+		return this._value;
+	}
+	
+	// Visit the set expression node with a visitor.
+	visit(visitor) {
+		return visitor.visitSetExpr(this);
+	}
+}

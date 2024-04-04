@@ -44,6 +44,7 @@ ast/nodes/grouping_expr_node.lox
 ast/nodes/literal_expr_node.lox
 ast/nodes/logical_expr_node.lox
 ast/nodes/module_node.lox
+ast/nodes/set_expr_node.lox
 ast/nodes/super_expr_node.lox
 ast/nodes/this_expr_node.lox
 ast/nodes/unary_expr_node.lox
