@@ -10,6 +10,21 @@ class GetChildrenVisitor < Visitor {
 		return List();
 	}
 	
+	// Get a module node's children.
+	visitModule(node) {
+		return node.getStatements();
+	}
+	
+	// Get a block statement node's children.
+	visitBlockStmt(node) {
+		return node.getStatements();
+	}
+	
+	// Get an expression statement node's children.
+	visitExprStmt(node) {
+		return List().pushBack(node.getExpression());
+	}
+	
 	// Get an assign expression node's children.
 	visitAssignExpr(node) {
 		return List().pushBack(node.getValue());
@@ -18,11 +33,6 @@ class GetChildrenVisitor < Visitor {
 	// Get a binary expression node's children.
 	visitBinaryExpr(node) {
 		return List().pushBack(node.getLeft()).pushBack(node.getRight());
-	}
-	
-	// Get a block statement node's children.
-	visitBlockStmt(node) {
-		return node.getStatements();
 	}
 	
 	// Get a call expression node's children.
@@ -46,19 +56,9 @@ class GetChildrenVisitor < Visitor {
 		return List().pushBack(node.getExpression());
 	}
 	
-	// Get an expression statement node's children.
-	visitExprStmt(node) {
-		return List().pushBack(node.getExpression());
-	}
-	
 	// Get a logical expression node's children.
 	visitLogicalExpr(node) {
 		return List().pushBack(node.getLeft()).pushBack(node.getRight());
-	}
-	
-	// Get a module node's children.
-	visitModule(node) {
-		return node.getStatements();
 	}
 	
 	// Get a set expression node's children.

@@ -2,7 +2,6 @@
 class Visitor {
 	// Initialize the visitor.
 	init() {}
-	
 	// Visit a node.
 	visit(node) {
 		return node.visit(this);
@@ -11,6 +10,21 @@ class Visitor {
 	// Visit a node with no defined visitor behavior.
 	visitDefault(node) {
 		return nil;
+	}
+	
+	// Visit a module node.
+	visitModule(node) {
+		return this.visitDefault(node);
+	}
+	
+	// Visit a block statement node.
+	visitBlockStmt(node) {
+		return this.visitDefault(node);
+	}
+	
+	// Visit an expression statement node.
+	visitExprStmt(node) {
+		return this.visitDefault(node);
 	}
 	
 	// Visit an assign expression node.
@@ -23,18 +37,8 @@ class Visitor {
 		return this.visitDefault(node);
 	}
 	
-	// Visit a block statement node.
-	visitBlockStmt(node) {
-		return this.visitDefault(node);
-	}
-	
 	// Visit a call expression node.
 	visitCallExpr(node) {
-		return this.visitDefault(node);
-	}
-	
-	// Visit an expression statement node.
-	visitExprStmt(node) {
 		return this.visitDefault(node);
 	}
 	
@@ -55,11 +59,6 @@ class Visitor {
 	
 	// Visit a logical expression node.
 	visitLogicalExpr(node) {
-		return this.visitDefault(node);
-	}
-	
-	// Visit a module node.
-	visitModule(node) {
 		return this.visitDefault(node);
 	}
 	

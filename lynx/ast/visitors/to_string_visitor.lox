@@ -5,6 +5,21 @@ class ToStringVisitor < Visitor {
 		super.init();
 	}
 	
+	// Get a module node's string representation.
+	visitModule(node) {
+		return "Module";
+	}
+	
+	// Get a block statement node's string representation.
+	visitBlockStmt(node) {
+		return "BlockStmt";
+	}
+	
+	// Get an expression statement node's string representation.
+	visitExprStmt(node) {
+		return "ExprStmt";
+	}
+	
 	// Get an assign expression node's string representation.
 	visitAssignExpr(node) {
 		return "AssignExpr '" + node.getName() + "'";
@@ -15,19 +30,9 @@ class ToStringVisitor < Visitor {
 		return "BinaryExpr " + TokenType.toString(node.getOperator());
 	}
 	
-	// Get a block statement node's string representation.
-	visitBlockStmt(node) {
-		return "BlockStmt";
-	}
-	
 	// Get a call expression node's string representation.
 	visitCallExpr(node) {
 		return "CallExpr";
-	}
-	
-	// Get an expression statement node's string representation.
-	visitExprStmt(node) {
-		return "ExprStmt";
 	}
 	
 	// Get a get expression node's string representation.
@@ -48,11 +53,6 @@ class ToStringVisitor < Visitor {
 	// Get a logical expression node's string representation.
 	visitLogicalExpr(node) {
 		return "LogicalExpr " + TokenType.toString(node.getOperator());
-	}
-	
-	// Get a module node's string representation.
-	visitModule(node) {
-		return "Module";
 	}
 	
 	// Get a set expression node's string representation.

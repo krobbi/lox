@@ -34,22 +34,26 @@ ast/literal/literal.lox
 ast/node.lox
 ast/visitor.lox
 
-# AST nodes:
-ast/nodes/assign_expr_node.lox
-ast/nodes/binary_expr_node.lox
-ast/nodes/block_stmt_node.lox
-ast/nodes/call_expr_node.lox
-ast/nodes/expr_stmt_node.lox
-ast/nodes/get_expr_node.lox
-ast/nodes/grouping_expr_node.lox
-ast/nodes/literal_expr_node.lox
-ast/nodes/logical_expr_node.lox
+# Expression AST nodes:
+ast/nodes/exprs/assign_expr_node.lox
+ast/nodes/exprs/binary_expr_node.lox
+ast/nodes/exprs/call_expr_node.lox
+ast/nodes/exprs/get_expr_node.lox
+ast/nodes/exprs/grouping_expr_node.lox
+ast/nodes/exprs/literal_expr_node.lox
+ast/nodes/exprs/logical_expr_node.lox
+ast/nodes/exprs/set_expr_node.lox
+ast/nodes/exprs/super_expr_node.lox
+ast/nodes/exprs/this_expr_node.lox
+ast/nodes/exprs/unary_expr_node.lox
+ast/nodes/exprs/variable_expr_node.lox
+
+# Statement AST nodes:
+ast/nodes/stmts/block_stmt_node.lox
+ast/nodes/stmts/expr_stmt_node.lox
+
+# Special AST nodes:
 ast/nodes/module_node.lox
-ast/nodes/set_expr_node.lox
-ast/nodes/super_expr_node.lox
-ast/nodes/this_expr_node.lox
-ast/nodes/unary_expr_node.lox
-ast/nodes/variable_expr_node.lox
 
 # AST visitors:
 ast/visitors/get_children_visitor.lox
