@@ -234,9 +234,7 @@ class Parser {
 	
 	// Peek the current node span to the parser's current span.
 	_peekSpan() {
-		var span = this._spanStack.popBack();
-		this._spanStack.pushBack(span);
-		span = span.clone();
+		var span = this._spanStack.peekBack().clone();
 		span.include(this._span);
 		return span;
 	}

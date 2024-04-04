@@ -2,6 +2,8 @@
 fun testLists(t) {
 	t.begin("New");
 		var list = List();
+		t.eq("has", list.has(nil), false);
+		t.eq("peek", list.peekBack(), nil);
 		t.eq("empty", list.isEmpty(), true);
 		t.eq("length", list.getLength(), 0);
 	t.end("New");
@@ -10,24 +12,28 @@ fun testLists(t) {
 		t.begin("Push");
 			t.begin("Index 0");
 				list.pushBack("Bottom pancake");
+				t.eq("peek", list.peekBack(), "Bottom pancake");
 				t.eq("empty", list.isEmpty(), false);
 				t.eq("length", list.getLength(), 1);
 			t.end("Index 0");
 			
 			t.begin("Index 1");
 				list.pushBack("Middle pancake");
+				t.eq("peek", list.peekBack(), "Middle pancake");
 				t.eq("empty", list.isEmpty(), false);
 				t.eq("length", list.getLength(), 2);
 			t.end("Index 1");
 			
 			t.begin("Index 2");
 				list.pushBack("Top pancake");
+				t.eq("peek", list.peekBack(), "Top pancake");
 				t.eq("empty", list.isEmpty(), false);
 				t.eq("length", list.getLength(), 3);
 			t.end("Index 2");
 			
 			t.begin("Index 3");
 				list.pushBack("Syrup");
+				t.eq("peek", list.peekBack(), "Syrup");
 				t.eq("empty", list.isEmpty(), false);
 				t.eq("length", list.getLength(), 4);
 			t.end("Index 3");
@@ -41,36 +47,60 @@ fun testLists(t) {
 			t.eq("index 2", list.get(2), "Top pancake");
 		t.end("Get");
 		
+		t.begin("Has");
+			t.eq("index 1", list.has("Middle pancake"), true);
+			t.eq("index 0", list.has("Bottom pancake"), true);
+			t.eq("index 3", list.has("Syrup"), true);
+			t.eq("index 2", list.has("Top pancake"), true);
+			
+			t.begin("Missing");
+				t.eq("nil", list.has(nil), false);
+				t.eq("number", list.has(0), false);
+				t.eq("case", list.has("syrup"), false);
+			t.end("Missing");
+		t.end("Has");
+		
 		// Set with fraction to test truncation.
 		list.set(1.2, "Crepe");
+		t.eq("has", list.has("Middle pancake"), false);
 		t.eq("set", list.get(1.8), "Crepe");
 		
 		t.begin("Pop");
 			t.begin("Index 3");
+				t.eq("peek", list.peekBack(), "Syrup");
 				t.eq("value", list.popBack(), "Syrup");
+				t.eq("has", list.has("Syrup"), false);
 				t.eq("empty", list.isEmpty(), false);
 				t.eq("length", list.getLength(), 3);
 			t.end("Index 3");
 			
 			t.begin("Index 2");
+				t.eq("peek", list.peekBack(), "Top pancake");
 				t.eq("value", list.popBack(), "Top pancake");
+				t.eq("has", list.has("Top pancake"), false);
 				t.eq("empty", list.isEmpty(), false);
 				t.eq("length", list.getLength(), 2);
 			t.end("Index 2");
 			
 			t.begin("Index 1");
+				t.eq("peek", list.peekBack(), "Crepe");
 				t.eq("value", list.popBack(), "Crepe");
+				t.eq("has", list.has("Crepe"), false);
 				t.eq("empty", list.isEmpty(), false);
 				t.eq("length", list.getLength(), 1);
 			t.end("Index 1");
 			
 			t.begin("Index 0");
+				t.eq("peek", list.peekBack(), "Bottom pancake");
 				t.eq("value", list.popBack(), "Bottom pancake");
+				t.eq("has", list.has("Bottom pancake"), false);
 				t.eq("empty", list.isEmpty(), true);
 				t.eq("length", list.getLength(), 0);
 			t.end("Index 0");
 			
 			t.begin("Empty");
+				t.eq("peek", list.peekBack(), nil);
+				t.eq("has", list.has(nil), false);
 				t.eq("value", list.popBack(), nil);
 				t.eq("empty", list.isEmpty(), true);
 				t.eq("length", list.getLength(), 0);

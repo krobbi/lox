@@ -10,6 +10,21 @@ class List {
 		return !this._head;
 	}
 	
+	// Get whether the list contains an element.
+	has(elem) {
+		var node = this._head;
+		
+		while (node) {
+			if (node.elem == elem) {
+				return true;
+			}
+			
+			node = node.next;
+		}
+		
+		return false;
+	}
+	
 	// Get an element from the list from its index.
 	get(index) {
 		var node = this._find(index);
@@ -60,6 +75,17 @@ class List {
 		
 		this._tail = node;
 		this._length = this._length + 1;
+	}
+	
+	// Return an element from the back of the list.
+	peekBack() {
+		var tail = this._tail;
+		
+		if (tail) {
+			return tail.elem;
+		} else {
+			return nil;
+		}
 	}
 	
 	// Remove and return an element from the back of the list.
