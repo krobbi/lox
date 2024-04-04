@@ -20,6 +20,11 @@ class GetClassVisitor < Visitor {
 		return ExprStmtNode;
 	}
 	
+	// Get a print statement node's class.
+	visitPrintStmt(node) {
+		return PrintStmtNode;
+	}
+	
 	// Get an assign expression node's class.
 	visitAssignExpr(node) {
 		return AssignExprNode;

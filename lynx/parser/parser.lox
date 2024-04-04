@@ -73,11 +73,29 @@ class Parser {
 	
 	// Parse a statement.
 	_parseStatement() {
-		if (this._accept(TokenType.LEFT_BRACE)) {
+		if (this._accept(TokenType.PRINT)) {
+			return this._parsePrintStmt();
+		} else if (this._accept(TokenType.LEFT_BRACE)) {
 			return this._parseBlockStmt();
 		} else {
 			return this._parseExprStmt();	
 		}
+	}
+	
+	// Parse a print statement.
+	_parsePrintStmt() {
+		this._pushSpan();
+		var expression = this._parseExpression();
+		
+		if (!expression) {
+			return this._dropSpan();
+		}
+		
+		if (!this._expect(TokenType.SEMICOLON, "after value")) {
+			return this._dropSpan();
+		}
+		
+		return PrintStmtNode(this._popSpan(), expression);
 	}
 	
 	// Parse a block statement.

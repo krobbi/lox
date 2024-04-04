@@ -27,6 +27,11 @@ class Visitor {
 		return this.visitDefault(node);
 	}
 	
+	// Visit a print statement node.
+	visitPrintStmt(node) {
+		return this.visitDefault(node);
+	}
+	
 	// Visit an assign expression node.
 	visitAssignExpr(node) {
 		return this.visitDefault(node);

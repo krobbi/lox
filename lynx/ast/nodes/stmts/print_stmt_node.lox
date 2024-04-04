@@ -1,0 +1,20 @@
+// A print statement node of an AST.
+class PrintStmtNode < Node {
+	// Initialize the print statement node from its span and expression.
+	init(span, expression) {
+		super.init(span);
+		
+		// The print statement node's expression.
+		this._expression = expression;
+	}
+	
+	// Get the print statement node's expression.
+	getExpression() {
+		return this._expression;
+	}
+	
+	// Visit the print statement node with a visitor.
+	visit(visitor) {
+		return visitor.visitPrintStmt(this);
+	}
+}

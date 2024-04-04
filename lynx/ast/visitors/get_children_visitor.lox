@@ -25,6 +25,11 @@ class GetChildrenVisitor < Visitor {
 		return List().pushBack(node.getExpression());
 	}
 	
+	// Get a print statement node's children.
+	visitPrintStmt(node) {
+		return List().pushBack(node.getExpression());
+	}
+	
 	// Get an assign expression node's children.
 	visitAssignExpr(node) {
 		return List().pushBack(node.getValue());
