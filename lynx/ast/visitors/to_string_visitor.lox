@@ -10,6 +10,11 @@ class ToStringVisitor < Visitor {
 		return "ExprStmt";
 	}
 	
+	// Get a get expression node's string representation.
+	visitGetExpr(node) {
+		return "GetExpr '" + node.getName() + "'";
+	}
+	
 	// Get a grouping expression node's string representation.
 	visitGroupingExpr(node) {
 		return "GroupingExpr";

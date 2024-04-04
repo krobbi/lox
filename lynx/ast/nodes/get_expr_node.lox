@@ -1,0 +1,28 @@
+// A get expression node.
+class GetExprNode < Node {
+	// Initialize the get expression node from its span, object, and name.
+	init(span, object, name) {
+		super.init(span);
+		
+		// The get expression node's object.
+		this._object = object;
+		
+		// The get expression node's name.
+		this._name = name;
+	}
+	
+	// Get the get expression node's object.
+	getObject() {
+		return this._object;
+	}
+	
+	// Get the get expression node's name.
+	getName() {
+		return this._name;
+	}
+	
+	// Visit the get expression node with a visitor.
+	visit(visitor) {
+		return visitor.visitGetExpr(this);
+	}
+}

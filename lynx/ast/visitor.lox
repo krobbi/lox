@@ -18,6 +18,11 @@ class Visitor {
 		return this.visitDefault(node);
 	}
 	
+	// Visit a get expression node.
+	visitGetExpr(node) {
+		return this.visitDefault(node);
+	}
+	
 	// Visit a grouping expression node.
 	visitGroupingExpr(node) {
 		return this.visitDefault(node);

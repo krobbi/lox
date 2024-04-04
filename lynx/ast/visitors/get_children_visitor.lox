@@ -10,6 +10,11 @@ class GetChildrenVisitor < Visitor {
 		return List();
 	}
 	
+	// Get a get expression node's children.
+	visitGetExpr(node) {
+		return this._createUnary(node.getObject());
+	}
+	
 	// Get a grouping expression node's children.
 	visitGroupingExpr(node) {
 		return this._createUnary(node.getExpression());

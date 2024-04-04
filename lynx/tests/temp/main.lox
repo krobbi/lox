@@ -22,3 +22,7 @@ foo;
 // Grouping expression statements.
 ("Grouping.");
 (("Nested grouping."));
+
+// Get expression statements.
+object.property;
+object.property.nested.deep;

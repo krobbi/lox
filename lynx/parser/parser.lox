@@ -24,7 +24,7 @@ class Parser {
 	
 	// Parse a module.
 	parseModule() {
-		this._begin();
+		this._pushSpan();
 		var statements = List();
 		
 		while (!this._is(TokenType.EOF)) {
@@ -35,7 +35,7 @@ class Parser {
 			}
 		}
 		
-		return ModuleNode(this._end(), statements);
+		return ModuleNode(this._popSpan(), statements);
 	}
 	
 	// Parse a declaration.
@@ -56,73 +56,100 @@ class Parser {
 	
 	// Parse an expression statement.
 	_parseExprStmt() {
-		this._begin();
+		this._pushSpan();
 		var expression = this._parseExpression();
 		
 		if (!expression) {
-			return this._unwind();
+			return this._dropSpan();
 		}
 		
 		if (!this._expect(TokenType.SEMICOLON, "after expression")) {
-			return this._unwind();
+			return this._dropSpan();
 		}
 		
-		return ExprStmtNode(this._end(), expression);
+		return ExprStmtNode(this._popSpan(), expression);
 	}
 	
 	// Parse an expression.
 	_parseExpression() {
-		return this._parsePrimaryExpr();
+		return this._parseCallExpr();
+	}
+	
+	// Parse a call expression.
+	_parseCallExpr() {
+		this._pushSpan();
+		var expr = this._parsePrimaryExpr();
+		
+		if (!expr) {
+			return this._dropSpan();
+		}
+		
+		for (var isLooping = true; isLooping;) {
+			if (this._accept(TokenType.DOT)) {
+				var token = this._expect(TokenType.IDENTIFIER, "for property name");
+				
+				if (!token) {
+					return this._dropSpan();
+				}
+				
+				expr = GetExprNode(this._peekSpan(), expr, token.getValue());
+			} else {
+				isLooping = false;
+			}
+		}
+		
+		this._dropSpan();
+		return expr;
 	}
 	
 	// Parse a primary expression.
 	_parsePrimaryExpr() {
-		this._begin();
+		this._pushSpan();
 		
 		if (this._accept(TokenType.NIL)) {
-			return LiteralExprNode(this._end(), Literal(LiteralType.NIL, nil));
+			return LiteralExprNode(this._popSpan(), Literal(LiteralType.NIL, nil));
 		} else if (this._accept(TokenType.TRUE)) {
-			return LiteralExprNode(this._end(), Literal(LiteralType.BOOL, true));
+			return LiteralExprNode(this._popSpan(), Literal(LiteralType.BOOL, true));
 		} else if (this._accept(TokenType.FALSE)) {
-			return LiteralExprNode(this._end(), Literal(LiteralType.BOOL, false));
+			return LiteralExprNode(this._popSpan(), Literal(LiteralType.BOOL, false));
 		} else if (this._is(TokenType.NUMBER)) {
 			var token = this._advance();
-			return LiteralExprNode(this._end(), Literal(LiteralType.NUMBER, token.getValue()));
+			return LiteralExprNode(this._popSpan(), Literal(LiteralType.NUMBER, token.getValue()));
 		} else if (this._is(TokenType.STRING)) {
 			var token = this._advance();
-			return LiteralExprNode(this._end(), Literal(LiteralType.STRING, token.getValue()));
+			return LiteralExprNode(this._popSpan(), Literal(LiteralType.STRING, token.getValue()));
 		} else if (this._accept(TokenType.SUPER)) {
 			if (!this._expect(TokenType.DOT, "after 'super'")) {
-				return this._unwind();
+				return this._dropSpan();
 			}
 			
 			var token = this._expect(TokenType.IDENTIFIER, "for superclass method");
 			
 			if (!token) {
-				return this._unwind();
+				return this._dropSpan();
 			}
 			
-			return SuperExprNode(this._end(), token.getValue());
+			return SuperExprNode(this._popSpan(), token.getValue());
 		} else if (this._accept(TokenType.THIS)) {
-			return ThisExprNode(this._end());
+			return ThisExprNode(this._popSpan());
 		} else if (this._is(TokenType.IDENTIFIER)) {
 			var token = this._advance();
-			return VariableExprNode(this._end(), token.getValue());
+			return VariableExprNode(this._popSpan(), token.getValue());
 		} else if (this._accept(TokenType.LEFT_PAREN)) {
 			var expression = this._parseExpression();
 			
 			if (!expression) {
-				return this._unwind();
+				return this._dropSpan();
 			}
 			
 			if (!this._expect(TokenType.RIGHT_PAREN, "after expression")) {
-				return this._unwind();
+				return this._dropSpan();
 			}
 			
-			return GroupingExprNode(this._end(), expression);
+			return GroupingExprNode(this._popSpan(), expression);
 		} else {
 			this._expected("an expression");
-			return this._unwind();
+			return this._dropSpan();
 		}
 	}
 	
@@ -152,20 +179,29 @@ class Parser {
 		}
 	}
 	
-	// Begin a new node span at the parser's next token.
-	_begin() {
+	// Push a new node span at the parser's next token.
+	_pushSpan() {
 		this._spanStack.pushBack(this._next.getSpan());
 	}
 	
-	// End the current node span at the parser's current span.
-	_end() {
+	// Peek the current node span to the parser's current span.
+	_peekSpan() {
+		var span = this._spanStack.popBack();
+		this._spanStack.pushBack(span);
+		span = span.clone();
+		span.include(this._span);
+		return span;
+	}
+	
+	// Pop the current node span to the parser's current span.
+	_popSpan() {
 		var span = this._spanStack.popBack().clone();
 		span.include(this._span);
 		return span;
 	}
 	
-	// Unwind the current node span.
-	_unwind() {
+	// Drop the current node span and return nil.
+	_dropSpan() {
 		this._spanStack.popBack();
 		return nil;
 	}
