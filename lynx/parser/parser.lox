@@ -91,6 +91,8 @@ class Parser {
 		} else if (this._is(TokenType.STRING)) {
 			var token = this._advance();
 			return LiteralExprNode(this._end(), Literal(LiteralType.STRING, token.getValue()));
+		} else if (this._accept(TokenType.THIS)) {
+			return ThisExprNode(this._end());
 		} else if (this._accept(TokenType.LEFT_PAREN)) {
 			var expression = this._parseExpression();
 			

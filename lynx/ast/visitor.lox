@@ -32,4 +32,9 @@ class Visitor {
 	visitModule(node) {
 		return this.visitDefault(node);
 	}
+	
+	// Visit a this expression node.
+	visitThisExpr(node) {
+		return this.visitDefault(node);
+	}
 }

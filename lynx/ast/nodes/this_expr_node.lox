@@ -1,0 +1,12 @@
+// A this expression node.
+class ThisExprNode < Node {
+	// Initialize the this expression node from its span.
+	init(span) {
+		super.init(span);
+	}
+	
+	// Visit the this expression node with a visitor.
+	visit(visitor) {
+		return visitor.visitThisExpr(this);
+	}
+}

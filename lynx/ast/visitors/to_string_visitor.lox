@@ -24,4 +24,9 @@ class ToStringVisitor < Visitor {
 	visitModule(node) {
 		return "Module";
 	}
+	
+	// Get a this expression node's string representation.
+	visitThisExpr(node) {
+		return "ThisExpr";
+	}
 }
