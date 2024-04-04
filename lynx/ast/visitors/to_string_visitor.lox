@@ -45,6 +45,11 @@ class ToStringVisitor < Visitor {
 		return "ThisExpr";
 	}
 	
+	// Get a unary expression node's string representation.
+	visitUnaryExpr(node) {
+		return "UnaryExpr " + TokenType.toString(node.getOperator());
+	}
+	
 	// Get a variable expression node's string representation.
 	visitVariableExpr(node) {
 		return "VariableExpr '" + node.getName() + "'";

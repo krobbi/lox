@@ -42,6 +42,11 @@ class GetChildrenVisitor < Visitor {
 		return node.getStatements();
 	}
 	
+	// Get a unary expression node's children.
+	visitUnaryExpr(node) {
+		return this._createUnary(node.getRight());
+	}
+	
 	// Create a unary child list.
 	_createUnary(child) {
 		var children = List();

@@ -72,6 +72,25 @@ class Parser {
 	
 	// Parse an expression.
 	_parseExpression() {
+		return this._parseUnaryExpr();
+	}
+	
+	// Parse a unary expression.
+	_parseUnaryExpr() {
+		this._pushSpan();
+		
+		if (this._is(TokenType.BANG) or this._is(TokenType.MINUS)) {
+			var operator = this._advance().getType();
+			var right = this._parseUnaryExpr();
+			
+			if (!right) {
+				return this._dropSpan();
+			}
+			
+			return UnaryExprNode(this._popSpan(), operator, right);
+		}
+		
+		this._dropSpan();
 		return this._parseCallExpr();
 	}
 	

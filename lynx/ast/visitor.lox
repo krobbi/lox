@@ -53,6 +53,11 @@ class Visitor {
 		return this.visitDefault(node);
 	}
 	
+	// Visit a unary expression node.
+	visitUnaryExpr(node) {
+		return this.visitDefault(node);
+	}
+	
 	// Visit a variable expression node.
 	visitVariableExpr(node) {
 		return this.visitDefault(node);

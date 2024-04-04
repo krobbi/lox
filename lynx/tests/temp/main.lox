@@ -36,3 +36,14 @@ getDoubler()(5);
 object.method(argument);
 ConfigBuilder().inSection("Graphics").setKey("width", 1920).setKey("height", 1080).status;
 dumpVec2(vec.getX(), vec.getY());
+
+// Unary expression statements.
+-1;
+--10;
+-vec.getMagnitude();
+--vec.getAngle();
+!true;
+!!!false;
+!vec.isZero();
+!!vec.isUnit();
+!-1;

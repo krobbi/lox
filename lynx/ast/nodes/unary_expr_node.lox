@@ -1,0 +1,29 @@
+// A unary expression node of an AST.
+class UnaryExprNode < Node {
+	// Initialize the unary expression node from its span, operator, and
+	// right-hand expression.
+	init(span, operator, right) {
+		super.init(span);
+		
+		// The unary expression node's operator.
+		this._operator = operator;
+		
+		// The unary expression node's right-hand expression.
+		this._right = right;
+	}
+	
+	// Get the unary expression node's operator.
+	getOperator() {
+		return this._operator;
+	}
+	
+	// Get the unary expression node's right-hand expression.
+	getRight() {
+		return this._right;
+	}
+	
+	// Visit the unary expression node with a visitor.
+	visit(visitor) {
+		return visitor.visitUnaryExpr(this);
+	}
+}
