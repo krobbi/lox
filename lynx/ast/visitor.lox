@@ -23,6 +23,11 @@ class Visitor {
 		return this.visitDefault(node);
 	}
 	
+	// Visit a block statement node.
+	visitBlockStmt(node) {
+		return this.visitDefault(node);
+	}
+	
 	// Visit a call expression node.
 	visitCallExpr(node) {
 		return this.visitDefault(node);

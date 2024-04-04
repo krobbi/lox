@@ -15,6 +15,11 @@ class ToStringVisitor < Visitor {
 		return "BinaryExpr " + TokenType.toString(node.getOperator());
 	}
 	
+	// Get a block statement node's string representation.
+	visitBlockStmt(node) {
+		return "BlockStmt";
+	}
+	
 	// Get a call expression node's string representation.
 	visitCallExpr(node) {
 		return "CallExpr";

@@ -2,7 +2,22 @@
 // Lynx will eventually parse itself, but this temporary test will be used while
 // the parser is being implemented.
 
-object.field;
-object.field = value;
-object.subobject.field = value;
-object.method().field = value;
+"Global Pre";
+
+{
+	"Outer Pre";
+	
+	{
+		"Inner";
+		
+		{} // Empty block.
+		
+		{
+			"Unit";
+		}
+	}
+	
+	"Outer Post";
+}
+
+"Global Post";

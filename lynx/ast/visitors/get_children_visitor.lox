@@ -20,6 +20,11 @@ class GetChildrenVisitor < Visitor {
 		return List().pushBack(node.getLeft()).pushBack(node.getRight());
 	}
 	
+	// Get a block statement node's children.
+	visitBlockStmt(node) {
+		return node.getStatements();
+	}
+	
 	// Get a call expression node's children.
 	visitCallExpr(node) {
 		var children = List().pushBack(node.getCallee());

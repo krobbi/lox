@@ -46,7 +46,7 @@ class Parser {
 	
 	// Parse a module.
 	parseModule() {
-		this._pushSpan();
+		this._pushSpanNext();
 		var statements = List();
 		
 		while (!this._is(TokenType.EOF)) {
@@ -73,12 +73,36 @@ class Parser {
 	
 	// Parse a statement.
 	_parseStatement() {
-		return this._parseExprStmt();
+		if (this._accept(TokenType.LEFT_BRACE)) {
+			return this._parseBlockStmt();
+		} else {
+			return this._parseExprStmt();	
+		}
+	}
+	
+	// Parse a block statement.
+	_parseBlockStmt() {
+		this._pushSpan();
+		var statements = List();
+		
+		while (!this._is(TokenType.RIGHT_BRACE) and !this._is(TokenType.EOF)) {
+			var statement = this._parseDeclaration();
+			
+			if (statement) {
+				statements.pushBack(statement);
+			}
+		}
+		
+		if (!this._expect(TokenType.RIGHT_BRACE, "after block")) {
+			return this._dropSpan();
+		}
+		
+		return BlockStmtNode(this._popSpan(), statements);
 	}
 	
 	// Parse an expression statement.
 	_parseExprStmt() {
-		this._pushSpan();
+		this._pushSpanNext();
 		var expression = this._parseExpression();
 		
 		if (!expression) {
@@ -99,7 +123,7 @@ class Parser {
 	
 	// Parse an assignment expression.
 	_parseAssignmentExpr() {
-		this._pushSpan();
+		this._pushSpanNext();
 		var expr = this._parseOrExpr();
 		
 		if (!expr) {
@@ -130,7 +154,7 @@ class Parser {
 	
 	// Parse a binary expression.
 	_parseBinaryExpr(constructor, operators, parser) {
-		this._pushSpan();
+		this._pushSpanNext();
 		var expr = parser();
 		
 		if (!expr) {
@@ -184,7 +208,7 @@ class Parser {
 	
 	// Parse a unary expression.
 	_parseUnaryExpr() {
-		this._pushSpan();
+		this._pushSpanNext();
 		
 		if (this._is(TokenType.BANG) or this._is(TokenType.MINUS)) {
 			var operator = this._advance().getType();
@@ -203,7 +227,7 @@ class Parser {
 	
 	// Parse a call expression.
 	_parseCallExpr() {
-		this._pushSpan();
+		this._pushSpanNext();
 		var expr = this._parsePrimaryExpr();
 		
 		if (!expr) {
@@ -259,7 +283,7 @@ class Parser {
 	
 	// Parse a primary expression.
 	_parsePrimaryExpr() {
-		this._pushSpan();
+		this._pushSpanNext();
 		
 		if (this._accept(TokenType.NIL)) {
 			return LiteralExprNode(this._popSpan(), Literal(LiteralType.NIL, nil));
@@ -334,8 +358,13 @@ class Parser {
 		}
 	}
 	
-	// Push a new node span at the parser's next token.
+	// Push a new node span at the parser's current span.
 	_pushSpan() {
+		this._spanStack.pushBack(this._span);
+	}
+	
+	// Push a new node span at the parser's next token.
+	_pushSpanNext() {
 		this._spanStack.pushBack(this._next.getSpan());
 	}
 	

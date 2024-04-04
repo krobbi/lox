@@ -1,0 +1,20 @@
+// A block statement node of an AST.
+class BlockStmtNode < Node {
+	// Initialize the block statement node from its span and statements.
+	init(span, statements) {
+		super.init(span);
+		
+		// The block statement node's statements.
+		this._statements = statements;
+	}
+	
+	// Get the block statement node's statements.
+	getStatements() {
+		return this._statements;
+	}
+	
+	// Visit the block statement node with a visitor.
+	visit(visitor) {
+		return visitor.visitBlockStmt(this);
+	}
+}
