@@ -94,7 +94,36 @@ class Parser {
 	
 	// Parse an expression.
 	_parseExpression() {
-		return this._parseOrExpr();
+		return this._parseAssignmentExpr();
+	}
+	
+	// Parse an assignment expression.
+	_parseAssignmentExpr() {
+		this._pushSpan();
+		var expr = this._parseOrExpr();
+		
+		if (!expr) {
+			return this._dropSpan();
+		}
+		
+		if (this._accept(TokenType.EQUAL)) {
+			var value = this._parseAssignmentExpr();
+			
+			if (!value) {
+				return this._dropSpan();
+			}
+			
+			var exprClass = GetClassVisitor().visit(expr);
+			
+			if (exprClass == VariableExprNode) {
+				return AssignExprNode(this._popSpan(), expr.getName(), value);
+			}
+			
+			this._logError("Invalid assignment target.", expr);
+		}
+		
+		this._dropSpan();
+		return expr;
 	}
 	
 	// Parse a binary expression.
@@ -328,6 +357,11 @@ class Parser {
 		return nil;
 	}
 	
+	// Log an error message at a token's span.
+	_logError(message, token) {
+		this._log.logErrorAt(message, token.getSpan());
+	}
+	
 	// Throw an error with a message at the parser's next token.
 	_throwError(message) {
 		if (this._isThrowing) {
@@ -335,7 +369,7 @@ class Parser {
 		}
 		
 		this._isThrowing = true;
-		this._log.logErrorAt(message, this._next.getSpan());
+		this._logError(message, this._next);
 	}
 	
 	// Catch an error.

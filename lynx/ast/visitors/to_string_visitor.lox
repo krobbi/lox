@@ -5,6 +5,11 @@ class ToStringVisitor < Visitor {
 		super.init();
 	}
 	
+	// Get an assign expression node's string representation.
+	visitAssignExpr(node) {
+		return "AssignExpr '" + node.getName() + "'";
+	}
+	
 	// Get a binary expression node's string representation.
 	visitBinaryExpr(node) {
 		return "BinaryExpr " + TokenType.toString(node.getOperator());

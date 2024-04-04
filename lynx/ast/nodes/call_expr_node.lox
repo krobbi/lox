@@ -1,22 +1,23 @@
 // A call expression node of an AST.
 class CallExprNode < Node {
-	// Initialize the call expression node from its span, callee and arguments.
+	// Initialize the call expression node from its span, callee expression, and
+	// argument expressions.
 	init(span, callee, arguments) {
 		super.init(span);
 		
 		// The call expression node's callee.
 		this._callee = callee;
 		
-		// The call expression node's arguments.
+		// The call expression node's argument expressions.
 		this._arguments = arguments;
 	}
 	
-	// Get the call expression node's callee.
+	// Get the call expression node's callee expression.
 	getCallee() {
 		return this._callee;
 	}
 	
-	// Get the call expression node's arguments.
+	// Get the call expression node's argument expressions.
 	getArguments() {
 		return this._arguments;
 	}

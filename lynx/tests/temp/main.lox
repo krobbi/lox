@@ -2,7 +2,6 @@
 // Lynx will eventually parse itself, but this temporary test will be used while
 // the parser is being implemented.
 
-"Lemon" and "lime.";
-"Hit" or "miss.";
-
-condition == "met" or isEscaping and escapeWeight >= 1.0 or specialFlag.isSet();
+variable = "Value.";
+a = b = c;
+id = (count = count + 1) - 1;

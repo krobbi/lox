@@ -10,6 +10,11 @@ class GetChildrenVisitor < Visitor {
 		return List();
 	}
 	
+	// Get an assign expression node's children.
+	visitAssignExpr(node) {
+		return List().pushBack(node.getValue());
+	}
+	
 	// Get a binary expression node's children.
 	visitBinaryExpr(node) {
 		return List().pushBack(node.getLeft()).pushBack(node.getRight());

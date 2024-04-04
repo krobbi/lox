@@ -1,80 +1,72 @@
-// Visits AST nodes.
-class Visitor {
-	// Initialize the visitor.
-	init() {}
-	
-	// Visit a node.
-	visit(node) {
-		return node.visit(this);
-	}
-	
-	// Visit a node with no defined visitor behavior.
-	visitDefault(node) {
-		return nil;
+// Visits AST nodes and returns their classes.
+class GetClassVisitor < Visitor {
+	// Initialize the get class visitor.
+	init() {
+		super.init();
 	}
 	
 	// Visit an assign expression node.
 	visitAssignExpr(node) {
-		return this.visitDefault(node);
+		return AssignExprNode;
 	}
 	
 	// Visit a binary expression node.
 	visitBinaryExpr(node) {
-		return this.visitDefault(node);
+		return BinaryExprNode;
 	}
 	
 	// Visit a call expression node.
 	visitCallExpr(node) {
-		return this.visitDefault(node);
+		return CallExprNode;
 	}
 	
 	// Visit an expression statement node.
 	visitExprStmt(node) {
-		return this.visitDefault(node);
+		return ExprStmtNode;
 	}
 	
 	// Visit a get expression node.
 	visitGetExpr(node) {
-		return this.visitDefault(node);
+		return GetExprNode;
 	}
 	
 	// Visit a grouping expression node.
 	visitGroupingExpr(node) {
-		return this.visitDefault(node);
+		return GroupingExprNode;
 	}
 	
 	// Visit a literal expression node.
 	visitLiteralExpr(node) {
-		return this.visitDefault(node);
+		return LiteralExprNode;
 	}
 	
 	// Visit a logical expression node.
 	visitLogicalExpr(node) {
-		return this.visitDefault(node);
+		return LogicalExprNode;
 	}
 	
 	// Visit a module node.
 	visitModule(node) {
-		return this.visitDefault(node);
+		return ModuleNode;
 	}
 	
 	// Visit a super expression node.
 	visitSuperExpr(node) {
-		return this.visitDefault(node);
+		return SuperExprNode;
 	}
 	
 	// Visit a this expression node.
 	visitThisExpr(node) {
-		return this.visitDefault(node);
+		return ThisExprNode;
 	}
 	
 	// Visit a unary expression node.
 	visitUnaryExpr(node) {
-		return this.visitDefault(node);
+		return UnaryExprNode;
 	}
 	
 	// Visit a variable expression node.
 	visitVariableExpr(node) {
-		return this.visitDefault(node);
+		return VariableExprNode;
 	}
 }

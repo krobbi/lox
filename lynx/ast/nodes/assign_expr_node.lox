@@ -1,0 +1,29 @@
+// An assign expression node of an AST.
+class AssignExprNode < Node {
+	// Initialize the assign expression node from its span, name, and value
+	// expression.
+	init(span, name, value) {
+		super.init(span);
+		
+		// The assign expression node's name.
+		this._name = name;
+		
+		// The assign expression node's value expression.
+		this._value = value;
+	}
+	
+	// Get the assign expression node's name.
+	getName() {
+		return this._name;
+	}
+	
+	// Get the assign expression node's value expression.
+	getValue() {
+		return this._value;
+	}
+	
+	// Visit the assign expression node with a visitor.
+	visit(visitor) {
+		return visitor.visitAssignExpr(this);
+	}
+}

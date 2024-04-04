@@ -35,6 +35,7 @@ ast/node.lox
 ast/visitor.lox
 
 # AST nodes:
+ast/nodes/assign_expr_node.lox
 ast/nodes/binary_expr_node.lox
 ast/nodes/call_expr_node.lox
 ast/nodes/expr_stmt_node.lox
@@ -50,6 +51,7 @@ ast/nodes/variable_expr_node.lox
 
 # AST visitors:
 ast/visitors/get_children_visitor.lox
+ast/visitors/get_class_visitor.lox
 ast/visitors/to_string_visitor.lox
 
 # Parser:
