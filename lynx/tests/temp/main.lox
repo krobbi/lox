@@ -2,71 +2,7 @@
 // Lynx will eventually parse itself, but this temporary test will be used while
 // the parser is being implemented.
 
-// Literal expression statements.
-nil;
-true;
-false;
-123;
-3.141592654;
-"Hello, Lynx!";
+"Lemon" and "lime.";
+"Hit" or "miss.";
 
-// Super expression statement.
-super.duper;
-
-// This expression statement.
-this;
-
-// Variable expression statement.
-foo;
-
-// Grouping expression statements.
-("Grouping.");
-(("Nested grouping."));
-
-// Get expression statements.
-object.property;
-object.property.nested.deep;
-
-// Call expression statements.
-procedure();
-add(9, 10);
-getDoubler()(5);
-
-// Mixed get and call expression statements.
-object.method(argument);
-ConfigBuilder().inSection("Graphics").setKey("width", 1920).setKey("height", 1080).status;
-dumpVec2(vec.getX(), vec.getY());
-
-// Unary expression statements.
--1;
---10;
--vec.getMagnitude();
---vec.getAngle();
-!true;
-!!!false;
-!vec.isZero();
-!!vec.isUnit();
-!-1;
-
-// Binary expression statements.
-1 + 2;
-5 - 10;
-10 * 100;
-1000 / 3;
-0.1 + 0.2 == 0.3;
-"Peanut." != "Nut.";
-654 > 321;
-123 >= 123;
-1234 < 5678;
-456 <= 456;
-1 > 2 == 3 > 4;
--5 - -6;
-"Con" + "cat" + "en" + "ate.";
-
-1 + 2 * 3;
-(1 + 2) * 3;
-1 + (2 * 3);
-
-4 * 5 + 6;
-(4 * 5) + 6;
-4 * (5 + 6);
+condition == "met" or isEscaping and escapeWeight >= 1.0 or specialFlag.isSet();

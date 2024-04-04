@@ -12,16 +12,12 @@ class GetChildrenVisitor < Visitor {
 	
 	// Get a binary expression node's children.
 	visitBinaryExpr(node) {
-		var children = List();
-		children.pushBack(node.getLeft());
-		children.pushBack(node.getRight());
-		return children;
+		return List().pushBack(node.getLeft()).pushBack(node.getRight());
 	}
 	
 	// Get a call expression node's children.
 	visitCallExpr(node) {
-		var children = List();
-		children.pushBack(node.getCallee());
+		var children = List().pushBack(node.getCallee());
 		
 		for (var iter = node.getArguments().iter(); iter.hasNext();) {
 			children.pushBack(iter.getNext());
@@ -32,17 +28,22 @@ class GetChildrenVisitor < Visitor {
 	
 	// Get a get expression node's children.
 	visitGetExpr(node) {
-		return this._createUnary(node.getObject());
+		return List().pushBack(node.getObject());
 	}
 	
 	// Get a grouping expression node's children.
 	visitGroupingExpr(node) {
-		return this._createUnary(node.getExpression());
+		return List().pushBack(node.getExpression());
 	}
 	
 	// Get an expression statement node's children.
 	visitExprStmt(node) {
-		return this._createUnary(node.getExpression());
+		return List().pushBack(node.getExpression());
+	}
+	
+	// Get a logical expression node's children.
+	visitLogicalExpr(node) {
+		return List().pushBack(node.getLeft()).pushBack(node.getRight());
 	}
 	
 	// Get a module node's children.
@@ -52,13 +53,6 @@ class GetChildrenVisitor < Visitor {
 	
 	// Get a unary expression node's children.
 	visitUnaryExpr(node) {
-		return this._createUnary(node.getRight());
-	}
-	
-	// Create a unary child list.
-	_createUnary(child) {
-		var children = List();
-		children.pushBack(child);
-		return children;
+		return List().pushBack(node.getRight());
 	}
 }

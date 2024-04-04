@@ -43,6 +43,11 @@ class Visitor {
 		return this.visitDefault(node);
 	}
 	
+	// Visit a logical expression node.
+	visitLogicalExpr(node) {
+		return this.visitDefault(node);
+	}
+	
 	// Visit a module node.
 	visitModule(node) {
 		return this.visitDefault(node);

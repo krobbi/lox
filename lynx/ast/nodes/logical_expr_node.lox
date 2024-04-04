@@ -1,0 +1,37 @@
+// A logical expression node of an AST.
+class LogicalExprNode < Node {
+	// Initialize the logical expression node from its span, left-hand
+	// expression, operator, and right-hand expression.
+	init(span, left, operator, right) {
+		super.init(span);
+		
+		// The logicl expression node's left-hand expression.
+		this._left = left;
+		
+		// The logical expression node's operator.
+		this._operator = operator;
+		
+		// The logical expression node's right-hand expression.
+		this._right = right;
+	}
+	
+	// Get the logical expression node's left-hand expression.
+	getLeft() {
+		return this._left;
+	}
+	
+	// Get the logical expression node's operator.
+	getOperator() {
+		return this._operator;
+	}
+	
+	// Get the logical expression node's right-hand expression.
+	getRight() {
+		return this._right;
+	}
+	
+	// Visit the logical expression node with a visitor.
+	visit(visitor) {
+		return visitor.visitLogicalExpr(this);
+	}
+}

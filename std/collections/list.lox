@@ -62,7 +62,7 @@ class List {
 		this._tail = nil;
 	}
 	
-	// Append an element to the back of the list.
+	// Append an element to the back of the list and return the list.
 	pushBack(elem) {
 		var tail = this._tail;
 		var node = ListNode(elem, tail, nil);
@@ -75,6 +75,7 @@ class List {
 		
 		this._tail = node;
 		this._length = this._length + 1;
+		return this;
 	}
 	
 	// Return an element from the back of the list.

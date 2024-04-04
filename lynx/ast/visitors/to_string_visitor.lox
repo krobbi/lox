@@ -35,6 +35,11 @@ class ToStringVisitor < Visitor {
 		return "LiteralExpr '" + node.getLiteral().toString() + "'";
 	}
 	
+	// Get a logical expression node's string representation.
+	visitLogicalExpr(node) {
+		return "LogicalExpr " + TokenType.toString(node.getOperator());
+	}
+	
 	// Get a module node's string representation.
 	visitModule(node) {
 		return "Module";
