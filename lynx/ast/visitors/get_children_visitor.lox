@@ -10,15 +10,25 @@ class GetChildrenVisitor < Visitor {
 		return List();
 	}
 	
+	// Get a grouping expression node's children.
+	visitGroupingExpr(node) {
+		return this._createUnary(node.getExpression());
+	}
+	
 	// Get an expression statement node's children.
 	visitExprStmt(node) {
-		var children = List();
-		children.pushBack(node.getExpression());
-		return children;
+		return this._createUnary(node.getExpression());
 	}
 	
 	// Get a module node's children.
 	visitModule(node) {
 		return node.getStatements();
+	}
+	
+	// Create a unary child list.
+	_createUnary(child) {
+		var children = List();
+		children.pushBack(child);
+		return children;
 	}
 }

@@ -1,0 +1,20 @@
+// A grouping expression node of an AST.
+class GroupingExprNode < Node {
+	// Initialize the grouping expression node from its span and expression.
+	init(span, expression) {
+		super.init(span);
+		
+		// The grouping expression node's expression.
+		this._expression = expression;
+	}
+	
+	// Get the grouping expression node's expression.
+	getExpression() {
+		return this._expression;
+	}
+	
+	// Visit the grouping expression node with a visitor.
+	visit(visitor) {
+		return visitor.visitGroupingExpr(this);
+	}
+}
