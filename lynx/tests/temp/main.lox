@@ -13,6 +13,9 @@ false;
 // This expression statement.
 this;
 
+// Variable expression statement.
+foo;
+
 // Grouping expression statements.
 ("Grouping.");
 (("Nested grouping."));

@@ -37,4 +37,9 @@ class Visitor {
 	visitThisExpr(node) {
 		return this.visitDefault(node);
 	}
+	
+	// Visit a variable expression node.
+	visitVariableExpr(node) {
+		return this.visitDefault(node);
+	}
 }

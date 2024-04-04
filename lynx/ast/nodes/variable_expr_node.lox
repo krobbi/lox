@@ -1,0 +1,20 @@
+// A variable expression node.
+class VariableExprNode < Node {
+	// Initialize the variable expression node from its span and name.
+	init(span, name) {
+		super.init(span);
+		
+		// The variable expression node's name.
+		this._name = name;
+	}
+	
+	// Get the variable expression node's name.
+	getName() {
+		return this._name;
+	}
+	
+	// Visit the variable expression node with a visitor.
+	visit(visitor) {
+		return visitor.visitVariableExpr(this);
+	}
+}

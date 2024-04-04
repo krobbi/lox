@@ -29,4 +29,9 @@ class ToStringVisitor < Visitor {
 	visitThisExpr(node) {
 		return "ThisExpr";
 	}
+	
+	// Get a variable expression node's string representation.
+	visitVariableExpr(node) {
+		return "VariableExpr '" + node.getName() + "'";
+	}
 }

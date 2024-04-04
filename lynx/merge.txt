@@ -40,6 +40,7 @@ ast/nodes/grouping_expr_node.lox
 ast/nodes/literal_expr_node.lox
 ast/nodes/module_node.lox
 ast/nodes/this_expr_node.lox
+ast/nodes/variable_expr_node.lox
 
 # AST visitors:
 ast/visitors/get_children_visitor.lox
