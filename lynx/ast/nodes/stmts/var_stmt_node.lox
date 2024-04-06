@@ -1,0 +1,29 @@
+// A var statement node of an AST.
+class VarStmtNode < Node {
+	// Initialize the var statement node from its span, name, and optional
+	// initializer expression.
+	init(span, name, initializer) {
+		super.init(span);
+		
+		// The var statement node's name.
+		this._name = name;
+		
+		// The var statement node's optional initializer expression.
+		this._initializer = initializer;
+	}
+	
+	// Get the var statement node's name.
+	getName() {
+		return this._name;
+	}
+	
+	// Get the var statement node's optional initializer expression.
+	getInitializer() {
+		return this._initializer;
+	}
+	
+	// Visit the var statement node with a visitor.
+	visit(visitor) {
+		return visitor.visitVarStmt(this);
+	}
+}

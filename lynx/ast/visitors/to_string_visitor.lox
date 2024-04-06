@@ -35,6 +35,11 @@ class ToStringVisitor < Visitor {
 		return "ReturnStmt";
 	}
 	
+	// Get a var statement node's string representation.
+	visitVarStmt(node) {
+		return "VarStmt '" + node.getName() + "'";
+	}
+	
 	// Get a while statement node's string representation.
 	visitWhileStmt(node) {
 		return "WhileStmt";

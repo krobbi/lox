@@ -62,13 +62,45 @@ class Parser {
 	
 	// Parse a declaration.
 	_parseDeclaration() {
-		var statement = this._parseStatement();
+		var decl;
+		
+		if (this._accept(TokenType.VAR)) {
+			decl = this._parseVarDecl();
+		} else {
+			decl = this._parseStatement();
+		}
 		
 		if (this._catchError()) {
 			return nil;
 		}
 		
-		return statement;
+		return decl;
+	}
+	
+	// Parse a var declaration.
+	_parseVarDecl() {
+		this._pushSpan();
+		var token = this._expect(TokenType.IDENTIFIER, "for variable name");
+		
+		if (!token) {
+			return this._dropSpan();
+		}
+		
+		var initializer = nil;
+		
+		if (this._accept(TokenType.EQUAL)) {
+			initializer = this._parseExpression();
+			
+			if (!initializer) {
+				return this._dropSpan();
+			}
+		}
+		
+		if (!this._expect(TokenType.SEMICOLON, "after variable declaration")) {
+			return this._dropSpan();
+		}
+		
+		return VarStmtNode(this._popSpan(), token.getValue(), initializer);
 	}
 	
 	// Parse a statement.

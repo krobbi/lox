@@ -54,6 +54,18 @@ class GetChildrenVisitor < Visitor {
 		return children;
 	}
 	
+	// Get a var statement node's children.
+	visitVarStmt(node) {
+		var children = List();
+		var initializer = node.getInitializer();
+		
+		if (initializer) {
+			children.pushBack(initializer);
+		}
+		
+		return children;
+	}
+	
 	// Get a while statement node's children.
 	visitWhileStmt(node) {
 		return List().pushBack(node.getCondition()).pushBack(node.getBody());

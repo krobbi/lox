@@ -42,6 +42,11 @@ class Visitor {
 		return this.visitDefault(node);
 	}
 	
+	// Visit a var statement node.
+	visitVarStmt(node) {
+		return this.visitDefault(node);
+	}
+	
 	// Visit a while statement node.
 	visitWhileStmt(node) {
 		return this.visitDefault(node);

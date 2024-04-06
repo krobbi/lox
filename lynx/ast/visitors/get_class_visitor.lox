@@ -35,6 +35,11 @@ class GetClassVisitor < Visitor {
 		return ReturnStmtNode;
 	}
 	
+	// Get a var statement node's class.
+	visitVarStmt(node) {
+		return VarStmtNode;
+	}
+	
 	// Get a while statement node's class.
 	visitWhileStmt(node) {
 		return WhileStmtNode;
