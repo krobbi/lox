@@ -2,17 +2,22 @@
 // Lynx will eventually parse itself, but this temporary test will be used while
 // the parser is being implemented.
 
-fun emptyFn() {}
-
-fun printMessage() {
-	var message = "Message!";
-	print message;
+class Greeter {
+	init(name) {
+		this._name = name;
+	}
+	
+	getMessage() {
+		return "My name is " + this._name + "!";
+	}
 }
 
-fun square(x) {
-	return x * x;
-}
-
-fun getY(m, x, c) {
-	return m * x + c;
+class SarcasticGreeter < Greeter {
+	init(name) {
+		super.init(name);
+	}
+	
+	getMessage() {
+		return super.getMessage() + " Duh!";
+	}
 }

@@ -22,6 +22,11 @@ class Visitor {
 		return this.visitDefault(node);
 	}
 	
+	// Visit a class statement node.
+	visitClassStmt(node) {
+		return this.visitDefault(node);
+	}
+	
 	// Visit an expression statement node.
 	visitExprStmt(node) {
 		return this.visitDefault(node);

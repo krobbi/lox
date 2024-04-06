@@ -20,6 +20,22 @@ class GetChildrenVisitor < Visitor {
 		return node.getStatements();
 	}
 	
+	// Get a class statement node's children.
+	visitClassStmt(node) {
+		var children = List();
+		var superclass = node.getSuperclass();
+		
+		if (superclass) {
+			children.pushBack(superclass);
+		}
+		
+		for (var iter = node.getMethods().iter(); iter.hasNext();) {
+			children.pushBack(iter.getNext());
+		}
+		
+		return children;
+	}
+	
 	// Get an expression statement node's children.
 	visitExprStmt(node) {
 		return List().pushBack(node.getExpression());

@@ -15,6 +15,11 @@ class ToStringVisitor < Visitor {
 		return "BlockStmt";
 	}
 	
+	// Get a class statement node's string representation.
+	visitClassStmt(node) {
+		return "ClassStmt '" + node.getName() + "'";
+	}
+	
 	// Get an expression statement node's string representation.
 	visitExprStmt(node) {
 		return "ExprStmt";

@@ -64,7 +64,9 @@ class Parser {
 	_parseDeclaration() {
 		var decl;
 		
-		if (this._accept(TokenType.FUN)) {
+		if (this._accept(TokenType.CLASS)) {
+			decl = this._parseClassDecl();
+		} else if (this._accept(TokenType.FUN)) {
 			decl = this._parseFunctionDecl(false);
 		} else if (this._accept(TokenType.VAR)) {
 			decl = this._parseVarDecl();
@@ -77,6 +79,51 @@ class Parser {
 		}
 		
 		return decl;
+	}
+	
+	// Parse a class declaration.
+	_parseClassDecl() {
+		this._pushSpan();
+		
+		var name = this._expect(TokenType.IDENTIFIER, "for class name");
+		
+		if (!name) {
+			return this._dropSpan();
+		}
+		
+		var superclass = nil;
+		
+		if (this._accept(TokenType.LESS)) {
+			superclass = this._expect(TokenType.IDENTIFIER, "for superclass name");
+			
+			if (!superclass) {
+				return this._dropSpan();
+			}
+			
+			superclass = VariableExprNode(superclass.getSpan().clone(), superclass.getValue());
+		}
+		
+		if (!this._expect(TokenType.LEFT_BRACE, "before class body")) {
+			return this._dropSpan();
+		}
+		
+		var methods = List();
+		
+		while (!this._is(TokenType.RIGHT_BRACE) and !this._is(TokenType.EOF)) {
+			var method = this._parseFunctionDecl(true);
+			
+			if (!method) {
+				return this._dropSpan();
+			}
+			
+			methods.pushBack(method);
+		}
+		
+		if (!this._expect(TokenType.RIGHT_BRACE, "after class body")) {
+			return this._dropSpan();
+		}
+		
+		return ClassStmtNode(this._popSpan(), name.getValue(), superclass, methods);
 	}
 	
 	// Parse a function declaration.

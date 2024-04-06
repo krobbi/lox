@@ -1,0 +1,37 @@
+// A class statement node of an AST.
+class ClassStmtNode < Node {
+	// Initialize the class statement node from its span, name, optional
+	// superclass variable expression, and method function statements.
+	init(span, name, superclass, methods) {
+		super.init(span);
+		
+		// The class statement node's name.
+		this._name = name;
+		
+		// The class statement node's optional superclass variable expression.
+		this._superclass = superclass;
+		
+		// The class statement node's method function statements.
+		this._methods = methods;
+	}
+	
+	// Get the class statement node's name.
+	getName() {
+		return this._name;
+	}
+	
+	// Get the class statement node's optional superclass variable expression.
+	getSuperclass() {
+		return this._superclass;
+	}
+	
+	// Get the class statement node's method function statements.
+	getMethods() {
+		return this._methods;
+	}
+	
+	// Visit the class statement node with a visitor.
+	visit(visitor) {
+		return visitor.visitClassStmt(this);
+	}
+}
