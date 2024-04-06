@@ -1,11 +1,19 @@
 // A module node of an AST.
 class ModuleNode < Node {
-	// Initialize the module node from its span and statements.
-	init(span, statements) {
+	// Initialize the module node from its span, imports, and statements.
+	init(span, imports, statements) {
 		super.init(span);
+		
+		// The module node's imports.
+		this._imports = imports;
 		
 		// The module node's statements.
 		this._statements = statements;
+	}
+	
+	// Get the module node's imports.
+	getImports() {
+		return this._imports;
 	}
 	
 	// Get the module node's statements.

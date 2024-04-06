@@ -12,6 +12,11 @@ class Visitor {
 		return nil;
 	}
 	
+	// Visit an import node.
+	visitImport(node) {
+		return this.visitDefault(node);
+	}
+	
 	// Visit a module node.
 	visitModule(node) {
 		return this.visitDefault(node);

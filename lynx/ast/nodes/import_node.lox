@@ -1,0 +1,20 @@
+// An import node of an AST.
+class ImportNode < Node {
+	// Initialize the import node from its span and path.
+	init(span, path) {
+		super.init(span);
+		
+		// The import node's path.
+		this._path = path;
+	}
+	
+	// Get the import node's path.
+	getPath() {
+		return this._path;
+	}
+	
+	// Visit the import node with a visitor.
+	visit(visitor) {
+		return visitor.visitImport(this);
+	}
+}

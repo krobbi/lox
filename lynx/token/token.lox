@@ -49,15 +49,7 @@ class Token {
 		var value = this._value;
 		
 		if (type == TokenType.STRING) {
-			var length = __strlen(value);
-			var escaped = "";
-			
-			for (var i = 0; i < length; i = i + 1) {
-				escaped = escaped + Char.escape(__chrat(value, i));
-			}
-			
-			var quote = __strof(Char.QUOTE);
-			value = quote + escaped + quote;
+			value = Literal(LiteralType.STRING, value).toString();
 		} else if (type == TokenType.NUMBER) {
 			value = __ftoa(value);
 		}

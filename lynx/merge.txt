@@ -60,6 +60,7 @@ ast/nodes/stmts/var_stmt_node.lox
 ast/nodes/stmts/while_stmt_node.lox
 
 # Special AST nodes:
+ast/nodes/import_node.lox
 ast/nodes/module_node.lox
 
 # AST visitors:

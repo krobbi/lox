@@ -5,6 +5,11 @@ class GetClassVisitor < Visitor {
 		super.init();
 	}
 	
+	// Get an import node's class.
+	visitImport(node) {
+		return ImportNode;
+	}
+	
 	// Get a module node's class.
 	visitModule(node) {
 		return ModuleNode;

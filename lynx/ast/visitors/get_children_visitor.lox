@@ -12,7 +12,17 @@ class GetChildrenVisitor < Visitor {
 	
 	// Get a module node's children.
 	visitModule(node) {
-		return node.getStatements();
+		var children = List();
+		
+		for (var iter = node.getImports().iter(); iter.hasNext();) {
+			children.pushBack(iter.getNext());
+		}
+		
+		for (var iter = node.getStatements().iter(); iter.hasNext();) {
+			children.pushBack(iter.getNext());
+		}
+		
+		return children;
 	}
 	
 	// Get a block statement node's children.

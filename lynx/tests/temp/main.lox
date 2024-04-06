@@ -2,22 +2,7 @@
 // Lynx will eventually parse itself, but this temporary test will be used while
 // the parser is being implemented.
 
-class Greeter {
-	init(name) {
-		this._name = name;
-	}
-	
-	getMessage() {
-		return "My name is " + this._name + "!";
-	}
-}
+// Directives may appear at the start of comments for compatibility reasons.
+// #import "lib.lox"
 
-class SarcasticGreeter < Greeter {
-	init(name) {
-		super.init(name);
-	}
-	
-	getMessage() {
-		return super.getMessage() + " Duh!";
-	}
-}
+print getLibMessage();

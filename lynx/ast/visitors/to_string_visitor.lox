@@ -5,6 +5,11 @@ class ToStringVisitor < Visitor {
 		super.init();
 	}
 	
+	// Get an import node's string representation.
+	visitImport(node) {
+		return "Import '" + Literal(LiteralType.STRING, node.getPath()).toString() + "'";
+	}
+	
 	// Get a module node's string representation.
 	visitModule(node) {
 		return "Module";
