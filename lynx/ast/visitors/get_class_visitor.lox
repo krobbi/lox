@@ -20,6 +20,11 @@ class GetClassVisitor < Visitor {
 		return ExprStmtNode;
 	}
 	
+	// Get a function statement node's class.
+	visitFunctionStmt(node) {
+		return FunctionStmtNode;
+	}
+	
 	// Get an if statement node's class.
 	visitIfStmt(node) {
 		return IfStmtNode;

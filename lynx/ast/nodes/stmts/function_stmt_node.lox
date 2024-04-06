@@ -1,0 +1,37 @@
+// A function statement node of an AST.
+class FunctionStmtNode < Node {
+	// Initialize the function statement node from its span, name, parameter
+	// names, and body statements.
+	init(span, name, params, body) {
+		super.init(span);
+		
+		// The function statement node's name.
+		this._name = name;
+		
+		// The function statement node's parameter names.
+		this._params = params;
+		
+		// The function statement node's body statements.
+		this._body = body;
+	}
+	
+	// Get the function statement node's name.
+	getName() {
+		return this._name;
+	}
+	
+	// Get the function statement node's parameter names.
+	getParams() {
+		return this._params;
+	}
+	
+	// Get the function statement node's body statements.
+	getBody() {
+		return this._body;
+	}
+	
+	// Visit the function statement node with a visitor.
+	visit(visitor) {
+		return visitor.visitFunctionStmt(this);
+	}
+}

@@ -64,7 +64,9 @@ class Parser {
 	_parseDeclaration() {
 		var decl;
 		
-		if (this._accept(TokenType.VAR)) {
+		if (this._accept(TokenType.FUN)) {
+			decl = this._parseFunctionDecl(false);
+		} else if (this._accept(TokenType.VAR)) {
 			decl = this._parseVarDecl();
 		} else {
 			decl = this._parseStatement();
@@ -77,12 +79,74 @@ class Parser {
 		return decl;
 	}
 	
+	// Parse a function declaration.
+	_parseFunctionDecl(isMethod) {
+		var kind;
+		
+		if (isMethod) {
+			kind = "method";
+			this._pushSpanNext();
+		} else {
+			kind = "function";
+			this._pushSpan();
+		}
+		
+		var name = this._expect(TokenType.IDENTIFIER, "for " + kind + " name");
+		
+		if (!name) {
+			return this._dropSpan();
+		}
+		
+		if (!this._expect(TokenType.LEFT_PAREN, "after " + kind + " name")) {
+			return this._dropSpan();
+		}
+		
+		var params = List();
+		
+		if (!this._is(TokenType.RIGHT_PAREN)) {
+			for (var isLooping = true; isLooping;) {
+				if (params.getLength() >= 255) {
+					this._throwError("Can't have more than 255 parameters.");
+					return this._dropSpan();
+				}
+				
+				var param = this._expect(TokenType.IDENTIFIER, "for parameter name");
+				
+				if (!param) {
+					return this._dropSpan();
+				}
+				
+				params.pushBack(param.getValue());
+				
+				if (!this._accept(TokenType.COMMA)) {
+					isLooping = false;
+				}
+			}
+		}
+		
+		if (!this._expect(TokenType.RIGHT_PAREN, "after parameters")) {
+			return this._dropSpan();
+		}
+		
+		if (!this._expect(TokenType.LEFT_BRACE, "before " + kind + " body")) {
+			return this._dropSpan();
+		}
+		
+		var body = this._parseBlockStmt();
+		
+		if (!body) {
+			return this._dropSpan();
+		}
+		
+		return FunctionStmtNode(this._popSpan(), name.getValue(), params, body.getStatements());
+	}
+	
 	// Parse a var declaration.
 	_parseVarDecl() {
 		this._pushSpan();
-		var token = this._expect(TokenType.IDENTIFIER, "for variable name");
+		var name = this._expect(TokenType.IDENTIFIER, "for variable name");
 		
-		if (!token) {
+		if (!name) {
 			return this._dropSpan();
 		}
 		
@@ -100,7 +164,7 @@ class Parser {
 			return this._dropSpan();
 		}
 		
-		return VarStmtNode(this._popSpan(), token.getValue(), initializer);
+		return VarStmtNode(this._popSpan(), name.getValue(), initializer);
 	}
 	
 	// Parse a statement.
@@ -490,13 +554,13 @@ class Parser {
 				
 				expr = CallExprNode(this._peekSpan(), expr, arguments);
 			} else if (this._accept(TokenType.DOT)) {
-				var token = this._expect(TokenType.IDENTIFIER, "for property name");
+				var name = this._expect(TokenType.IDENTIFIER, "for property name");
 				
-				if (!token) {
+				if (!name) {
 					return this._dropSpan();
 				}
 				
-				expr = GetExprNode(this._peekSpan(), expr, token.getValue());
+				expr = GetExprNode(this._peekSpan(), expr, name.getValue());
 			} else {
 				isLooping = false;
 			}
@@ -517,28 +581,28 @@ class Parser {
 		} else if (this._accept(TokenType.FALSE)) {
 			return LiteralExprNode(this._popSpan(), Literal(LiteralType.BOOL, false));
 		} else if (this._is(TokenType.NUMBER)) {
-			var token = this._advance();
-			return LiteralExprNode(this._popSpan(), Literal(LiteralType.NUMBER, token.getValue()));
+			var value = this._advance();
+			return LiteralExprNode(this._popSpan(), Literal(LiteralType.NUMBER, value.getValue()));
 		} else if (this._is(TokenType.STRING)) {
-			var token = this._advance();
-			return LiteralExprNode(this._popSpan(), Literal(LiteralType.STRING, token.getValue()));
+			var value = this._advance();
+			return LiteralExprNode(this._popSpan(), Literal(LiteralType.STRING, value.getValue()));
 		} else if (this._accept(TokenType.SUPER)) {
 			if (!this._expect(TokenType.DOT, "after 'super'")) {
 				return this._dropSpan();
 			}
 			
-			var token = this._expect(TokenType.IDENTIFIER, "for superclass method");
+			var method = this._expect(TokenType.IDENTIFIER, "for superclass method");
 			
-			if (!token) {
+			if (!method) {
 				return this._dropSpan();
 			}
 			
-			return SuperExprNode(this._popSpan(), token.getValue());
+			return SuperExprNode(this._popSpan(), method.getValue());
 		} else if (this._accept(TokenType.THIS)) {
 			return ThisExprNode(this._popSpan());
 		} else if (this._is(TokenType.IDENTIFIER)) {
-			var token = this._advance();
-			return VariableExprNode(this._popSpan(), token.getValue());
+			var name = this._advance();
+			return VariableExprNode(this._popSpan(), name.getValue());
 		} else if (this._accept(TokenType.LEFT_PAREN)) {
 			var expression = this._parseExpression();
 			

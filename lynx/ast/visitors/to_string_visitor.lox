@@ -20,6 +20,21 @@ class ToStringVisitor < Visitor {
 		return "ExprStmt";
 	}
 	
+	// Get a function statement node's string representation.
+	visitFunctionStmt(node) {
+		var params = "";
+		
+		for (var iter = node.getParams().iter(); iter.hasNext();) {
+			params = params + iter.getNext();
+			
+			if (iter.hasNext()) {
+				params = params + ", ";
+			}
+		}
+		
+		return "FunctionStmt '" + node.getName() + "(" + params + ")'";
+	}
+	
 	// Get an if statement node's string representation.
 	visitIfStmt(node) {
 		return "IfStmt";
