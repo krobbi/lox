@@ -54,6 +54,11 @@ class GetChildrenVisitor < Visitor {
 		return children;
 	}
 	
+	// Get a while statement node's children.
+	visitWhileStmt(node) {
+		return List().pushBack(node.getCondition()).pushBack(node.getBody());
+	}
+	
 	// Get an assign expression node's children.
 	visitAssignExpr(node) {
 		return List().pushBack(node.getValue());

@@ -79,6 +79,8 @@ class Parser {
 			return this._parsePrintStmt();
 		} else if (this._accept(TokenType.RETURN)) {
 			return this._parseReturnStmt();
+		} else if (this._accept(TokenType.WHILE)) {
+			return this._parseWhileStmt();
 		} else if (this._accept(TokenType.LEFT_BRACE)) {
 			return this._parseBlockStmt();
 		} else {
@@ -157,6 +159,33 @@ class Parser {
 		}
 		
 		return ReturnStmtNode(this._popSpan(), value);
+	}
+	
+	// Parse a while statement.
+	_parseWhileStmt() {
+		this._pushSpan();
+		
+		if (!this._expect(TokenType.LEFT_PAREN, "after 'while'")) {
+			return this._dropSpan();
+		}
+		
+		var condition = this._parseExpression();
+		
+		if (!condition) {
+			return this._dropSpan();
+		}
+		
+		if (!this._expect(TokenType.RIGHT_PAREN, "after condition")) {
+			return this._dropSpan();
+		}
+		
+		var body = this._parseStatement();
+		
+		if (!body) {
+			return this._dropSpan();
+		}
+		
+		return WhileStmtNode(this._popSpan(), condition, body);
 	}
 	
 	// Parse a block statement.

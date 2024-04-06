@@ -35,6 +35,11 @@ class ToStringVisitor < Visitor {
 		return "ReturnStmt";
 	}
 	
+	// Get a while statement node's string representation.
+	visitWhileStmt(node) {
+		return "WhileStmt";
+	}
+	
 	// Get an assign expression node's string representation.
 	visitAssignExpr(node) {
 		return "AssignExpr '" + node.getName() + "'";

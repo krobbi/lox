@@ -35,6 +35,11 @@ class GetClassVisitor < Visitor {
 		return ReturnStmtNode;
 	}
 	
+	// Get a while statement node's class.
+	visitWhileStmt(node) {
+		return WhileStmtNode;
+	}
+	
 	// Get an assign expression node's class.
 	visitAssignExpr(node) {
 		return AssignExprNode;

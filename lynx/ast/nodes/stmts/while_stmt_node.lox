@@ -1,0 +1,29 @@
+// A while statement node of an AST.
+class WhileStmtNode < Node {
+	// Initialize the while statement node from its span, condition expression,
+	// and body statement.
+	init(span, condition, body) {
+		super.init(span);
+		
+		// The while statement node's condition expression.
+		this._condition = condition;
+		
+		// The while statement node's body statement.
+		this._body = body;
+	}
+	
+	// Get the while statement node's condition expression.
+	getCondition() {
+		return this._condition;
+	}
+	
+	// Get the while statement node's body statement.
+	getBody() {
+		return this._body;
+	}
+	
+	// Visit the while statement node with a visitor.
+	visit(visitor) {
+		return visitor.visitWhileStmt(this);
+	}
+}
