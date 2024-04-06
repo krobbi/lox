@@ -105,7 +105,9 @@ class Parser {
 	
 	// Parse a statement.
 	_parseStatement() {
-		if (this._accept(TokenType.IF)) {
+		if (this._accept(TokenType.FOR)) {
+			return this._parseForStmt();
+		} else if (this._accept(TokenType.IF)) {
 			return this._parseIfStmt();
 		} else if (this._accept(TokenType.PRINT)) {
 			return this._parsePrintStmt();
@@ -118,6 +120,89 @@ class Parser {
 		} else {
 			return this._parseExprStmt();	
 		}
+	}
+	
+	// Parse a for statement.
+	_parseForStmt() {
+		this._pushSpan();
+		
+		if (!this._expect(TokenType.LEFT_PAREN, "after 'for'")) {
+			return this._dropSpan();
+		}
+		
+		var initializer = nil;
+		
+		if (this._accept(TokenType.VAR)) {
+			initializer = this._parseVarDecl();
+			
+			if (!initializer) {
+				return this._dropSpan();
+			}
+		} else if (!this._accept(TokenType.SEMICOLON)) {
+			initializer = this._parseExprStmt();
+			
+			if (!initializer) {
+				return this._dropSpan();
+			}
+		}
+		
+		// TODO: Conditions should be optional if for statement nodes are added.
+		var condition;
+		
+		if (this._accept(TokenType.SEMICOLON)) {
+			this._pushSpan();
+			condition = LiteralExprNode(this._popSpan(), Literal(LiteralType.BOOL, true));
+		} else {
+			condition = this._parseExpression();
+			
+			if (!condition) {
+				return this._dropSpan();
+			}
+			
+			if (!this._expect(TokenType.SEMICOLON, "after loop condition")) {
+				return this._dropSpan();
+			}
+		}
+		
+		var increment = nil;
+		
+		if (!this._accept(TokenType.RIGHT_PAREN)) {
+			increment = this._parseExpression();
+			
+			if (!increment) {
+				return this._dropSpan();
+			}
+			
+			if (!this._expect(TokenType.RIGHT_PAREN, "after for clauses")) {
+				return this._dropSpan();
+			}
+		}
+		
+		var body = this._parseStatement();
+		
+		if (!body) {
+			return this._dropSpan();
+		}
+		
+		// TODO: Consider adding for statement nodes instead of desugaring.
+		if (increment) {
+			var bodySpan = body.getSpan().clone();
+			var incrementSpan = increment.getSpan().clone();
+			bodySpan.include(incrementSpan);
+			body = BlockStmtNode(bodySpan, List()
+				.pushBack(body)
+				.pushBack(ExprStmtNode(incrementSpan, increment)));
+		}
+		
+		body = WhileStmtNode(this._popSpan(), condition, body);
+		
+		if (initializer) {
+			body = BlockStmtNode(body.getSpan().clone(), List()
+				.pushBack(initializer)
+				.pushBack(body));
+		}
+		
+		return body;
 	}
 	
 	// Parse an if statement.

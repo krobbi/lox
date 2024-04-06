@@ -2,6 +2,14 @@
 // Lynx will eventually parse itself, but this temporary test will be used while
 // the parser is being implemented.
 
-var canParseVarStatements = true;
-var nilVar = nil;
-var undefinedVar;
+for (var i = 1; i <= 10; i = i + 1) {
+	print i;
+}
+
+for (var isLooping = true; isLooping;) {
+	isLooping = false;
+}
+
+for (;;) {
+	print "Infinite loop!";
+}
