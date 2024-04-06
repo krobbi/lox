@@ -3,6 +3,22 @@
 // the parser is being implemented.
 
 // Directives may appear at the start of comments for compatibility reasons.
+// #import <collections/list> // Shorthand for standard library.
 // #import "lib.lox"
 
-print getLibMessage();
+// Get a message string associated with the main module.
+fun getMainMessage() {
+	return "Message from 'main.lox'!";
+}
+
+// Get a list of messages.
+fun getMessages() {
+	return List().pushBack(getMainMessage()).pushBack(getLibMessage());
+}
+
+print "Messages:";
+var messages = getMessages();
+
+for (var i = 0; i < messages.getLength(); i = i + 1) {
+	print " * " + __ftoa(i + 1) + ": " + messages.get(i);
+}

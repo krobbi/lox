@@ -66,13 +66,40 @@ class Parser {
 	// Parse an import.
 	_parseImport() {
 		this._pushSpan();
-		var path = this._expect(TokenType.STRING, "for import path");
+		var path;
 		
-		if (!path) {
+		if (this._is(TokenType.STRING)) {
+			path = this._advance().getValue();
+		} else if (this._accept(TokenType.LESS)) {
+			path = "<";
+			
+			for (var isLooping = true; isLooping;) {
+				var part = this._expect(TokenType.IDENTIFIER, "for standard path part");
+				
+				if (!part) {
+					return this._dropSpan();
+				}
+				
+				path = path + part.getValue();
+				
+				if (this._accept(TokenType.SLASH)) {
+					path = path + "/";
+				} else {
+					isLooping = false;
+				}
+			}
+			
+			if (!this._expect(TokenType.GREATER, "after standard path")) {
+				return this._dropSpan();
+			}
+			
+			path = path + ">";
+		} else {
+			this._expected("an import path");
 			return this._dropSpan();
 		}
 		
-		return ImportNode(this._popSpan(), path.getValue());
+		return ImportNode(this._popSpan(), path);
 	}
 	
 	// Parse an optional declaration.
