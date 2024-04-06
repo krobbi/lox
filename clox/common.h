@@ -14,8 +14,11 @@
 // Merge constant indices for constants with equal values.
 #define CONSTANT_MERGING
 
-// Use 16-bit constant indices
+// Use 16-bit constant indices.
 #define LONG_CONSTANTS
+
+// Use a maximum function call depth of 128.
+#define DEEP_CALLS
 
 // Disassemble bytecode after compilation.
 //#define DEBUG_PRINT_CODE

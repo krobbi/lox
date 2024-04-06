@@ -53,7 +53,7 @@ $(BIN_DIR):
 
 # Compile Clox objects from Clox sources:
 $(BIN_DIR)/clox_%.o: $(CLOX_DIR)/%.c $(CLOX_HDRS) | $(BIN_DIR)
-	@ echo "Compiling '$<'..." 1>&2
+	@ echo "Compiling '$@'..." 1>&2
 	@ $(CC) $(CFLAGS) -c $< -o $@
 
 # Link Clox executable from Clox objects:

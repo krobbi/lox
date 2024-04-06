@@ -6,8 +6,17 @@
 #include "table.h"
 #include "value.h"
 
-// The maximum function call depth.
+#ifdef DEEP_CALLS
+
+// The maximum function call depth of 128.
+#define FRAMES_MAX 128
+
+#else // DEEP_CALLS
+
+// The maximum function call depth of 64.
 #define FRAMES_MAX 64
+
+#endif // !DEEP_CALLS
 
 // The maximum size of the stack in values.
 #define STACK_MAX (FRAMES_MAX * UINT8_COUNT)
