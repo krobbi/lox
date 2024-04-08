@@ -74,6 +74,7 @@ parser/scanner.lox
 parser/parser.lox
 
 # Importer:
+importer/dependency_state.lox
 importer/dependency.lox
 importer/importer.lox
 

@@ -1,0 +1,17 @@
+// An enumeration of dependency states.
+class DependencyState {
+	// Initialize the dependency state enumeration.
+	init() {
+		// The dependency has not yet been resolved.
+		this.UNRESOLVED = 0;
+		
+		// The dependency is in the process of being resolved.
+		this.RESOLVING = 1;
+		
+		// The dependency has finished being resolved.
+		this.RESOLVED = 2;
+	}
+}
+
+// The enumeration of dependency states.
+var DependencyState = DependencyState();

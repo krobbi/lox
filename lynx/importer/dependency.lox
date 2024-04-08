@@ -1,9 +1,20 @@
 // A dependency of an importer's dependency cache.
 class Dependency {
-	// Initialize the dependency from its module.
-	init(module) {
+	// Initialize the dependency from its name and module.
+	init(name, module) {
+		// The dependency's state.
+		this.state = DependencyState.UNRESOLVED;
+		
+		// The dependency's name.
+		this._name = name;
+		
 		// The dependency's module.
 		this._module = module;
+	}
+	
+	// Get the dependency's name.
+	getName() {
+		return this._name;
 	}
 	
 	// Get the dependency's module.

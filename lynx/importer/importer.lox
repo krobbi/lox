@@ -67,15 +67,42 @@ class Importer {
 		this._dependencies = Map();
 	}
 	
-	// Import a program.
+	// Import a program or log an error.
 	importProgram() {
-		var main = this._findDependency(this._mainName);
+		if (!this._validatePart(this._mainName)) {
+			this._log.logError("Main path '" + this._config.getMainPath() + "' is invalid.");
+			return nil;
+		}
+		
+		var main = this._getDependency(this._mainName, nil);
 		
 		if (!main) {
-			return ProgramNode(List());
+			return nil;
 		}
 		
 		return ProgramNode(this._resolveDependency(main));
+	}
+	
+	// Get a dependency from its name or log an error at a span.
+	_getDependency(name, span) {
+		var dependency = this._dependencies.get(name);
+		
+		if (dependency) {
+			return dependency;
+		}
+		
+		var path = this._nameToPath(name);
+		var stream = __fopenr(path);
+		
+		if (!stream) {
+			this._log.logErrorAt(
+					"Could not open source file '" + path + "'. File may not exist.", span);
+			return nil;
+		}
+		
+		dependency = Dependency(name, Parser(this._config, name, stream).parseModule());
+		this._dependencies.set(name, dependency);
+		return dependency;
 	}
 	
 	// Convert a dependency name to a path.
@@ -83,36 +110,47 @@ class Importer {
 		return this._mainPath + name;
 	}
 	
-	// Parse an optional module from its dependency name.
-	_parseModule(name) {
-		var path = this._nameToPath(name);
-		var stream = __fopenr(path);
-		
-		if (!stream) {
-			this._log.logError("Could not open source file '" + path + "'. File may not exist.");
-			return nil;
+	// Get whether a path part is valid.
+	_validatePart(part) {
+		if (part == "" or __chrat(part, 0) == Char.SPACE) {
+			return false;
 		}
 		
-		return Parser(this._config, name, stream).parseModule();
-	}
-	
-	// Find an optional dependency from its name.
-	_findDependency(name) {
-		var dependency = this._dependencies.get(name);
+		var length = __strlen(part);
 		
-		if (dependency) {
-			return dependency;
+		{
+			var tail = __chrat(part, length - 1);
+			
+			if (tail == Char.SPACE or tail == Char.DOT) {
+				return false;
+			}
 		}
 		
-		var module = this._parseModule(name);
+		var prev = nil;
 		
-		if (!module) {
-			return nil;
+		for (var i = 0; i < length; i = i + 1) {
+			var char = __chrat(part, i);
+			
+			if (
+					char < Char.SPACE or char > Char.TILDE
+					or char == Char.QUOTE
+					or char == Char.STAR
+					or char == Char.SLASH
+					or char == Char.COLON
+					or char == Char.LESS
+					or char == Char.GREATER
+					or char == Char.QUESTION
+					or char == Char.BACKSLASH
+					or char == Char.CARET
+					or char == Char.PIPE
+					or char == prev and (char == Char.SPACE or char == Char.DOT)) {
+				return false;
+			}
+			
+			prev = char;
 		}
 		
-		dependency = Dependency(module);
-		this._dependencies.set(name, dependency);
-		return dependency;
+		return true;
 	}
 	
 	// Resolve a dependency's modules in topological order.

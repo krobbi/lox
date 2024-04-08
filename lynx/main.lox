@@ -62,7 +62,11 @@ fun main(args) {
 		return 1;
 	}
 	
-	dumpNode(Importer(config).importProgram(), List());
+	var program = Importer(config).importProgram();
+	
+	if (program) {
+		dumpNode(program, List());
+	}
 	
 	if (log.hasErrors()) {
 		log.flush();

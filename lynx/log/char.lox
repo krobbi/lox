@@ -32,6 +32,9 @@ class Char {
 		// A `'\''` character.
 		this.APOSTROPHE = __chrat("'", 0);
 		
+		// A `'*'` character.
+		this.STAR = __chrat("*", 0);
+		
 		// A `'.'` character.
 		this.DOT = __chrat(".", 0);
 		
@@ -44,6 +47,9 @@ class Char {
 		// A `'9'` character.
 		this.DIGIT_9 = __chrat("9", 0);
 		
+		// A `':'` character.
+		this.COLON = __chrat(":", 0);
+		
 		// A `'<'` character.
 		this.LESS = __chrat("<", 0);
 		
@@ -52,6 +58,9 @@ class Char {
 		
 		// A `'>'` character.
 		this.GREATER = __chrat(">", 0);
+		
+		// A `'?'` character.
+		this.QUESTION = __chrat("?", 0);
 		
 		// An `'A'` character.
 		this.A_UPPER = __chrat("A", 0);
@@ -62,6 +71,9 @@ class Char {
 		// A `'\\'` character.
 		this.BACKSLASH = __chrat("\", 0);
 		
+		// A `^'` character.
+		this.CARET = __chrat("^", 0);
+		
 		// An `'_'` character.
 		this.UNDERSCORE = __chrat("_", 0);
 		
@@ -70,6 +82,9 @@ class Char {
 		
 		// A `'z'` character.
 		this.Z_LOWER = __chrat("z", 0);
+		
+		// A `'|'` character.
+		this.PIPE = __chrat("|", 0);
 		
 		// A `'~'` character.
 		this.TILDE = __chrat("~", 0);
