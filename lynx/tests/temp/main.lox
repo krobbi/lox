@@ -4,7 +4,7 @@
 
 // Directives may appear at the start of comments for compatibility reasons.
 // TODO: Implement importing standard library paths.
-//// #import <collections/list> // Shorthand for standard library.
+// #import <collections/list> // Shorthand for standard library.
 // #import "lib.lox"
 
 // Get a message string associated with the main module.

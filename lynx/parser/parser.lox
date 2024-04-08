@@ -74,7 +74,7 @@ class Parser {
 			path = "<";
 			
 			for (var isLooping = true; isLooping;) {
-				var part = this._expect(TokenType.IDENTIFIER, "for standard path part");
+				var part = this._expect(TokenType.IDENTIFIER, "for standard library path part");
 				
 				if (!part) {
 					return this._dropSpan();
@@ -89,7 +89,7 @@ class Parser {
 				}
 			}
 			
-			if (!this._expect(TokenType.GREATER, "after standard path")) {
+			if (!this._expect(TokenType.GREATER, "after standard library path")) {
 				return this._dropSpan();
 			}
 			

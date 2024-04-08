@@ -107,6 +107,12 @@ class Importer {
 	
 	// Convert a dependency name to a path.
 	_nameToPath(name) {
+		var unwrapped = this._unwrapStdPath(name);
+		
+		if (unwrapped) {
+			return this._stdPath + unwrapped + ".lox";
+		}
+		
 		return this._mainPath + name;
 	}
 	
@@ -173,6 +179,48 @@ class Importer {
 		return parts.pushBack(part);
 	}
 	
+	// Return a path without angle brackets if it is wrapped in angle brackets.
+	_unwrapStdPath(path) {
+		var length = __strlen(path);
+		
+		if (
+				length < 2
+				or __chrat(path, 0) != Char.LESS
+				or __chrat(path, length - 1) != Char.GREATER) {
+			return nil;
+		}
+		
+		var unwrapped = "";
+		
+		for (var i = 1; i < length - 1; i = i + 1) {
+			unwrapped = unwrapped + __strof(__chrat(path, i));
+		}
+		
+		return unwrapped;
+	}
+	
+	// Return a path without a `.lox` extension if it has one.
+	_unwrapLoxPath(path) {
+		var length = __strlen(path);
+		
+		if (
+				length < 4
+				or __chrat(path, length - 4) != Char.DOT
+				or __chrat(path, length - 3) != __chrat("l", 0)
+				or __chrat(path, length - 2) != __chrat("o", 0)
+				or __chrat(path, length - 1) != __chrat("x", 0)) {
+			return nil;
+		}
+		
+		var unwrapped = "";
+		
+		for (var i = 0; i < length - 4; i = i + 1) {
+			unwrapped = unwrapped + __strof(__chrat(path, i));
+		}
+		
+		return unwrapped;
+	}
+	
 	// Convert a path at a base dependency name to a dependency name or log an
 	// error message at a span.
 	_pathToName(path, base, span) {
@@ -180,6 +228,32 @@ class Importer {
 		fun error(message) {
 			this._log.logErrorAt(message, span);
 			return nil;
+		}
+		
+		var isStd = false;
+		var isWrapped = false;
+		
+		{
+			var unwrapped = this._unwrapStdPath(path);
+			
+			if (unwrapped) {
+				path = "/" + unwrapped;
+				isStd = true;
+				isWrapped = true;
+			}
+		}
+		
+		{
+			var unwrapped = this._unwrapStdPath(base);
+			
+			if (unwrapped) {
+				base = unwrapped;
+				isStd = true;
+			}
+		}
+		
+		if (isStd and !this._stdPath) {
+			return error("Standard library is not defined. Use '--std' in the command line.");
 		}
 		
 		path = this._splitPath(path);
@@ -238,6 +312,18 @@ class Importer {
 			if (iter.hasNext()) {
 				name = name + "/";
 			}
+		}
+		
+		if (isStd) {
+			if (!isWrapped) {
+				name = this._unwrapLoxPath(name);
+				
+				if (!name) {
+					return error("Standard library source files must have a '.lox' extension.");
+				}
+			}
+			
+			name = "<" + name + ">";
 		}
 		
 		return name;
