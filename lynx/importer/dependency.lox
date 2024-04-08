@@ -1,0 +1,13 @@
+// A dependency of an importer's dependency cache.
+class Dependency {
+	// Initialize the dependency from its module.
+	init(module) {
+		// The dependency's module.
+		this._module = module;
+	}
+	
+	// Get the dependency's module.
+	getModule() {
+		return this._module;
+	}
+}

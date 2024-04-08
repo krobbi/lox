@@ -1,0 +1,122 @@
+// Imports a program AST from configuration.
+class Importer {
+	// Initialize the importer from its configuration.
+	init(config) {
+		var mainPath = config.getMainPath();
+		var mainName = "";
+		
+		{
+			var length = __strlen(mainPath);
+			var pivot = length - 1;
+			
+			for (var isLooping = true; isLooping;) {
+				var char = __chrat(mainPath, pivot);
+				
+				if (char == Char.SLASH or char == Char.BACKSLASH) {
+					isLooping = false;
+				} else {
+					pivot = pivot - 1;
+					
+					if (pivot < 0) {
+						isLooping = false;
+					}
+				}
+			}
+			
+			var path = "";
+			
+			for (var i = 0; i < length; i = i + 1) {
+				var character = __strof(__chrat(mainPath, i));
+				
+				if (i <= pivot) {
+					path = path + character;
+				} else {
+					mainName = mainName + character;
+				}
+			}
+			
+			mainPath = path;
+		}
+		
+		var stdPath = config.getStdPath();
+		
+		if (stdPath and stdPath != "") {
+			var char = __chrat(stdPath, __strlen(stdPath) - 1);
+			
+			if (char != Char.SLASH and char != Char.BACKSLASH) {
+				stdPath = stdPath + "/";
+			}
+		}
+		
+		// The importer's configuration.
+		this._config = config;
+		
+		// The importer's log.
+		this._log = config.getLog();
+		
+		// The importer's main path.
+		this._mainPath = mainPath;
+		
+		// The importer's main module name.
+		this._mainName = mainName;
+		
+		// The importer's optional standard library path.
+		this._stdPath = stdPath;
+		
+		// The importer's map of dependency names to dependencies.
+		this._dependencies = Map();
+	}
+	
+	// Import a program.
+	importProgram() {
+		var main = this._findDependency(this._mainName);
+		
+		if (!main) {
+			return ProgramNode(List());
+		}
+		
+		return ProgramNode(this._resolveDependency(main));
+	}
+	
+	// Convert a dependency name to a path.
+	_nameToPath(name) {
+		return this._mainPath + name;
+	}
+	
+	// Parse an optional module from its dependency name.
+	_parseModule(name) {
+		var path = this._nameToPath(name);
+		var stream = __fopenr(path);
+		
+		if (!stream) {
+			this._log.logError("Could not open source file '" + path + "'. File may not exist.");
+			return nil;
+		}
+		
+		return Parser(this._config, name, stream).parseModule();
+	}
+	
+	// Find an optional dependency from its name.
+	_findDependency(name) {
+		var dependency = this._dependencies.get(name);
+		
+		if (dependency) {
+			return dependency;
+		}
+		
+		var module = this._parseModule(name);
+		
+		if (!module) {
+			return nil;
+		}
+		
+		dependency = Dependency(module);
+		this._dependencies.set(name, dependency);
+		return dependency;
+	}
+	
+	// Resolve a dependency's modules in topological order.
+	_resolveDependency(dependency) {
+		return List().pushBack(dependency.getModule());
+	}
+}

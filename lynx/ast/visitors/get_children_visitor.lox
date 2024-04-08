@@ -10,6 +10,11 @@ class GetChildrenVisitor < Visitor {
 		return List();
 	}
 	
+	// Get a program node's children.
+	visitProgram(node) {
+		return node.getModules();
+	}
+	
 	// Get a module node's children.
 	visitModule(node) {
 		var children = List();

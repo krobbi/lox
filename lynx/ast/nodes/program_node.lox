@@ -1,0 +1,20 @@
+// A program node of an AST.
+class ProgramNode < Node {
+	// Initialize the program node from its modules.
+	init(modules) {
+		super.init(nil);
+		
+		// The program node's modules.
+		this._modules = modules;
+	}
+	
+	// Get the program node's modules.
+	getModules() {
+		return this._modules;
+	}
+	
+	// Visit the program node with a visitor.
+	visit(visitor) {
+		return visitor.visitProgram(this);
+	}
+}

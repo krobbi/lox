@@ -5,14 +5,19 @@ class GetClassVisitor < Visitor {
 		super.init();
 	}
 	
-	// Get an import node's class.
-	visitImport(node) {
-		return ImportNode;
+	// Get a program node's class.
+	visitProgram(node) {
+		return ProgramNode;
 	}
 	
 	// Get a module node's class.
 	visitModule(node) {
 		return ModuleNode;
+	}
+	
+	// Get an import node's class.
+	visitImport(node) {
+		return ImportNode;
 	}
 	
 	// Get a block statement node's class.

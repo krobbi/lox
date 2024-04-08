@@ -62,6 +62,7 @@ ast/nodes/stmts/while_stmt_node.lox
 # Special AST nodes:
 ast/nodes/import_node.lox
 ast/nodes/module_node.lox
+ast/nodes/program_node.lox
 
 # AST visitors:
 ast/visitors/get_children_visitor.lox
@@ -71,6 +72,10 @@ ast/visitors/to_string_visitor.lox
 # Parser:
 parser/scanner.lox
 parser/parser.lox
+
+# Importer:
+importer/dependency.lox
+importer/importer.lox
 
 # Tests:
 # These tests should only be included in the bootstrap version of Lynx. The

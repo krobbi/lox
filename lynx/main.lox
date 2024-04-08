@@ -6,14 +6,6 @@
 // #import "parser/parser.lox"
 // #import "token/token_type.lox"
 
-//// Uncomment to run tests:
-//// #import "tests/run.lox"
-
-// Get a node's children.
-fun getNodeChildren(node) {
-	return GetChildrenVisitor().visit(node);
-}
-
 // Represent a node as a string.
 fun nodeToString(node) {
 	var string = "(" + ToStringVisitor().visit(node) + ")";
@@ -50,38 +42,13 @@ fun dumpNode(node, flags) {
 	}
 	
 	print prefix + nodeToString(node);
-	var children = getNodeChildren(node);
+	var children = GetChildrenVisitor().visit(node);
 	
 	for (var iter = children.iter(); iter.hasNext();) {
 		var child = iter.getNext();
 		flags.pushBack(iter.hasNext());
 		dumpNode(child, flags);
 		flags.popBack();
-	}
-}
-
-// Dump an AST's information.
-fun dumpTree(node) {
-	dumpNode(node, List());
-}
-
-// Parse the module at a configuration's main path.
-fun parseMainModule(config) {
-	var log = config.getLog();
-	var mainPath = config.getMainPath();
-	var stream = __fopenr(mainPath);
-	
-	if (!stream) {
-		log.logError("Could not open '" + mainPath + "' for reading. File may not exist.");
-		return;
-	}
-	
-	var parser = Parser(config, mainPath, stream);
-	var module = parser.parseModule();
-	dumpTree(module);
-	
-	if (__fclose(stream)) {
-		log.logError("Parser did not close '" + mainPath + "' after parsing.");
 	}
 }
 
@@ -95,7 +62,7 @@ fun main(args) {
 		return 1;
 	}
 	
-	parseMainModule(config);
+	dumpNode(Importer(config).importProgram(), List());
 	
 	if (log.hasErrors()) {
 		log.flush();
