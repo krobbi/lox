@@ -67,7 +67,7 @@ class Importer {
 		this._dependencies = Map();
 	}
 	
-	// Import a program or log an error.
+	// Import a program or log an error message.
 	importProgram() {
 		if (!this._validatePart(this._mainName)) {
 			this._log.logError("Main path '" + this._config.getMainPath() + "' is invalid.");
@@ -83,7 +83,7 @@ class Importer {
 		return ProgramNode(this._resolveDependency(main));
 	}
 	
-	// Get a dependency from its name or log an error at a span.
+	// Get a dependency from its name or log an error message at a span.
 	_getDependency(name, span) {
 		var dependency = this._dependencies.get(name);
 		
@@ -153,8 +153,138 @@ class Importer {
 		return true;
 	}
 	
+	// Split a path into path parts.
+	_splitPath(path) {
+		var length = __strlen(path);
+		var parts = List();
+		var part = "";
+		
+		for (var i = 0; i < length; i = i + 1) {
+			var char = __chrat(path, i);
+			
+			if (char == Char.SLASH or char == Char.BACKSLASH) {
+				parts.pushBack(part);
+				part = "";
+			} else {
+				part = part + __strof(char);
+			}
+		}
+		
+		return parts.pushBack(part);
+	}
+	
+	// Convert a path at a base dependency name to a dependency name or log an
+	// error message at a span.
+	_pathToName(path, base, span) {
+		// Log an error message at the span and return nil.
+		fun error(message) {
+			this._log.logErrorAt(message, span);
+			return nil;
+		}
+		
+		path = this._splitPath(path);
+		base = this._splitPath(base);
+		var iter = path.iter();
+		
+		// Make the path absolute if it has a leading slash.
+		if (path.get(0) == "") {
+			base.clear();
+			iter.getNext();
+		} else {
+			base.popBack();
+		}
+		
+		if (!iter.hasNext()) {
+			return error("Import path is empty.");
+		}
+		
+		var isFile = false;
+		
+		while (iter.hasNext()) {
+			var part = iter.getNext();
+			
+			if (part == "") {
+				if (iter.hasNext()) {
+					return error("Import path contains an empty part.");
+				}
+				
+				isFile = false;
+			} else if (part == ".") {
+				isFile = false;
+			} else if (part == "..") {
+				if (base.isEmpty()) {
+					return error("Import path ascends above the main directory.");
+				}
+				
+				base.popBack();
+				isFile = false;
+			} else if (this._validatePart(part)) {
+				base.pushBack(part);
+				isFile = true;
+			} else {
+				return error("Import path contains an invalid part.");
+			}
+		}
+		
+		if (!isFile) {
+			return error("Import path is not a file.");
+		}
+		
+		var name = "";
+		
+		for (var iter = base.iter(); iter.hasNext();) {
+			name = name + iter.getNext();
+			
+			if (iter.hasNext()) {
+				name = name + "/";
+			}
+		}
+		
+		return name;
+	}
+	
+	// Resolve an import node's optional modules at a base dependency name in
+	// topological order.
+	_resolveImport(import, base) {
+		var span = import.getSpan();
+		var name = this._pathToName(import.getPath(), base, span);
+		
+		if (!name) {
+			return nil;
+		}
+		
+		var dependency = this._getDependency(name, span);
+		
+		if (!dependency) {
+			return nil;
+		}
+		
+		if (dependency.state == DependencyState.UNRESOLVED) {
+			return this._resolveDependency(dependency);
+		} else if (dependency.state == DependencyState.RESOLVING) {
+			this._log.logErrorAt("Import forms a circular dependency.", span);
+		}
+		
+		return nil;
+	}
+	
 	// Resolve a dependency's modules in topological order.
 	_resolveDependency(dependency) {
-		return List().pushBack(dependency.getModule());
+		dependency.state = DependencyState.RESOLVING;
+		var name = dependency.getName();
+		var modules = List();
+		
+		for (var iter = dependency.getModule().getImports().iter(); iter.hasNext();) {
+			var submodules = this._resolveImport(iter.getNext(), name);
+			
+			if (submodules) {
+				for (var iter = submodules.iter(); iter.hasNext();) {
+					modules.pushBack(iter.getNext());
+				}
+			}
+		}
+		
+		dependency.state = DependencyState.RESOLVED;
+		return modules.pushBack(dependency.getModule());
 	}
 }

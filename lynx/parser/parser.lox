@@ -65,7 +65,7 @@ class Parser {
 	
 	// Parse an import.
 	_parseImport() {
-		this._pushSpan();
+		this._pushSpanNext();
 		var path;
 		
 		if (this._is(TokenType.STRING)) {
@@ -528,7 +528,7 @@ class Parser {
 				return SetExprNode(this._popSpan(), expr.getObject(), expr.getName(), value);
 			}
 			
-			this._logError("Invalid assignment target.", expr);
+			this._logError("Invalid assignment target.", expr.getSpan());
 		}
 		
 		this._dropSpan();
@@ -771,9 +771,9 @@ class Parser {
 		return nil;
 	}
 	
-	// Log an error message at a token's span.
-	_logError(message, token) {
-		this._log.logErrorAt(message, token.getSpan());
+	// Log an error message at a span.
+	_logError(message, span) {
+		this._log.logErrorAt(message, span);
 	}
 	
 	// Throw an error with a message at the parser's next token.
@@ -783,7 +783,7 @@ class Parser {
 		}
 		
 		this._isThrowing = true;
-		this._logError(message, this._next);
+		this._logError(message, this._next.getSpan());
 	}
 	
 	// Catch an error.
