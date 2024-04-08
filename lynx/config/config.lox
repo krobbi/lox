@@ -38,8 +38,10 @@ class Config {
 			}
 		}
 		
-		if (arguments.getLength() != 1) {
-			log.logError("Expected 1 positional argument.");
+		var argumentCount = arguments.getLength();
+		
+		if (argumentCount != 1) {
+			log.logError("Expected 1 positional argument, found " + __ftoa(argumentCount) + ".");
 		}
 		
 		if (log.hasErrors()) {
@@ -52,10 +54,10 @@ class Config {
 		// The configuration's main path.
 		this._mainPath = arguments.get(0);
 		
-		// The configuration's standard library path.
+		// The configuration's optional standard library path.
 		this._stdPath = options.get("--std");
 		
-		// The configuration's output path.
+		// The configuration's optional output path.
 		this._outputPath = options.get("--output");
 	}
 	
@@ -69,12 +71,12 @@ class Config {
 		return this._mainPath;
 	}
 	
-	// Get the configuration's standard library path.
+	// Get the configuration's optional standard library path.
 	getStdPath() {
 		return this._stdPath;
 	}
 	
-	// Get the configuration's output path.
+	// Get the configuration's optional output path.
 	getOutputPath() {
 		return this._outputPath;
 	}
