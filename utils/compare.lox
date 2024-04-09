@@ -1,0 +1,91 @@
+// Lox Compare
+// Compare two files by bytes and exit with an error if they are not equal.
+
+// Print an error message.
+fun printError(message) {
+	var length = __strlen(message);
+	var stderr = __stderr();
+	
+	for (var i = 0; i < length; i = i + 1) {
+		__fputc(__chrat(message, i), stderr);
+	}
+	
+	__fputc(10, stderr);
+}
+
+// Compare two input streams.
+fun compareStreams(aStream, bStream) {
+	for (;;) {
+		var aChar = __fgetc(aStream);
+		var bChar = __fgetc(bStream);
+		
+		if (aChar != bChar) {
+			printError("Files are not equal.");
+			return false;
+		} else if (!aChar) {
+			return true;
+		}
+	}
+}
+
+// Run Lox compare from an 'A' and 'B' path.
+fun run(aPath, bPath) {
+	if (aPath == bPath) {
+		printError("Paths are equal.");
+		return false;
+	}
+	
+	var aStream = __fopenr(aPath);
+	
+	if (!aStream) {
+		printError("Could not open 'A' file '" + aPath + "'.");
+		return false;
+	}
+	
+	var bStream = __fopenr(bPath);
+	
+	if (!bStream) {
+		printError("Could not open 'B' file '" + bPath + "'.");
+		__fclose(aStream);
+		return false;
+	}
+	
+	var isOk = compareStreams(aStream, bStream);
+	
+	if (!__fclose(aStream)) {
+		printError("Could not close 'A' file '" + aPath + "'.");
+		isOk = false;
+	}
+	
+	if (!__fclose(bStream)) {
+		printError("Could not close 'B' file '" + bPath + "'.");
+		isOk = false;
+	}
+	
+	return isOk;
+}
+
+// Run Lox compare from arguments and return an exit status code.
+fun main(argc, argv) {
+	if (argc != 3) {
+		printError("Usage: compare.lox <a> <b>");
+		return 1;
+	}
+	
+	var aPath = argv(1);
+	var bPath = argv(2);
+	
+	if (!run(aPath, bPath)) {
+		return 1;
+	}
+	
+	return 0;
+}
+
+{
+	var status = main(__argc(), __argv);
+	
+	if (status != 0) {
+		__exit(status);
+	}
+}

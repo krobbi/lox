@@ -263,7 +263,7 @@ fun run(list, targetPath) {
 	}
 	
 	if (!__fclose(targetStream)) {
-		printError("Could not close target file.");
+		printError("Could not close target file '" + targetPath + "'.");
 		list.close();
 		return false;
 	}
