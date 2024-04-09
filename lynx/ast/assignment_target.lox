@@ -1,0 +1,17 @@
+// An enumeration of assignment targets.
+class AssignmentTarget {
+	// Initialize the assignment target enumeration.
+	init() {
+		// Not an assignment target.
+		this.NONE = 0;
+		
+		// A get expression.
+		this.GET = 1;
+		
+		// A variable expression.
+		this.VARIABLE = 2;
+	}
+}
+
+// The enumeration of assignment targets.
+var AssignmentTarget = AssignmentTarget();

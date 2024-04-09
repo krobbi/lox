@@ -520,12 +520,12 @@ class Parser {
 				return this._dropSpan();
 			}
 			
-			var exprClass = GetClassVisitor().visit(expr);
+			var target = GetAssignmentTargetVisitor().visit(expr);
 			
-			if (exprClass == VariableExprNode) {
-				return AssignExprNode(this._popSpan(), expr.getName(), value);
-			} else if (exprClass == GetExprNode) {
+			if (target == AssignmentTarget.GET) {
 				return SetExprNode(this._popSpan(), expr.getObject(), expr.getName(), value);
+			} else if (target == AssignmentTarget.VARIABLE) {
+				return AssignExprNode(this._popSpan(), expr.getName(), value);
 			}
 			
 			this._logError("Invalid assignment target.", expr.getSpan());

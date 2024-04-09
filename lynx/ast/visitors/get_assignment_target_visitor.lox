@@ -1,0 +1,22 @@
+// Visits AST nodes and returns their assignment target.
+class GetAssignmentTargetVisitor < Visitor {
+	// Initialize the get assignment target visitor.
+	init() {
+		super.init();
+	}
+	
+	// Get a node's assignment target.
+	visitDefault(node) {
+		return AssignmentTarget.NONE;
+	}
+	
+	// Get a get expression node's assignment target.
+	visitGetExpr(node) {
+		return AssignmentTarget.GET;
+	}
+	
+	// Get a variable expression node's assignment target.
+	visitVariableExpr(node) {
+		return AssignmentTarget.VARIABLE;
+	}
+}

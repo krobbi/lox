@@ -1,57 +1,6 @@
 // Lynx
 // Lox preprocessor.
 
-// #import <call_main>
-// #import "config/config.lox"
-// #import "parser/parser.lox"
-// #import "token/token_type.lox"
-
-// Represent a node as a string.
-fun nodeToString(node) {
-	var string = "(" + ToStringVisitor().visit(node) + ")";
-	var span = node.getSpan();
-	
-	if (span) {
-		string = string + " @ " + span.toString();
-	}
-	
-	return string;
-}
-
-// Dump a node's information.
-fun dumpNode(node, flags) {
-	var prefix = "";
-	
-	for (var iter = flags.iter(); iter.hasNext();) {
-		var hasMoreVertical = iter.getNext();
-		var hasMoreHorizontal = iter.hasNext();
-		
-		if (hasMoreVertical) {
-			if (hasMoreHorizontal) {
-				prefix = prefix + "| ";
-			} else {
-				prefix = prefix + "|-";
-			}
-		} else {
-			if (hasMoreHorizontal) {
-				prefix = prefix + "  ";
-			} else {
-				prefix = prefix + "|_";
-			}
-		}
-	}
-	
-	print prefix + nodeToString(node);
-	var children = GetChildrenVisitor().visit(node);
-	
-	for (var iter = children.iter(); iter.hasNext();) {
-		var child = iter.getNext();
-		flags.pushBack(iter.hasNext());
-		dumpNode(child, flags);
-		flags.popBack();
-	}
-}
-
 // Run Lynx from arguments and return an exit status code.
 fun main(args) {
 	var config = Config(args);
@@ -62,11 +11,7 @@ fun main(args) {
 		return 1;
 	}
 	
-	var program = Importer(config).importProgram();
-	
-	if (program) {
-		dumpNode(program, List());
-	}
+	Importer(config).importProgram();
 	
 	if (log.hasErrors()) {
 		log.flush();
