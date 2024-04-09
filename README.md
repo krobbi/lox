@@ -36,7 +36,7 @@ adding some additional features:
 * [x] More native functions to improve Lox's I/O capabilities.
 * [x] Source merging script for bootstrapping a preprocessor.
 * [x] Standard library of useful functions and collections.
-* [ ] Preprocessor for C-like modularity.
+* [x] Preprocessor for C-like modularity.
 * [ ] Implementation of Lox, or another language in Lox.
 
 # Extensions

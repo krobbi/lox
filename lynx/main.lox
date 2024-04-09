@@ -1,20 +1,78 @@
 // Lynx
 // Lox preprocessor.
 
-// Print a token's lexeme.
-fun printTokenLexeme(token) {
-	print token.getLexeme();
+// Write a message to an output stream.
+fun write(message, stream) {
+	var length = __strlen(message);
+	
+	for (var i = 0; i < length; i = i + 1) {
+		__fputc(__chrat(message, i), stream);
+	}
+}
+
+// Write a message to an output stream with a line feed.
+fun writeLine(message, stream) {
+	write(message, stream);
+	__fputc(Char.LF, stream);
+}
+
+// Write a program to an output path with a log.
+fun writeProgram(program, path, log) {
+	var stream = __fopenw(path);
+	
+	if (!stream) {
+		log.logError("Could not open output file '" + path + "'.");
+		return;
+	}
+	
+	var tokens = List();
+	EmitTokensVisitor(tokens.pushBack).visit(program);
+	var width = 0;
+	var needsSpace = false;
+	
+	for (var iter = tokens.iter(); iter.hasNext();) {
+		var lexeme = iter.getNext().getLexeme();
+		var length = __strlen(lexeme);
+		
+		if (needsSpace) {
+			width = width + 1;
+		}
+		
+		if (width + length > 80) {
+			writeLine("", stream);
+			width = 0;
+			needsSpace = false;
+		}
+		
+		if (needsSpace) {
+			write(" ", stream);
+		}
+		
+		write(lexeme, stream);
+		width = width + length;
+		needsSpace = true;
+		
+		if (!iter.hasNext()) {
+			writeLine("", stream);
+		}
+	}
+	
+	if (!__fclose(stream)) {
+		log.logError("Could not close output file '" + path + "'.");
+	}
 }
 
 // Run Lynx from configuration.
 fun run(config) {
 	var program = Importer(config).importProgram();
+	var path = config.getOutputPath();
+	var log = config.getLog();
 	
-	if (config.getLog().hasErrors()) {
+	if (!path or log.hasErrors()) {
 		return;
 	}
 	
-	EmitTokensVisitor(printTokenLexeme).visit(program);
+	writeProgram(program, path, log);
 }
 
 // Run Lynx from arguments and return an exit status code.
