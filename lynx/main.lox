@@ -1,6 +1,22 @@
 // Lynx
 // Lox preprocessor.
 
+// Print a token's lexeme.
+fun printTokenLexeme(token) {
+	print token.getLexeme();
+}
+
+// Run Lynx from configuration.
+fun run(config) {
+	var program = Importer(config).importProgram();
+	
+	if (config.getLog().hasErrors()) {
+		return;
+	}
+	
+	EmitTokensVisitor(printTokenLexeme).visit(program);
+}
+
 // Run Lynx from arguments and return an exit status code.
 fun main(args) {
 	var config = Config(args);
@@ -11,7 +27,7 @@ fun main(args) {
 		return 1;
 	}
 	
-	Importer(config).importProgram();
+	run(config);
 	
 	if (log.hasErrors()) {
 		log.flush();

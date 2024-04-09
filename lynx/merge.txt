@@ -65,6 +65,7 @@ ast/nodes/program_node.lox
 
 # AST visitors:
 ast/visitor.lox
+ast/visitors/emit_tokens_visitor.lox
 ast/visitors/get_assignment_target_visitor.lox
 
 # Parser:

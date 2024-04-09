@@ -1,0 +1,280 @@
+// Visits AST nodes and emits their tokens to a callback function.
+class EmitTokensVisitor < Visitor {
+	// Initialize the emit tokens visitor from its callback function.
+	init(callback) {
+		super.init();
+		
+		// The emit tokens visitor's callback function.
+		this._callback = callback;
+		
+		// Whether the next function statement is a method.
+		this._isMethod = false;
+	}
+	
+	// Emit a program node's tokens.
+	visitProgram(node) {
+		for (var iter = node.getModules().iter(); iter.hasNext();) {
+			this.visit(iter.getNext());
+		}
+	}
+	
+	// Emit a module node's tokens.
+	visitModule(node) {
+		for (var iter = node.getStatements().iter(); iter.hasNext();) {
+			this.visit(iter.getNext());
+		}
+	}
+	
+	// Emit a block statement node's tokens.
+	visitBlockStmt(node) {
+		this._emit(TokenType.LEFT_BRACE);
+		
+		for (var iter = node.getStatements().iter(); iter.hasNext();) {
+			this.visit(iter.getNext());
+		}
+		
+		this._emit(TokenType.RIGHT_BRACE);
+	}
+	
+	// Emit a class statement node's tokens.
+	visitClassStmt(node) {
+		this._emit(TokenType.CLASS);
+		this._emitIdentifier(node.getName());
+		var superclass = node.getSuperclass();
+		
+		if (superclass) {
+			this._emit(TokenType.LESS);
+			this.visit(superclass);
+		}
+		
+		this._emit(TokenType.LEFT_BRACE);
+		
+		for (var iter = node.getMethods().iter(); iter.hasNext();) {
+			this._isMethod = true;
+			this.visit(iter.getNext());
+		}
+		
+		this._emit(TokenType.RIGHT_BRACE);
+	}
+	
+	// Emit an expression statement node's tokens.
+	visitExprStmt(node) {
+		this.visit(node.getExpression());
+		this._emit(TokenType.SEMICOLON);
+	}
+	
+	// Emit a function statement node's tokens.
+	visitFunctionStmt(node) {
+		if (this._isMethod) {
+			this._isMethod = false;
+		} else {
+			this._emit(TokenType.FUN);
+		}
+		
+		this._emitIdentifier(node.getName());
+		this._emit(TokenType.LEFT_PAREN);
+		
+		for (var iter = node.getParams().iter(); iter.hasNext();) {
+			this._emitIdentifier(iter.getNext());
+			
+			if (iter.hasNext()) {
+				this._emit(TokenType.COMMA);
+			}
+		}
+		
+		this._emit(TokenType.RIGHT_PAREN);
+		this._emit(TokenType.LEFT_BRACE);
+		
+		for (var iter = node.getBody().iter(); iter.hasNext();) {
+			this.visit(iter.getNext());
+		}
+		
+		this._emit(TokenType.RIGHT_BRACE);
+	}
+	
+	// Emit an if statement node's tokens.
+	visitIfStmt(node) {
+		this._emit(TokenType.IF);
+		this._emit(TokenType.LEFT_PAREN);
+		this.visit(node.getCondition());
+		this._emit(TokenType.RIGHT_PAREN);
+		this.visit(node.getThenBranch());
+		var elseBranch = node.getElseBranch();
+		
+		if (elseBranch) {
+			this._emit(TokenType.ELSE);
+			this.visit(elseBranch);
+		}
+	}
+	
+	// Emit a print statement node's tokens.
+	visitPrintStmt(node) {
+		this._emit(TokenType.PRINT);
+		this.visit(node.getExpression());
+		this._emit(TokenType.SEMICOLON);
+	}
+	
+	// Emit a return statement node's tokens.
+	visitReturnStmt(node) {
+		this._emit(TokenType.RETURN);
+		var value = node.getValue();
+		
+		if (value) {
+			this.visit(value);
+		}
+		
+		this._emit(TokenType.SEMICOLON);
+	}
+	
+	// Emit a var statement node's tokens.
+	visitVarStmt(node) {
+		this._emit(TokenType.VAR);
+		this._emitIdentifier(node.getName());
+		var initializer = node.getInitializer();
+		
+		if (initializer) {
+			this._emit(TokenType.EQUAL);
+			this.visit(initializer);
+		}
+		
+		this._emit(TokenType.SEMICOLON);
+	}
+	
+	// Emit a while statement node's tokens.
+	visitWhileStmt(node) {
+		this._emit(TokenType.WHILE);
+		this._emit(TokenType.LEFT_PAREN);
+		this.visit(node.getCondition());
+		this._emit(TokenType.RIGHT_PAREN);
+		this.visit(node.getBody());
+	}
+	
+	// Emit an assign expression node's tokens.
+	visitAssignExpr(node) {
+		this._emitIdentifier(node.getName());
+		this._emit(TokenType.EQUAL);
+		this.visit(node.getValue());
+	}
+	
+	// Emit a binary expression node's tokens.
+	visitBinaryExpr(node) {
+		this.visit(node.getLeft());
+		this._emit(node.getOperator());
+		this.visit(node.getRight());
+	}
+	
+	// Emit a call expression node's tokens.
+	visitCallExpr(node) {
+		this.visit(node.getCallee());
+		this._emit(TokenType.LEFT_PAREN);
+		
+		for (var iter = node.getArguments().iter(); iter.hasNext();) {
+			this.visit(iter.getNext());
+			
+			if (iter.hasNext()) {
+				this._emit(TokenType.COMMA);
+			}
+		}
+		
+		this._emit(TokenType.RIGHT_PAREN);
+	}
+	
+	// Emit a get expression node's tokens.
+	visitGetExpr(node) {
+		this.visit(node.getObject());
+		this._emit(TokenType.DOT);
+		this._emitIdentifier(node.getName());
+	}
+	
+	// Emit a grouping expression node's tokens.
+	visitGroupingExpr(node) {
+		this._emit(TokenType.LEFT_PAREN);
+		this.visit(node.getExpression());
+		this._emit(TokenType.RIGHT_PAREN);
+	}
+	
+	// Emit a literal expression node's tokens.
+	visitLiteralExpr(node) {
+		var literal = node.getLiteral();
+		var type = literal.getType();
+		var value = literal.getValue();
+		
+		if (type == LiteralType.NIL) {
+			this._emit(TokenType.NIL);
+		} else if (type == LiteralType.BOOL) {
+			if (value) {
+				this._emit(TokenType.TRUE);
+			} else {
+				this._emit(TokenType.FALSE);
+			}
+		} else if (type == LiteralType.NUMBER) {
+			this._emitNumber(value);
+		} else if (type == LiteralType.STRING) {
+			this._emitString(value);
+		}
+	}
+	
+	// Emit a logical expression node's tokens.
+	visitLogicalExpr(node) {
+		this.visit(node.getLeft());
+		this._emit(node.getOperator());
+		this.visit(node.getRight());
+	}
+	
+	// Emit a set expression node's tokens.
+	visitSetExpr(node) {
+		this.visit(node.getObject());
+		this._emit(TokenType.DOT);
+		this._emitIdentifier(node.getName());
+		this._emit(TokenType.EQUAL);
+		this.visit(node.getValue());
+	}
+	
+	// Emit a super expression node's tokens.
+	visitSuperExpr(node) {
+		this._emit(TokenType.SUPER);
+		this._emit(TokenType.DOT);
+		this._emitIdentifier(node.getMethod());
+	}
+	
+	// Emit a this expression node's tokens.
+	visitThisExpr(node) {
+		this._emit(TokenType.THIS);
+	}
+	
+	// Emit a unary expression node's tokens.
+	visitUnaryExpr(node) {
+		this._emit(node.getOperator());
+		this.visit(node.getRight());
+	}
+	
+	// Emit a variable expression node's tokens.
+	visitVariableExpr(node) {
+		this._emitIdentifier(node.getName());
+	}
+	
+	// Emit a token from its type and value.
+	_emitValue(type, value) {
+		this._callback(Token(type, value, nil));
+	}
+	
+	// Emit a token from its type.
+	_emit(type) {
+		this._emitValue(type, nil);
+	}
+	
+	// Emit an identifier token from its value.
+	_emitIdentifier(value) {
+		this._emitValue(TokenType.IDENTIFIER, value);
+	}
+	
+	// Emit a string token from its value.
+	_emitString(value) {
+		this._emitValue(TokenType.STRING, value);
+	}
+	
+	// Emit a number token from its value.
+	_emitNumber(value) {
+		this._emitValue(TokenType.NUMBER, value);
+	}
+}
