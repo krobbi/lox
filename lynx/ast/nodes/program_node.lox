@@ -1,3 +1,5 @@
+// #import "/ast/node.lox"
+
 // A program node of an AST.
 class ProgramNode < Node {
 	// Initialize the program node from its modules.

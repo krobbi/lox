@@ -1,4 +1,6 @@
-// A span between two position in source code.
+// #import "char.lox"
+
+// A span between two positions in source code.
 class Span {
 	// Initialize the span from its file name.
 	init(name) {

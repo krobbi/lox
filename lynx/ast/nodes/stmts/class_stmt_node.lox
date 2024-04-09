@@ -1,3 +1,5 @@
+// #import "/ast/node.lox"
+
 // A class statement node of an AST.
 class ClassStmtNode < Node {
 	// Initialize the class statement node from its span, name, optional

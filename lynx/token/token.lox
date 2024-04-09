@@ -1,3 +1,7 @@
+// #import "/ast/literal/literal.lox"
+// #import "/ast/literal/literal_type.lox"
+// #import "token_type.lox"
+
 // A token of Lox code.
 class Token {
 	// Initialize the token from its token type, value, and span.

@@ -1,3 +1,5 @@
+// #import "/ast/node.lox"
+
 // A set expression node of an AST.
 class SetExprNode < Node {
 	// Initialize the set expression node from its span, object expression,

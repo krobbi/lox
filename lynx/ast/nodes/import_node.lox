@@ -1,3 +1,5 @@
+// #import "/ast/node.lox"
+
 // An import node of an AST.
 class ImportNode < Node {
 	// Initialize the import node from its span and path.

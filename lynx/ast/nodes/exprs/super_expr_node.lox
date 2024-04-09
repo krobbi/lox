@@ -1,3 +1,5 @@
+// #import "/ast/node.lox"
+
 // A super expression node of an AST.
 class SuperExprNode < Node {
 	// Initialize the super expression node from its span and method.

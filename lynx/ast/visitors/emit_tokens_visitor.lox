@@ -1,3 +1,8 @@
+// #import "/ast/literal/literal_type.lox"
+// #import "/ast/visitor.lox"
+// #import "/token/token.lox"
+// #import "/token/token_type.lox"
+
 // Visits AST nodes and emits their tokens to a callback function.
 class EmitTokensVisitor < Visitor {
 	// Initialize the emit tokens visitor from its callback function.

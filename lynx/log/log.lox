@@ -1,3 +1,8 @@
+// #import <list>
+
+// #import "char.lox"
+// #import "log_record.lox"
+
 // A log of messages.
 class Log {
 	// Initialize the log.

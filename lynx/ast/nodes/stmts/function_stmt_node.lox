@@ -1,3 +1,5 @@
+// #import "/ast/node.lox"
+
 // A function statement node of an AST.
 class FunctionStmtNode < Node {
 	// Initialize the function statement node from its span, name, parameter

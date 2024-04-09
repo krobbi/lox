@@ -1,3 +1,5 @@
+// #import "/ast/node.lox"
+
 // A block statement node of an AST.
 class BlockStmtNode < Node {
 	// Initialize the block statement node from its span and statements.

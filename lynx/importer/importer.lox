@@ -1,3 +1,12 @@
+// #import <list>
+// #import <map>
+
+// #import "/ast/nodes/program_node.lox"
+// #import "/log/char.lox"
+// #import "/parser/parser.lox"
+// #import "dependency.lox"
+// #import "dependency_state.lox"
+
 // Imports a program AST from configuration.
 class Importer {
 	// Initialize the importer from its configuration.

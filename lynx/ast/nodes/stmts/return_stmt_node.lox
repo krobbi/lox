@@ -1,3 +1,5 @@
+// #import "/ast/node.lox"
+
 // A return statement node of an AST.
 class ReturnStmtNode < Node {
 	// Initialize the return statement node from its span and optional value

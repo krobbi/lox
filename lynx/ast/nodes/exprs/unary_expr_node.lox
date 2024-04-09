@@ -1,3 +1,5 @@
+// #import "/ast/node.lox"
+
 // A unary expression node of an AST.
 class UnaryExprNode < Node {
 	// Initialize the unary expression node from its span, operator, and

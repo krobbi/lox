@@ -1,3 +1,5 @@
+// #import "/ast/node.lox"
+
 // A get expression node of an AST.
 class GetExprNode < Node {
 	// Initialize the get expression node from its span, object expression, and

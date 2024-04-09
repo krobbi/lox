@@ -1,3 +1,5 @@
+// #import "/ast/node.lox"
+
 // An expression statement node of an AST.
 class ExprStmtNode < Node {
 	// Initialize the expression statement node from its span and expression.

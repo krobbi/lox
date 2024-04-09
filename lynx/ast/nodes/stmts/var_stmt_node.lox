@@ -1,3 +1,5 @@
+// #import "/ast/node.lox"
+
 // A var statement node of an AST.
 class VarStmtNode < Node {
 	// Initialize the var statement node from its span, name, and optional

@@ -1,6 +1,14 @@
 // Lynx
 // Lox preprocessor.
 
+// #import <call_main>
+// #import <list>
+
+// #import "ast/visitors/emit_tokens_visitor.lox"
+// #import "config/config.lox"
+// #import "importer/importer.lox"
+// #import "log/char.lox"
+
 // Write a message to an output stream.
 fun write(message, stream) {
 	var length = __strlen(message);

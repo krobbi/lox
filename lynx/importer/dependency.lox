@@ -1,3 +1,5 @@
+// #import "dependency_state.lox"
+
 // A dependency of an importer's dependency cache.
 class Dependency {
 	// Initialize the dependency from its name and module.

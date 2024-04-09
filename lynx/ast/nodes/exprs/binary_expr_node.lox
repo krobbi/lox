@@ -1,3 +1,5 @@
+// #import "/ast/node.lox"
+
 // A binary expression node of an AST.
 class BinaryExprNode < Node {
 	// Initialize the binary expression node from its span, left-hand

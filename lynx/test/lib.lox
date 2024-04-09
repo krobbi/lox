@@ -1,4 +1,0 @@
-// Get a message string associated with this library module.
-fun getLibMessage() {
-	return "Message from 'lib.lox'!";
-}

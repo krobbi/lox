@@ -1,3 +1,6 @@
+// #import "/log/char.lox"
+// #import "literal_type.lox"
+
 // A value that can be represented by a literal token.
 class Literal {
 	// Initialize the literal from its type and value.

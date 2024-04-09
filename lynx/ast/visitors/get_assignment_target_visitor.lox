@@ -1,3 +1,6 @@
+// #import "/ast/assignment_target.lox"
+// #import "/ast/visitor.lox"
+
 // Visits AST nodes and returns their assignment target.
 class GetAssignmentTargetVisitor < Visitor {
 	// Initialize the get assignment target visitor.

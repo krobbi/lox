@@ -1,3 +1,5 @@
+// #import "/ast/node.lox"
+
 // A print statement node of an AST.
 class PrintStmtNode < Node {
 	// Initialize the print statement node from its span and expression.
