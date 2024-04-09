@@ -1,5 +1,7 @@
-// Call a main function with arguments and exit if a non-zero exit status code
-// was returned.
+// #import "list.lox"
+
+// Call a main function with a list of arguments and exit if a non-zero exit
+// status code was returned.
 fun callMain(main) {
 	var args = List();
 	

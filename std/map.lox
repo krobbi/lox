@@ -1,0 +1,125 @@
+// A map of keys to values.
+var Map;
+
+{
+	// A node of a map.
+	class Node {
+		// Initialize the map node from its key, value, and next map node.
+		init(key, value, next) {
+			// The map node's key.
+			this.key = key;
+			
+			// The map node's value.
+			this.value = value;
+			
+			// The map node's next map node.
+			this.next = next;
+		}
+	}
+	
+	// An iterator for a map.
+	class Iter {
+		// Initialize the map iterator from its next map node.
+		init(next) {
+			// The map iterator's next map node.
+			this._next = next;
+		}
+		
+		// Get whether the map iterator has a next key.
+		hasNext() {
+			return this._next != nil;
+		}
+		
+		// Get the next key from the map iterator.
+		getNext() {
+			var next = this._next;
+			
+			if (next) {
+				this._next = next.next;
+				return next.key;
+			} else {
+				return nil;
+			}
+		}
+	}
+	
+	// A map's implementation.
+	class Impl {
+		// Initialize the map.
+		init() {
+			// The most recently created node of the map.
+			this._head = nil;
+		}
+		
+		// Get whether the map contains a key.
+		has(key) {
+			return this._find(key) != nil;
+		}
+		
+		// Get a value from the map from its key.
+		get(key) {
+			return this.getDefault(key, nil);
+		}
+		
+		// Get a value from the map from its key, or return a default value.
+		getDefault(key, default) {
+			var node = this._find(key);
+			
+			if (node) {
+				return node.value;
+			} else {
+				return default;
+			}
+		}
+		
+		// Set a key-value pair in the map.
+		set(key, value) {
+			var node = this._find(key);
+			
+			if (node) {
+				node.value = value;
+			} else {
+				this._head = Node(key, value, this._head);
+			}
+		}
+		
+		// Remove a key from the map.
+		remove(key) {
+			var prev = nil;
+			var node = this._head;
+			
+			while (node) {
+				if (node.key == key) {
+					if (prev) {
+						prev.next = node.next;
+					} else {
+						this._head = node.next;
+					}
+					
+					return;
+				}
+				
+				prev = node;
+				node = node.next;
+			}
+		}
+		
+		// Create an iterator for the map's keys.
+		iter() {
+			return Iter(this._head);
+		}
+		
+		// Find a node in the map from its key.
+		_find(key) {
+			for (var node = this._head; node; node = node.next) {
+				if (node.key == key) {
+					return node;
+				}
+			}
+			
+			return nil;
+		}
+	}
+	
+	Map = Impl;
+}

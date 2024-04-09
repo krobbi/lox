@@ -1,0 +1,181 @@
+// A list of elements.
+var List;
+
+{
+	// A node of a list.
+	class Node {
+		// Initialize the list node from its element and connecting list nodes.
+		init(elem, prev, next) {
+			// The list node's element.
+			this.elem = elem;
+			
+			// The list node's previous list node.
+			this.prev = prev;
+			
+			// The list node's next list node.
+			this.next = next;
+		}
+	}
+	
+	// An iterator for a list.
+	class Iter {
+		// Initialize the list iterator from its next list node.
+		init(next) {
+			// The list iterator's next list node.
+			this._next = next;
+		}
+		
+		// Get whether the list iterator has a next element.
+		hasNext() {
+			return this._next != nil;
+		}
+		
+		// Get the next element from the list iterator.
+		getNext() {
+			var next = this._next;
+			
+			if (next) {
+				this._next = next.next;
+				return next.elem;
+			} else {
+				return nil;
+			}
+		}
+	}
+	
+	// A list's implementation.
+	class Impl {
+		// Initialize the list.
+		init() {
+			this.clear();
+		}
+		
+		// Get whether the list is empty.
+		isEmpty() {
+			return !this._head;
+		}
+		
+		// Get whether the list contains an element.
+		has(elem) {
+			var node = this._head;
+			
+			while (node) {
+				if (node.elem == elem) {
+					return true;
+				}
+				
+				node = node.next;
+			}
+			
+			return false;
+		}
+		
+		// Get an element from the list from its index.
+		get(index) {
+			var node = this._find(index);
+			
+			if (node) {
+				return node.elem;
+			} else {
+				return nil;
+			}
+		}
+		
+		// Get the number of elements in the list.
+		getLength() {
+			return this._length;
+		}
+		
+		// Set an element in the list at an index.
+		set(index, elem) {
+			var node = this._find(index);
+			
+			if (node) {
+				node.elem = elem;
+			}
+		}
+		
+		// Clear the list.
+		clear() {
+			// The number of elements in the list.
+			this._length = 0;
+			
+			// The front node of the list.
+			this._head = nil;
+			
+			// The back node of the list.
+			this._tail = nil;
+		}
+		
+		// Append an element to the back of the list and return the list.
+		pushBack(elem) {
+			var tail = this._tail;
+			var node = Node(elem, tail, nil);
+			
+			if (tail) {
+				tail.next = node;
+			} else {
+				this._head = node;
+			}
+			
+			this._tail = node;
+			this._length = this._length + 1;
+			return this;
+		}
+		
+		// Return an element from the back of the list.
+		peekBack() {
+			var tail = this._tail;
+			
+			if (tail) {
+				return tail.elem;
+			} else {
+				return nil;
+			}
+		}
+		
+		// Remove and return an element from the back of the list.
+		popBack() {
+			var tail = this._tail;
+			
+			if (tail) {
+				var prev = tail.prev;
+				this._tail = prev;
+				
+				if (prev) {
+					prev.next = nil;
+				} else {
+					this._head = nil;
+				}
+				
+				this._length = this._length - 1;
+				return tail.elem;
+			} else {
+				return nil;
+			}
+		}
+		
+		// Create an iterator for the front of the list.
+		iter() {
+			return Iter(this._head);
+		}
+		
+		// Find a node in the list from its index.
+		_find(index) {
+			if (index < this._length and index >= 0) {
+				var node = this._head;
+				
+				while (index >= 1) {
+					index = index - 1;
+					node = node.next;
+				}
+				
+				return node;
+			} else {
+				return nil;
+			}
+		}
+	}
+	
+	List = Impl;
+}

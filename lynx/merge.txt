@@ -7,12 +7,8 @@
 
 # Standard library:
 <call_main>
-<collections/list/node>
-<collections/list/iterator>
-<collections/list>
-<collections/map/node>
-<collections/map/iterator>
-<collections/map>
+<list>
+<map>
 
 # Log:
 log/char.lox
