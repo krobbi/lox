@@ -1,3 +1,4 @@
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -293,6 +294,13 @@ static Value strofExtension(int argCount, Value *args) {
 	return OBJ_VAL(takeString(chars, 1));
 }
 
+// The native trunc extension function.
+static Value truncExtension(int argCount, Value *args) {
+	PARAMS_1(IS_NUMBER);
+	double number = trunc(AS_NUMBER(args[0]));
+	return NUMBER_VAL(number);
+}
+
 #undef PARAMS_0
 #undef PARAMS_1
 #undef PARAMS_2
@@ -324,6 +332,7 @@ void defineExtensions(DefineNativeFn defineNative) {
 	defineNative("__stdout", stdoutExtension);
 	defineNative("__strlen", strlenExtension);
 	defineNative("__strof", strofExtension);
+	defineNative("__trunc", truncExtension);
 }
 
 void freeExtensions() {

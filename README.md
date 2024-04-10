@@ -20,6 +20,7 @@ __Copyright &copy; 2024 Chris Roberts__ (Krobbizoid).
    * [`__stdout`](#__stdout---int)
    * [`__strlen`](#__strlentext-string---int)
    * [`__strof`](#__strofbyte-int---string--nil)
+   * [`__trunc`](#__truncnumber-float---int)
 3. [License](#license)
 
 # About
@@ -114,6 +115,9 @@ Return the length of `text` in bytes.
 ## `__strof(byte: int) -> string | nil`
 Return a single-byte string containing the byte `byte`. Returns `nil` if `byte`
 is less than `1` or greater than `255`.
+
+## `__trunc(number: float) -> int`
+Return the number `number` with the fractional part truncated.
 
 # License
 This implementation of Lox is released under the MIT License:  
