@@ -1,5 +1,7 @@
 // #import <map>
 
+// #import "token_spacing.lox"
+
 // An enumeration of token types.
 class TokenType {
 	// Initialize the token type enumeration.
@@ -9,6 +11,9 @@ class TokenType {
 		
 		// A map of token types to lexemes.
 		this._typeLexemes = Map();
+		
+		// A map of token types to token spacings.
+		this._typeSpacings = Map();
 		
 		// A map of characters to token types.
 		this._charTypes = Map();
@@ -36,9 +41,15 @@ class TokenType {
 			return type;
 		}
 		
-		// Define a literal token type from its name.
-		fun defineLiteral(name) {
-			return defineToken(name, nil);
+		// Define a literal token type from its name and token spacing.
+		fun defineLiteral(name, spacing) {
+			var type = defineToken(name, nil);
+			
+			if (spacing) {
+				this._typeSpacings.set(type, spacing);
+			}
+			
+			return type;
 		}
 		
 		// Define a fixed-lexeme token type from its lexeme.
@@ -56,6 +67,7 @@ class TokenType {
 		// Define a keyword token type from its lexeme.
 		fun defineKeyword(lexeme) {
 			var type = defineFixed(lexeme);
+			this._typeSpacings.set(type, TokenSpacing.WORD);
 			this._keywordTypes.set(lexeme, type);
 			return type;
 		}
@@ -63,6 +75,7 @@ class TokenType {
 		// Define a directive token type from its keyword.
 		fun defineDirective(keyword) {
 			var type = defineFixed("#" + keyword);
+			this._typeSpacings.set(type, TokenSpacing.DIRECTIVE);
 			this._directiveTypes.set(keyword, type);
 			return type;
 		}
@@ -125,13 +138,13 @@ class TokenType {
 		this.LESS_EQUAL = defineFixed("<=");
 		
 		// An identifier token's type.
-		this.IDENTIFIER = defineLiteral("identifier");
+		this.IDENTIFIER = defineLiteral("identifier", TokenSpacing.WORD);
 		
 		// A string token's type.
-		this.STRING = defineLiteral("string");
+		this.STRING = defineLiteral("string", nil);
 		
 		// A number token's type.
-		this.NUMBER = defineLiteral("number");
+		this.NUMBER = defineLiteral("number", TokenSpacing.NUMBER);
 		
 		// An `and` token's type.
 		this.AND = defineKeyword("and");
@@ -182,10 +195,10 @@ class TokenType {
 		this.WHILE = defineKeyword("while");
 		
 		// A whitespace, comment, or syntax error token's type.
-		this.ERROR = defineLiteral("error");
+		this.ERROR = defineLiteral("error", nil);
 		
 		// An end-of-file token's type.
-		this.EOF = defineLiteral("end-of-file");
+		this.EOF = defineLiteral("end-of-file", nil);
 		
 		// A `#import` token's type.
 		this.HASH_IMPORT = defineDirective("import");
@@ -209,6 +222,11 @@ class TokenType {
 	// Get a token type's lexeme.
 	getLexeme(type) {
 		return this._typeLexemes.get(type);
+	}
+	
+	// Get a token type's token spacing.
+	getSpacing(type) {
+		return this._typeSpacings.getDefault(type, TokenSpacing.NONE);
 	}
 	
 	// Represent a token type as a string.

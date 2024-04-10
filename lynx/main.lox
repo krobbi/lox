@@ -8,21 +8,7 @@
 // #import "config/config.lox"
 // #import "importer/importer.lox"
 // #import "log/char.lox"
-
-// Write a message to an output stream.
-fun write(message, stream) {
-	var length = __strlen(message);
-	
-	for (var i = 0; i < length; i = i + 1) {
-		__fputc(__chrat(message, i), stream);
-	}
-}
-
-// Write a message to an output stream with a line feed.
-fun writeLine(message, stream) {
-	write(message, stream);
-	__fputc(Char.LF, stream);
-}
+// #import "token/token_spacing.lox"
 
 // Write a program to an output path with a log.
 fun writeProgram(program, path, log) {
@@ -35,33 +21,38 @@ fun writeProgram(program, path, log) {
 	
 	var tokens = List();
 	EmitTokensVisitor(tokens.pushBack).visit(program);
+	var prevSpacing = TokenSpacing.NONE;
 	var width = 0;
-	var needsSpace = false;
 	
 	for (var iter = tokens.iter(); iter.hasNext();) {
-		var lexeme = iter.getNext().getLexeme();
-		var length = __strlen(lexeme);
+		var token = iter.getNext();
+		var spacing = token.getSpacing();
+		var hasSpace = TokenSpacing.between(prevSpacing, spacing);
 		
-		if (needsSpace) {
+		if (hasSpace) {
 			width = width + 1;
 		}
 		
+		var lexeme = token.getLexeme();
+		var length = __strlen(lexeme);
+		
 		if (width + length > 80) {
-			writeLine("", stream);
+			__fputc(Char.LF, stream);
 			width = 0;
-			needsSpace = false;
+			hasSpace = false;
+		} else if (hasSpace) {
+			__fputc(Char.SPACE, stream);
 		}
 		
-		if (needsSpace) {
-			write(" ", stream);
+		for (var i = 0; i < length; i = i + 1) {
+			__fputc(__chrat(lexeme, i), stream);
 		}
 		
-		write(lexeme, stream);
 		width = width + length;
-		needsSpace = true;
+		prevSpacing = spacing;
 		
 		if (!iter.hasNext()) {
-			writeLine("", stream);
+			__fputc(Char.LF, stream);
 		}
 	}
 	

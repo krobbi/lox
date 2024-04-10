@@ -20,6 +20,7 @@ log/log.lox
 config/config.lox
 
 # Token:
+token/token_spacing.lox
 token/token_type.lox
 token/token.lox
 

@@ -1,0 +1,29 @@
+// An enumeration of token spacings.
+class TokenSpacing {
+	// Initialize the token spacing enumeration.
+	init() {
+		// Token never needs separation from other tokens.
+		this.NONE = 0;
+		
+		// Token is an identifier or keyword.
+		this.WORD = 1;
+		
+		// Token is a number.
+		this.NUMBER = 2;
+		
+		// Token is a directive.
+		this.DIRECTIVE = 3;
+	}
+	
+	// Get whether there should be a separation between two token spacings.
+	between(first, second) {
+		if (second == this.WORD or second == this.NUMBER) {
+			return first == this.WORD or first == this.DIRECTIVE;
+		} else {
+			return false;
+		}
+	}
+}
+
+// The enumeration of token spacings.
+var TokenSpacing = TokenSpacing();

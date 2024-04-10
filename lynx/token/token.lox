@@ -1,5 +1,6 @@
 // #import "/ast/literal/literal.lox"
 // #import "/ast/literal/literal_type.lox"
+// #import "/log/char.lox"
 // #import "token_type.lox"
 
 // A token of Lox code.
@@ -45,6 +46,11 @@ class Token {
 		} else {
 			return TokenType.getLexeme(type);
 		}
+	}
+	
+	// Get the token's token spacing.
+	getSpacing() {
+		return TokenType.getSpacing(this._type);
 	}
 	
 	// Represent the token as a string.
