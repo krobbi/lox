@@ -38,14 +38,14 @@ fun run(aPath, bPath) {
 	var aStream = __fopenr(aPath);
 	
 	if (!aStream) {
-		printError("Could not open 'A' file '" + aPath + "'.");
+		printError("Could not open 'A' file '" + aPath + "'. File may not exist.");
 		return false;
 	}
 	
 	var bStream = __fopenr(bPath);
 	
 	if (!bStream) {
-		printError("Could not open 'B' file '" + bPath + "'.");
+		printError("Could not open 'B' file '" + bPath + "'. File may not exist.");
 		__fclose(aStream);
 		return false;
 	}
