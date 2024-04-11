@@ -14,11 +14,14 @@ class ResolverWalker < Walker {
 		// The resolver walker's log.
 		this._log = config.getLog();
 		
-		// The resolver walker's optional current initializer name.
-		this._initializerName = nil;
-		
 		// The resolver walker's scope stack.
 		this._scopes = List();
+		
+		// Whether the resolver walker's current branch has returned.
+		this._branchReturned = false;
+		
+		// The resolver walker's optional current initializer name.
+		this._initializerName = nil;
 	}
 	
 	// Resolve a program node.
@@ -48,7 +51,7 @@ class ResolverWalker < Walker {
 	// Resolve a block statement node.
 	visitBlockStmt(node) {
 		this._beginScope(this._getClassType(), this._getFunctionType());
-		super.visitBlockStmt(node);
+		this._resolveStatements(node.getStatements());
 		this._endScope();
 	}
 	
@@ -96,12 +99,71 @@ class ResolverWalker < Walker {
 		this._endScope();
 	}
 	
+	// Resolve an if statement node.
+	visitIfStmt(node) {
+		// Return a list of definitions from a branch.
+		fun defineBranch(branch) {
+			var undefinedSymbols = this._getUndefinedSymbols();
+			this._branchReturned = false;
+			this.visit(branch);
+			var definitions = List();
+			
+			for (var iter = undefinedSymbols.iter(); iter.hasNext();) {
+				var symbol = iter.getNext();
+				
+				if (symbol.defined) {
+					symbol.defined = false;
+					definitions.pushBack(symbol);
+				}
+			}
+			
+			return definitions;
+		}
+		
+		// Define a list of symbols.
+		fun defineSymbols(symbols) {
+			for (var iter = symbols.iter(); iter.hasNext();) {
+				iter.getNext().defined = true;
+			}
+		}
+		
+		this.visit(node.getCondition());
+		var thenDefinitions = defineBranch(node.getThenBranch());
+		var thenReturned = this._branchReturned;
+		this._branchReturned = false;
+		var elseBranch = node.getElseBranch();
+		
+		if (elseBranch) {
+			var elseDefinitions = defineBranch(elseBranch);
+			var elseReturned = this._branchReturned;
+			this._branchReturned = false;
+			
+			if (thenReturned and elseReturned) {
+				this._branchReturned = true;
+			} else if (thenReturned) {
+				defineSymbols(elseDefinitions);
+			} else if (elseReturned) {
+				defineSymbols(thenDefinitions);
+			} else {
+				for (var iter = thenDefinitions.iter(); iter.hasNext();) {
+					var symbol = iter.getNext();
+					
+					if (elseDefinitions.has(symbol)) {
+						symbol.defined = true;
+					}
+				}
+			}
+		}
+	}
+	
 	// Resolve a return statement node.
 	visitReturnStmt(node) {
 		var functionType = this._getFunctionType();
 		
 		if (functionType == FunctionType.NONE) {
 			this._logError("Can't return from top-level code.", node);
+		} else {
+			this._branchReturned = true;
 		}
 		
 		var value = node.getValue();
@@ -125,9 +187,18 @@ class ResolverWalker < Walker {
 			this._initializerName = name;
 			this.visit(initializer);
 			this._initializerName = nil;
+			this._define(name);
 		}
-		
-		this._define(name);
+	}
+	
+	// Resolve a while statement node.
+	visitWhileStmt(node) {
+		this.visit(node.getCondition());
+		var undefinedSymbols = this._getUndefinedSymbols();
+		this._branchReturned = false;
+		this.visit(node.getBody());
+		this._branchReturned = false;
+		this._undefineSymbols(undefinedSymbols);
 	}
 	
 	// Resolve an assign expression node.
@@ -143,6 +214,14 @@ class ResolverWalker < Walker {
 		} else {
 			this._define(name);
 		}
+	}
+	
+	// Resolve a logical expression node.
+	visitLogicalExpr(node) {
+		this.visit(node.getLeft());
+		var undefinedSymbols = this._getUndefinedSymbols();
+		this.visit(node.getRight());
+		this._undefineSymbols(undefinedSymbols);
 	}
 	
 	// Resolve a super expression node.
@@ -200,6 +279,41 @@ class ResolverWalker < Walker {
 		return nil;
 	}
 	
+	// Get a list of all declared but undefined symbols in the scope stack.
+	_getUndefinedSymbols() {
+		var symbols = List();
+		
+		for (var iter = this._scopes.iter(); iter.hasNext();) {
+			var scopeSymbols = iter.getNext().getUndefinedSymbols();
+			
+			for (var iter = scopeSymbols.iter(); iter.hasNext();) {
+				symbols.pushBack(iter.getNext());
+			}
+		}
+		
+		return symbols;
+	}
+	
+	// Undefine a list of symbols.
+	_undefineSymbols(symbols) {
+		for (var iter = symbols.iter(); iter.hasNext();) {
+			iter.getNext().defined = false;
+		}
+	}
+	
+	// Resolve a list of statements.
+	_resolveStatements(statements) {
+		for (var iter = statements.iter(); iter.hasNext();) {
+			var node = iter.getNext();
+			
+			if (this._branchReturned) {
+				this._logError("Statement is unreachable.", node);
+			}
+			
+			this.visit(node);
+		}
+	}
+	
 	// Resolve a function statement node in the current scope.
 	_resolveFunction(node) {
 		var span = node.getSpan();
@@ -210,7 +324,9 @@ class ResolverWalker < Walker {
 			this._define(name);
 		}
 		
-		super.visitFunctionStmt(node);
+		this._branchReturned = false;
+		this._resolveStatements(node.getBody());
+		this._branchReturned = false;
 	}
 	
 	// Begin a new scope from its class type and function type.

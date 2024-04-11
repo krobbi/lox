@@ -1,3 +1,4 @@
+// #import <list>
 // #import <map>
 
 // #import "symbol.lox"
@@ -29,6 +30,22 @@ class Scope {
 	// Get an optional symbol from the scope from its name.
 	getSymbol(name) {
 		return this._symbols.get(name);
+	}
+	
+	// Get a list of all declared but undefined symbols in the scope.
+	getUndefinedSymbols() {
+		var symbols = List();
+		
+		for (var iter = this._symbols.iter(); iter.hasNext();) {
+			var name = iter.getNext();
+			var symbol = this._symbols.get(name);
+			
+			if (!symbol.defined) {
+				symbols.pushBack(symbol);
+			}
+		}
+		
+		return symbols;
 	}
 	
 	// Declare a symbol in the scope from its name.
