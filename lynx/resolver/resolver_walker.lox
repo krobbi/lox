@@ -14,6 +14,9 @@ class ResolverWalker < Walker {
 		// The resolver walker's log.
 		this._log = config.getLog();
 		
+		// The resolver walker's optional current initializer name.
+		this._initializerName = nil;
+		
 		// The resolver walker's scope stack.
 		this._scopes = List();
 	}
@@ -57,8 +60,8 @@ class ResolverWalker < Walker {
 		var superclass = node.getSuperclass();
 		
 		if (superclass) {
-			if (superclass.getName() == node.getName()) {
-				this._logError("A class can't inherit from itself.", superclass);
+			if (superclass.getName() == name) {
+				this._logError("Class '" + name + "' can't inherit from itself.", superclass);
 			}
 			
 			this.visit(superclass);
@@ -119,10 +122,26 @@ class ResolverWalker < Walker {
 		var initializer = node.getInitializer();
 		
 		if (initializer) {
+			this._initializerName = name;
 			this.visit(initializer);
+			this._initializerName = nil;
 		}
 		
 		this._define(name);
+	}
+	
+	// Resolve an assign expression node.
+	visitAssignExpr(node) {
+		super.visitAssignExpr(node);
+		var name = node.getName();
+		
+		if (!this._hasDeclared(name)) {
+			this._logError("Can't assign undeclared variable '" + name + "'.", node);
+		} else if (name == this._initializerName) {
+			this._logError("Can't assign variable '" + name + "' in its own initializer.", node);
+		} else {
+			this._define(name);
+		}
 	}
 	
 	// Resolve a super expression node.
@@ -145,14 +164,24 @@ class ResolverWalker < Walker {
 	
 	// Resolve a variable expression node.
 	visitVariableExpr(node) {
-		var scope = this._scopes.peekBack();
 		var name = node.getName();
 		
-		if (scope.hasDeclared(name) and !scope.hasDefined(name)) {
+		if (name == this._initializerName) {
 			this._logError("Can't read variable '" + name + "' in its own initializer.", node);
 		} else if (!this._hasDefined(name)) {
 			this._logError("Variable '" + name + "' is undefined in the current scope", node);
 		}
+	}
+	
+	// Get whether a name is declared in the current scope.
+	_hasDeclared(name) {
+		for (var i = this._scopes.getLength() - 1; i >= 0; i = i - 1) {
+			if (this._scopes.get(i).hasDeclared(name)) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	// Get whether a name is defined in the current scope.
