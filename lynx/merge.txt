@@ -27,8 +27,8 @@ token/token.lox
 # AST:
 ast/literal/literal_type.lox
 ast/literal/literal.lox
-ast/assignment_target.lox
 ast/node.lox
+ast/visitor.lox
 
 # Expression AST nodes:
 ast/nodes/exprs/assign_expr_node.lox
@@ -61,12 +61,12 @@ ast/nodes/module_node.lox
 ast/nodes/program_node.lox
 
 # AST visitors:
-ast/visitor.lox
 ast/visitors/emit_tokens_visitor.lox
-ast/visitors/get_assignment_target_visitor.lox
 
 # Parser:
 parser/scanner.lox
+parser/assignment_target.lox
+parser/get_assignment_target_visitor.lox
 parser/parser.lox
 
 # Importer:

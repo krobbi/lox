@@ -26,10 +26,10 @@
 // #import "/ast/nodes/import_node.lox"
 // #import "/ast/nodes/module_node.lox"
 // #import "/ast/nodes/program_node.lox"
-// #import "/ast/visitors/get_assignment_target_visitor.lox"
-// #import "/ast/assignment_target.lox"
 // #import "/log/span.lox"
 // #import "/token/token_type.lox"
+// #import "assignment_target.lox"
+// #import "get_assignment_target_visitor.lox"
 // #import "scanner.lox"
 
 // Parses a module AST from an input stream.
