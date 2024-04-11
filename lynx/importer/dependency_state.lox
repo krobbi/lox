@@ -13,5 +13,4 @@ class DependencyState {
 	}
 }
 
-// The enumeration of dependency states.
-var DependencyState = DependencyState();
+DependencyState = DependencyState();

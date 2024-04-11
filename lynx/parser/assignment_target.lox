@@ -13,5 +13,4 @@ class AssignmentTarget {
 	}
 }
 
-// The enumeration of assignment targets.
-var AssignmentTarget = AssignmentTarget();
+AssignmentTarget = AssignmentTarget();

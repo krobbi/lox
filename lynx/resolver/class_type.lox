@@ -13,5 +13,4 @@ class ClassType {
 	}
 }
 
-// The enumeration of class types.
-var ClassType = ClassType();
+ClassType = ClassType();

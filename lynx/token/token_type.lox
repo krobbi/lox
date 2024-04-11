@@ -241,5 +241,4 @@ class TokenType {
 	}
 }
 
-// The enumeration of token types.
-var TokenType = TokenType();
+TokenType = TokenType();

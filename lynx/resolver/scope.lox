@@ -1,3 +1,5 @@
+// #import <map>
+
 // A scope of an AST.
 class Scope {
 	// Initialize the scope from its class type and function type.
@@ -7,6 +9,19 @@ class Scope {
 		
 		// The scope's function type.
 		this._functionType = functionType;
+		
+		// A map of declared names to their definition states.
+		this._names = Map();
+	}
+	
+	// Get whether the scope contains a declared name.
+	hasDeclared(name) {
+		return this._names.has(name);
+	}
+	
+	// Get whether the scope contains a defined name.
+	hasDefined(name) {
+		return this._names.get(name) == true;
 	}
 	
 	// Get the scope's class type.
@@ -17,5 +32,15 @@ class Scope {
 	// Get the scope's function type.
 	getFunctionType() {
 		return this._functionType;
+	}
+	
+	// Declare a name in the scope.
+	declare(name) {
+		this._names.set(name, false);
+	}
+	
+	// Define a name in the scope.
+	define(name) {
+		this._names.set(name, true);
 	}
 }

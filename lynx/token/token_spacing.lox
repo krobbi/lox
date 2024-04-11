@@ -25,5 +25,4 @@ class TokenSpacing {
 	}
 }
 
-// The enumeration of token spacings.
-var TokenSpacing = TokenSpacing();
+TokenSpacing = TokenSpacing();

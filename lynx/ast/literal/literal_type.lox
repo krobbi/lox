@@ -16,5 +16,4 @@ class LiteralType {
 	}
 }
 
-// The enumeration of literal types.
-var LiteralType = LiteralType();
+LiteralType = LiteralType();

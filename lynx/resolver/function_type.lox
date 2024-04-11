@@ -16,5 +16,4 @@ class FunctionType {
 	}
 }
 
-// The enumeration of function types.
-var FunctionType = FunctionType();
+FunctionType = FunctionType();

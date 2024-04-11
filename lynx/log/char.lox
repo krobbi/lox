@@ -146,5 +146,4 @@ class Char {
 	}
 }
 
-// The enumeration of characters.
-var Char = Char();
+Char = Char();
