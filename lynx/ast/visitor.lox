@@ -2,6 +2,7 @@
 class Visitor {
 	// Initialize the visitor.
 	init() {}
+	
 	// Visit a node.
 	visit(node) {
 		return node.visit(this);
