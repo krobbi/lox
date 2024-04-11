@@ -1,5 +1,7 @@
 // #import <map>
 
+// #import "symbol.lox"
+
 // A scope of an AST.
 class Scope {
 	// Initialize the scope from its class type and function type.
@@ -10,18 +12,8 @@ class Scope {
 		// The scope's function type.
 		this._functionType = functionType;
 		
-		// A map of declared names to their definition states.
-		this._names = Map();
-	}
-	
-	// Get whether the scope contains a declared name.
-	hasDeclared(name) {
-		return this._names.has(name);
-	}
-	
-	// Get whether the scope contains a defined name.
-	hasDefined(name) {
-		return this._names.get(name) == true;
+		// A map of declared names to their symbols.
+		this._symbols = Map();
 	}
 	
 	// Get the scope's class type.
@@ -34,13 +26,13 @@ class Scope {
 		return this._functionType;
 	}
 	
-	// Declare a name in the scope.
-	declare(name) {
-		this._names.set(name, false);
+	// Get an optional symbol from the scope from its name.
+	getSymbol(name) {
+		return this._symbols.get(name);
 	}
 	
-	// Define a name in the scope.
-	define(name) {
-		this._names.set(name, true);
+	// Declare a symbol in the scope from its name.
+	declare(name) {
+		this._symbols.set(name, Symbol());
 	}
 }

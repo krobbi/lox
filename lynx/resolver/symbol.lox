@@ -1,0 +1,8 @@
+// A symbol of a scope.
+class Symbol {
+	// Initialize the symbol.
+	init() {
+		// Whether the symbol is defined.
+		this.defined = false;
+	}
+}

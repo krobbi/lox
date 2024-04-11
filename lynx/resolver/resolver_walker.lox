@@ -24,23 +24,23 @@ class ResolverWalker < Walker {
 	// Resolve a program node.
 	visitProgram(node) {
 		this._beginScope(ClassType.NONE, FunctionType.NONE);
-		this._define("clock");
-		this._define("__argc");
-		this._define("__argv");
-		this._define("__chrat");
-		this._define("__exit");
-		this._define("__fclose");
-		this._define("__fgetc");
-		this._define("__fopenr");
-		this._define("__fopenw");
-		this._define("__fputc");
-		this._define("__ftoa");
-		this._define("__stderr");
-		this._define("__stdin");
-		this._define("__stdout");
-		this._define("__strlen");
-		this._define("__strof");
-		this._define("__trunc");
+		this._defineNative("clock");
+		this._defineNative("__argc");
+		this._defineNative("__argv");
+		this._defineNative("__chrat");
+		this._defineNative("__exit");
+		this._defineNative("__fclose");
+		this._defineNative("__fgetc");
+		this._defineNative("__fopenr");
+		this._defineNative("__fopenw");
+		this._defineNative("__fputc");
+		this._defineNative("__ftoa");
+		this._defineNative("__stderr");
+		this._defineNative("__stdin");
+		this._defineNative("__stdout");
+		this._defineNative("__strlen");
+		this._defineNative("__strof");
+		this._defineNative("__trunc");
 		super.visitProgram(node);
 		this._endScope();
 	}
@@ -108,7 +108,7 @@ class ResolverWalker < Walker {
 		
 		if (value) {
 			if (functionType == FunctionType.INITIALIZER) {
-				this._logError("Can't return a value from an initializer", value);
+				this._logError("Can't return a value from an initializer.", value);
 			}
 			
 			this.visit(value);
@@ -134,8 +134,9 @@ class ResolverWalker < Walker {
 	visitAssignExpr(node) {
 		super.visitAssignExpr(node);
 		var name = node.getName();
+		var symbol = this._getSymbol(name);
 		
-		if (!this._hasDeclared(name)) {
+		if (!symbol) {
 			this._logError("Can't assign undeclared variable '" + name + "'.", node);
 		} else if (name == this._initializerName) {
 			this._logError("Can't assign variable '" + name + "' in its own initializer.", node);
@@ -165,36 +166,15 @@ class ResolverWalker < Walker {
 	// Resolve a variable expression node.
 	visitVariableExpr(node) {
 		var name = node.getName();
+		var symbol = this._getSymbol(name);
 		
 		if (name == this._initializerName) {
 			this._logError("Can't read variable '" + name + "' in its own initializer.", node);
-		} else if (!this._hasDefined(name)) {
-			this._logError("Variable '" + name + "' is undefined in the current scope", node);
+		} else if (!symbol) {
+			this._logError("Variable '" + name + "' is undeclared in the current scope.", node);
+		} else if (!symbol.defined) {
+			this._logError("Can't read undefined variable '" + name + "'.", node);
 		}
-	}
-	
-	// Get whether a name is declared in the current scope.
-	_hasDeclared(name) {
-		for (var i = this._scopes.getLength() - 1; i >= 0; i = i - 1) {
-			if (this._scopes.get(i).hasDeclared(name)) {
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
-	// Get whether a name is defined in the current scope.
-	_hasDefined(name) {
-		for (var i = this._scopes.getLength() - 1; i >= 0; i = i - 1) {
-			var scope = this._scopes.get(i);
-			
-			if (scope.hasDeclared(name)) {
-				return scope.hasDefined(name);
-			}
-		}
-		
-		return false;
 	}
 	
 	// Get the current scope's class type.
@@ -205,6 +185,19 @@ class ResolverWalker < Walker {
 	// Get the current scope's function type.
 	_getFunctionType() {
 		return this._scopes.peekBack().getFunctionType();
+	}
+	
+	// Get an optional symbol from the scope stack from its name.
+	_getSymbol(name) {
+		for (var i = this._scopes.getLength() - 1; i >= 0; i = i - 1) {
+			var symbol = this._scopes.get(i).getSymbol(name);
+			
+			if (symbol) {
+				return symbol;
+			}
+		}
+		
+		return nil;
 	}
 	
 	// Resolve a function statement node in the current scope.
@@ -244,7 +237,7 @@ class ResolverWalker < Walker {
 	_declare(name, span) {
 		var scope = this._scopes.peekBack();
 		
-		if (scope.hasDeclared(name)) {
+		if (scope.getSymbol(name)) {
 			this._log.logErrorAt(
 					"Variable '" + name + "' is already declared in the current scope.", span);
 		}
@@ -252,9 +245,15 @@ class ResolverWalker < Walker {
 		scope.declare(name);
 	}
 	
-	// Define a name in the current scope.
+	// Define a name in the scope stack.
 	_define(name) {
-		this._scopes.peekBack().define(name);
+		this._getSymbol(name).defined = true;
+	}
+	
+	// Define a native function in the current scope.
+	_defineNative(name) {
+		this._declare(name, nil);
+		this._define(name);
 	}
 	
 	// Log an error message at a node's span.

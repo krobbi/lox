@@ -75,6 +75,7 @@ importer/importer.lox
 # Resolver:
 resolver/class_type.lox
 resolver/function_type.lox
+resolver/symbol.lox
 resolver/scope.lox
 resolver/resolver_walker.lox
 
