@@ -1,0 +1,17 @@
+// An enumeration of class types.
+class ClassType {
+	// Initialize the class type enumeration.
+	init() {
+		// Outside a class definition.
+		this.NONE = 0;
+		
+		// Inside a class definition without a superclass.
+		this.CLASS = 1;
+		
+		// Inside a class definition with a superclass.
+		this.SUBCLASS = 2;
+	}
+}
+
+// The enumeration of class types.
+var ClassType = ClassType();

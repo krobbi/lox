@@ -72,6 +72,12 @@ importer/dependency_state.lox
 importer/dependency.lox
 importer/importer.lox
 
+# Resolver:
+resolver/class_type.lox
+resolver/function_type.lox
+resolver/scope.lox
+resolver/resolver_walker.lox
+
 # Writer:
 writer/emit_tokens_walker.lox
 writer/writer.lox

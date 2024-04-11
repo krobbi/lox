@@ -62,9 +62,13 @@ class Walker < Visitor {
 	
 	// Walk an if statement node.
 	visitIfStmt(node) {
-		this.visit(iter.getCondition());
-		this.visit(iter.getThenBranch());
-		var elseBranch = iter.getElseBranch();
+		this.visit(node.getCondition());
+		this.visit(node.getThenBranch());
+		var elseBranch = node.getElseBranch();
+		
+		if (elseBranch) {
+			this.visit(elseBranch);
+		}
 	}
 	
 	// Walk a print statement node.

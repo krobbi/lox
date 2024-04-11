@@ -1,0 +1,21 @@
+// A scope of an AST.
+class Scope {
+	// Initialize the scope from its class type and function type.
+	init(classType, functionType) {
+		// The scope's class type.
+		this._classType = classType;
+		
+		// The scope's function type.
+		this._functionType = functionType;
+	}
+	
+	// Get the scope's class type.
+	getClassType() {
+		return this._classType;
+	}
+	
+	// Get the scope's function type.
+	getFunctionType() {
+		return this._functionType;
+	}
+}

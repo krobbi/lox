@@ -6,12 +6,19 @@
 
 // #import "config/config.lox"
 // #import "importer/importer.lox"
+// #import "resolver/resolver_walker.lox"
 // #import "writer/writer.lox"
 
 // Run Lynx from configuration.
 fun run(config) {
 	var program = Importer(config).importProgram();
 	var log = config.getLog();
+	
+	if (log.hasErrors()) {
+		return;
+	}
+	
+	ResolverWalker(config).visit(program);
 	
 	if (log.hasErrors() or !config.getOutputPath()) {
 		return;

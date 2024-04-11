@@ -1,0 +1,20 @@
+// An enumeration of function types.
+class FunctionType {
+	// Initialize the function type enumeration.
+	init() {
+		// Outside a function declaration.
+		this.NONE = 0;
+		
+		// Inside a function declaration.
+		this.FUNCTION = 1;
+		
+		// Inside an initializer method declaration.
+		this.INITIALIZER = 2;
+		
+		// Inside a non-initializer method declaration.
+		this.METHOD = 3;
+	}
+}
+
+// The enumeration of function types.
+var FunctionType = FunctionType();

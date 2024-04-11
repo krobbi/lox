@@ -1,0 +1,142 @@
+// #import <list>
+
+// #import "/ast/walker.lox"
+// #import "class_type.lox"
+// #import "function_type.lox"
+// #import "scope.lox"
+
+// Walks AST nodes and resolves them.
+class ResolverWalker < Walker {
+	// Initialize the resolver walker from configuration.
+	init(config) {
+		super.init();
+		
+		// The resolver walker's log.
+		this._log = config.getLog();
+		
+		// The resolver walker's scope stack.
+		this._scopes = List();
+	}
+	
+	// Resolve a program node.
+	visitProgram(node) {
+		this._beginScope(ClassType.NONE, FunctionType.NONE);
+		super.visitProgram(node);
+		this._endScope();
+	}
+	
+	// Resolve a class statement node.
+	visitClassStmt(node) {
+		var superclass = node.getSuperclass();
+		
+		if (superclass) {
+			if (superclass.getName() == node.getName()) {
+				this._logError("A class can't inherit from itself.", superclass);
+			}
+			
+			this.visit(superclass);
+			this._beginClassScope(ClassType.SUBCLASS);
+		} else {
+			this._beginClassScope(ClassType.CLASS);
+		}
+		
+		for (var iter = node.getMethods().iter(); iter.hasNext();) {
+			var method = iter.getNext();
+			
+			if (method.getName() == "init") {
+				this._beginFunctionScope(FunctionType.INITIALIZER);
+			} else {
+				this._beginFunctionScope(FunctionType.METHOD);
+			}
+			
+			this._resolveFunction(method);
+			this._endScope();
+		}
+		
+		this._endScope();
+	}
+	
+	// Resolve a function statement node.
+	visitFunctionStmt(node) {
+		this._beginFunctionScope(FunctionType.FUNCTION);
+		this._resolveFunction(node);
+		this._endScope();
+	}
+	
+	// Resolve a return statement node.
+	visitReturnStmt(node) {
+		var functionType = this._getFunctionType();
+		
+		if (functionType == FunctionType.NONE) {
+			this._logError("Can't return from top-level code.", node);
+		}
+		
+		var value = node.getValue();
+		
+		if (value) {
+			if (functionType == FunctionType.INITIALIZER) {
+				this._logError("Can't return a value from an initializer", value);
+			}
+			
+			this.visit(value);
+		}
+	}
+	
+	// Resolve a super expression node.
+	visitSuperExpr(node) {
+		var classType = this._getClassType();
+		
+		if (classType == ClassType.NONE) {
+			this._logError("Can't use 'super' outside of a class.", node);
+		} else if (classType != ClassType.SUBCLASS) {
+			this._logError("Can't use 'super' in a class with no superclass.", node);
+		}
+	}
+	
+	// Resolve a this expression node.
+	visitThisExpr(node) {
+		if (this._getClassType() == ClassType.NONE) {
+			this._logError("Can't use 'this' outside of a class.", node);
+		}
+	}
+	
+	// Get the current scope's class type.
+	_getClassType() {
+		return this._scopes.peekBack().getClassType();
+	}
+	
+	// Get the current scope's function type.
+	_getFunctionType() {
+		return this._scopes.peekBack().getFunctionType();
+	}
+	
+	// Resolve a function statement node in the current scope.
+	_resolveFunction(node) {
+		super.visitFunctionStmt(node);
+	}
+	
+	// Begin a new scope from its class type and function type.
+	_beginScope(classType, functionType) {
+		this._scopes.pushBack(Scope(classType, functionType));
+	}
+	
+	// Begin a new class scope from its class type.
+	_beginClassScope(classType) {
+		this._beginScope(classType, this._getFunctionType());
+	}
+	
+	// Begin a new function scope from its function type.
+	_beginFunctionScope(functionType) {
+		this._beginScope(this._getClassType(), functionType);
+	}
+	
+	// End the current scope.
+	_endScope() {
+		this._scopes.popBack();
+	}
+	
+	// Log an error message at a node's span.
+	_logError(message, node) {
+		this._log.logErrorAt(message, node.getSpan());
+	}
+}
