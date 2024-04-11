@@ -1,0 +1,145 @@
+// #import "visitor.lox"
+
+// Walks AST nodes.
+class Walker < Visitor {
+	// Initialize the walker.
+	init() {
+		super.init();
+	}
+	
+	// Walk a node with no defined walker behavior.
+	visitDefault(node) {}
+	
+	// Walk a program node.
+	visitProgram(node) {
+		for (var iter = node.getModules().iter(); iter.hasNext();) {
+			this.visit(iter.getNext());
+		}
+	}
+	
+	// Walk a module node.
+	visitModule(node) {
+		for (var iter = node.getImports().iter(); iter.hasNext();) {
+			this.visit(iter.getNext());
+		}
+		
+		for (var iter = node.getStatements().iter(); iter.hasNext();) {
+			this.visit(iter.getNext());
+		}
+	}
+	
+	// Walk a block statement node.
+	visitBlockStmt(node) {
+		for (var iter = node.getStatements().iter(); iter.hasNext();) {
+			this.visit(iter.getNext());
+		}
+	}
+	
+	// Walk a class statement node.
+	visitClassStmt(node) {
+		var superclass = node.getSuperclass();
+		
+		if (superclass) {
+			this.visit(superclass);
+		}
+		
+		for (var iter = node.getMethods().iter(); iter.hasNext();) {
+			this.visit(iter.getNext());
+		}
+	}
+	
+	// Walk an expression statement node.
+	visitExprStmt(node) {
+		this.visit(node.getExpression());
+	}
+	
+	// Walk a function statement node.
+	visitFunctionStmt(node) {
+		for (var iter = node.getBody().iter(); iter.hasNext();) {
+			this.visit(iter.getNext());
+		}
+	}
+	
+	// Walk an if statement node.
+	visitIfStmt(node) {
+		this.visit(iter.getCondition());
+		this.visit(iter.getThenBranch());
+		var elseBranch = iter.getElseBranch();
+	}
+	
+	// Walk a print statement node.
+	visitPrintStmt(node) {
+		this.visit(node.getExpression());
+	}
+	
+	// Walk a return statement node.
+	visitReturnStmt(node) {
+		var value = node.getValue();
+		
+		if (value) {
+			this.visit(value);
+		}
+	}
+	
+	// Walk a var statement node.
+	visitVarStmt(node) {
+		var initializer = node.getInitializer();
+		
+		if (initializer) {
+			this.visit(initializer);
+		}
+	}
+	
+	// Walk a while statement node.
+	visitWhileStmt(node) {
+		this.visit(node.getCondition());
+		this.visit(node.getBody());
+	}
+	
+	// Walk an assign expression node.
+	visitAssignExpr(node) {
+		this.visit(node.getValue());
+	}
+	
+	// Walk a binary expression node.
+	visitBinaryExpr(node) {
+		this.visit(node.getLeft());
+		this.visit(node.getRight());
+	}
+	
+	// Walk a call expression node.
+	visitCallExpr(node) {
+		this.visit(node.getCallee());
+		
+		for (var iter = node.getArguments().iter(); iter.hasNext();) {
+			this.visit(iter.getNext());
+		}
+	}
+	
+	// Walk a get expression node.
+	visitGetExpr(node) {
+		this.visit(node.getObject());
+	}
+	
+	// Walk a grouping expression node.
+	visitGroupingExpr(node) {
+		this.visit(node.getExpression());
+	}
+	
+	// Walk a logical expression node.
+	visitLogicalExpr(node) {
+		this.visit(node.getLeft());
+		this.visit(node.getRight());
+	}
+	
+	// Walk a set expression node.
+	visitSetExpr(node) {
+		this.visit(node.getObject());
+		this.visit(node.getValue());
+	}
+	
+	// Walk a unary expression node.
+	visitUnaryExpr(node) {
+		this.visit(node.getRight());
+	}
+}

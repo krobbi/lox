@@ -1,0 +1,86 @@
+// #import "/log/char.lox"
+// #import "/token/token_spacing.lox"
+// #import "emit_tokens_walker.lox"
+
+// Writes a program to an output file from configuration.
+class Writer {
+	// Initialize the writer from its configuration.
+	init(config) {
+		// The writer's maximum column number.
+		this._MAX_COLUMN = 80;
+		
+		// The writer's configuration.
+		this._config = config;
+		
+		// The writer's log.
+		this._log = config.getLog();
+		
+		// The writer's output stream.
+		this._stream = nil;
+		
+		// Whether the writer encountered any errors.
+		this._hasErrors = false;
+		
+		// The writer's column number.
+		this._column = 0;
+		
+		// The writer's spacing.
+		this._spacing = TokenSpacing.NONE;
+	}
+	
+	// Write a program to the output file.
+	writeProgram(program) {
+		var path = this._config.getOutputPath();
+		this._stream = __fopenw(path);
+		
+		if (!this._stream) {
+			this._log.logError("Could not open output file '" + path + "'.");
+			return;
+		}
+		
+		EmitTokensWalker(this._writeToken).visit(program);
+		this._writeChar(Char.LF);
+		
+		if (this._hasErrors) {
+			this._log.logError("Could not write to output file '" + path + "'.");
+		}
+		
+		if (!__fclose(this._stream)) {
+			this._log.logError("Could not close output file '" + path + "'.");
+		}
+	}
+	
+	// Write a character to the output file.
+	_writeChar(char) {
+		if (!__fputc(char, this._stream)) {
+			this._hasErrors = true;
+		}
+	}
+	
+	// Write a token to the output file.
+	_writeToken(token) {
+		var spacing = token.getSpacing();
+		var hasSpace = TokenSpacing.between(this._spacing, spacing);
+		
+		if (hasSpace) {
+			this._column = this._column + 1;
+		}
+		
+		var lexeme = token.getLexeme();
+		var length = __strlen(lexeme);
+		
+		if (this._column + length > this._MAX_COLUMN) {
+			this._writeChar(Char.LF);
+			this._column = 0;
+		} else if (hasSpace) {
+			this._writeChar(Char.SPACE);
+		}
+		
+		for (var i = 0; i < length; i = i + 1) {
+			this._writeChar(__chrat(lexeme, i));
+		}
+		
+		this._column = this._column + length;
+		this._spacing = spacing;
+	}
+}

@@ -1,43 +1,25 @@
 // #import "/ast/literal/literal_type.lox"
-// #import "/ast/visitor.lox"
+// #import "/ast/walker.lox"
 // #import "/token/token.lox"
 // #import "/token/token_type.lox"
 
-// Visits AST nodes and emits their tokens to a callback function.
-class EmitTokensVisitor < Visitor {
-	// Initialize the emit tokens visitor from its callback function.
+// Walks AST nodes and emits their tokens to a callback function.
+class EmitTokensWalker < Walker {
+	// Initialize the emit tokens walker from its callback function.
 	init(callback) {
 		super.init();
 		
-		// The emit tokens visitor's callback function.
+		// The emit tokens walker's callback function.
 		this._callback = callback;
 		
 		// Whether the next function statement is a method.
 		this._isMethod = false;
 	}
 	
-	// Emit a program node's tokens.
-	visitProgram(node) {
-		for (var iter = node.getModules().iter(); iter.hasNext();) {
-			this.visit(iter.getNext());
-		}
-	}
-	
-	// Emit a module node's tokens.
-	visitModule(node) {
-		for (var iter = node.getStatements().iter(); iter.hasNext();) {
-			this.visit(iter.getNext());
-		}
-	}
-	
 	// Emit a block statement node's tokens.
 	visitBlockStmt(node) {
 		this._emit(TokenType.LEFT_BRACE);
-		
-		for (var iter = node.getStatements().iter(); iter.hasNext();) {
-			this.visit(iter.getNext());
-		}
-		
+		super.visitBlockStmt(node);
 		this._emit(TokenType.RIGHT_BRACE);
 	}
 	
@@ -64,7 +46,7 @@ class EmitTokensVisitor < Visitor {
 	
 	// Emit an expression statement node's tokens.
 	visitExprStmt(node) {
-		this.visit(node.getExpression());
+		super.visitExprStmt(node);
 		this._emit(TokenType.SEMICOLON);
 	}
 	
@@ -115,19 +97,14 @@ class EmitTokensVisitor < Visitor {
 	// Emit a print statement node's tokens.
 	visitPrintStmt(node) {
 		this._emit(TokenType.PRINT);
-		this.visit(node.getExpression());
+		super.visitPrintStmt(node);
 		this._emit(TokenType.SEMICOLON);
 	}
 	
 	// Emit a return statement node's tokens.
 	visitReturnStmt(node) {
 		this._emit(TokenType.RETURN);
-		var value = node.getValue();
-		
-		if (value) {
-			this.visit(value);
-		}
-		
+		super.visitReturnStmt(node);
 		this._emit(TokenType.SEMICOLON);
 	}
 	
@@ -158,7 +135,7 @@ class EmitTokensVisitor < Visitor {
 	visitAssignExpr(node) {
 		this._emitIdentifier(node.getName());
 		this._emit(TokenType.EQUAL);
-		this.visit(node.getValue());
+		super.visitAssignExpr(node);
 	}
 	
 	// Emit a binary expression node's tokens.
@@ -186,7 +163,7 @@ class EmitTokensVisitor < Visitor {
 	
 	// Emit a get expression node's tokens.
 	visitGetExpr(node) {
-		this.visit(node.getObject());
+		super.visitGetExpr(node);
 		this._emit(TokenType.DOT);
 		this._emitIdentifier(node.getName());
 	}
@@ -194,7 +171,7 @@ class EmitTokensVisitor < Visitor {
 	// Emit a grouping expression node's tokens.
 	visitGroupingExpr(node) {
 		this._emit(TokenType.LEFT_PAREN);
-		this.visit(node.getExpression());
+		super.visitGroupingExpr(node);
 		this._emit(TokenType.RIGHT_PAREN);
 	}
 	
@@ -250,7 +227,7 @@ class EmitTokensVisitor < Visitor {
 	// Emit a unary expression node's tokens.
 	visitUnaryExpr(node) {
 		this._emit(node.getOperator());
-		this.visit(node.getRight());
+		super.visitUnaryExpr(node);
 	}
 	
 	// Emit a variable expression node's tokens.

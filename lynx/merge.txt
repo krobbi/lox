@@ -6,9 +6,9 @@
 # preprocessed.
 
 # Standard library:
-<call_main>
 <list>
 <map>
+<call_main>
 
 # Log:
 log/char.lox
@@ -29,6 +29,7 @@ ast/literal/literal_type.lox
 ast/literal/literal.lox
 ast/node.lox
 ast/visitor.lox
+ast/walker.lox
 
 # Expression AST nodes:
 ast/nodes/exprs/assign_expr_node.lox
@@ -60,9 +61,6 @@ ast/nodes/import_node.lox
 ast/nodes/module_node.lox
 ast/nodes/program_node.lox
 
-# AST visitors:
-ast/visitors/emit_tokens_visitor.lox
-
 # Parser:
 parser/scanner.lox
 parser/assignment_target.lox
@@ -73,6 +71,10 @@ parser/parser.lox
 importer/dependency_state.lox
 importer/dependency.lox
 importer/importer.lox
+
+# Writer:
+writer/emit_tokens_walker.lox
+writer/writer.lox
 
 # Main:
 main.lox
