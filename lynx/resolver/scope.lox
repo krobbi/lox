@@ -40,7 +40,7 @@ class Scope {
 			var name = iter.getNext();
 			var symbol = this._symbols.get(name);
 			
-			if (!symbol.defined) {
+			if (!symbol.isDefined) {
 				symbols.pushBack(symbol);
 			}
 		}

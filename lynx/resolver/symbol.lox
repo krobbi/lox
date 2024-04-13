@@ -3,6 +3,6 @@ class Symbol {
 	// Initialize the symbol.
 	init() {
 		// Whether the symbol is defined.
-		this.defined = false;
+		this.isDefined = false;
 	}
 }

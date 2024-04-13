@@ -111,8 +111,8 @@ class ResolverWalker < Walker {
 			for (var iter = undefinedSymbols.iter(); iter.hasNext();) {
 				var symbol = iter.getNext();
 				
-				if (symbol.defined) {
-					symbol.defined = false;
+				if (symbol.isDefined) {
+					symbol.isDefined = false;
 					definitions.pushBack(symbol);
 				}
 			}
@@ -123,7 +123,7 @@ class ResolverWalker < Walker {
 		// Define a list of symbols.
 		fun defineSymbols(symbols) {
 			for (var iter = symbols.iter(); iter.hasNext();) {
-				iter.getNext().defined = true;
+				iter.getNext().isDefined = true;
 			}
 		}
 		
@@ -149,7 +149,7 @@ class ResolverWalker < Walker {
 					var symbol = iter.getNext();
 					
 					if (elseDefinitions.has(symbol)) {
-						symbol.defined = true;
+						symbol.isDefined = true;
 					}
 				}
 			}
@@ -251,7 +251,7 @@ class ResolverWalker < Walker {
 			this._logError("Can't read variable '" + name + "' in its own initializer.", node);
 		} else if (!symbol) {
 			this._logError("Variable '" + name + "' is undeclared in the current scope.", node);
-		} else if (!symbol.defined) {
+		} else if (!symbol.isDefined) {
 			this._logError("Can't read undefined variable '" + name + "'.", node);
 		}
 	}
@@ -297,7 +297,7 @@ class ResolverWalker < Walker {
 	// Undefine a list of symbols.
 	_undefineSymbols(symbols) {
 		for (var iter = symbols.iter(); iter.hasNext();) {
-			iter.getNext().defined = false;
+			iter.getNext().isDefined = false;
 		}
 	}
 	
@@ -363,7 +363,7 @@ class ResolverWalker < Walker {
 	
 	// Define a name in the scope stack.
 	_define(name) {
-		this._getSymbol(name).defined = true;
+		this._getSymbol(name).isDefined = true;
 	}
 	
 	// Define a native function in the current scope.
