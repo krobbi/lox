@@ -15,7 +15,7 @@ typedef uint16_t ConstantIndex;
 #else // LONG_CONSTANTS
 
 // The maximum 8-bit constant index.
-#define CONSTANT_INDEX_MAX UINT8_COUNT
+#define CONSTANT_INDEX_MAX UINT8_MAX
 
 // An 8-bit constant index.
 typedef uint8_t ConstantIndex;
