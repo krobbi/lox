@@ -1,9 +1,10 @@
 // #import <list>
+// #import <map>
 
 // #import "/ast/walker.lox"
 // #import "class_type.lox"
 // #import "function_type.lox"
-// #import "scope.lox"
+// #import "symbol.lox"
 
 // Walks AST nodes and resolves them.
 class ResolverWalker < Walker {
@@ -13,6 +14,12 @@ class ResolverWalker < Walker {
 		
 		// The resolver walker's log.
 		this._log = config.getLog();
+		
+		// The resolver walker's class type stack.
+		this._classTypes = List();
+		
+		// The resolver walker's function type stack.
+		this._functionTypes = List();
 		
 		// The resolver walker's scope stack.
 		this._scopes = List();
@@ -26,31 +33,37 @@ class ResolverWalker < Walker {
 	
 	// Resolve a program node.
 	visitProgram(node) {
-		this._beginScope(ClassType.NONE, FunctionType.NONE);
-		this._defineNative("clock");
-		this._defineNative("__argc");
-		this._defineNative("__argv");
-		this._defineNative("__chrat");
-		this._defineNative("__exit");
-		this._defineNative("__fclose");
-		this._defineNative("__fgetc");
-		this._defineNative("__fopenr");
-		this._defineNative("__fopenw");
-		this._defineNative("__fputc");
-		this._defineNative("__ftoa");
-		this._defineNative("__stderr");
-		this._defineNative("__stdin");
-		this._defineNative("__stdout");
-		this._defineNative("__strlen");
-		this._defineNative("__strof");
-		this._defineNative("__trunc");
+		// Define a native function in the program from its name.
+		fun defineNative(name) {
+			this._declare(name, node);
+			this._define(name);
+		}
+		
+		this._beginScope();
+		defineNative("clock");
+		defineNative("__argc");
+		defineNative("__argv");
+		defineNative("__chrat");
+		defineNative("__exit");
+		defineNative("__fclose");
+		defineNative("__fgetc");
+		defineNative("__fopenr");
+		defineNative("__fopenw");
+		defineNative("__fputc");
+		defineNative("__ftoa");
+		defineNative("__stderr");
+		defineNative("__stdin");
+		defineNative("__stdout");
+		defineNative("__strlen");
+		defineNative("__strof");
+		defineNative("__trunc");
 		super.visitProgram(node);
 		this._endScope();
 	}
 	
 	// Resolve a block statement node.
 	visitBlockStmt(node) {
-		this._beginScope(this._getClassType(), this._getFunctionType());
+		this._beginScope();
 		this._resolveStatements(node.getStatements());
 		this._endScope();
 	}
@@ -58,7 +71,7 @@ class ResolverWalker < Walker {
 	// Resolve a class statement node.
 	visitClassStmt(node) {
 		var name = node.getName();
-		this._declare(name, node.getSpan());
+		this._declare(name, node);
 		this._define(name);
 		var superclass = node.getSuperclass();
 		
@@ -68,35 +81,35 @@ class ResolverWalker < Walker {
 			}
 			
 			this.visit(superclass);
-			this._beginClassScope(ClassType.SUBCLASS);
+			this._beginClass(ClassType.SUBCLASS);
 		} else {
-			this._beginClassScope(ClassType.CLASS);
+			this._beginClass(ClassType.CLASS);
 		}
 		
 		for (var iter = node.getMethods().iter(); iter.hasNext();) {
 			var method = iter.getNext();
 			
 			if (method.getName() == "init") {
-				this._beginFunctionScope(FunctionType.INITIALIZER);
+				this._beginFunction(FunctionType.INITIALIZER);
 			} else {
-				this._beginFunctionScope(FunctionType.METHOD);
+				this._beginFunction(FunctionType.METHOD);
 			}
 			
 			this._resolveFunction(method);
-			this._endScope();
+			this._endFunction();
 		}
 		
-		this._endScope();
+		this._endClass();
 	}
 	
 	// Resolve a function statement node.
 	visitFunctionStmt(node) {
 		var name = node.getName();
-		this._declare(name, node.getSpan());
+		this._declare(name, node);
 		this._define(name);
-		this._beginFunctionScope(FunctionType.FUNCTION);
+		this._beginFunction(FunctionType.FUNCTION);
 		this._resolveFunction(node);
-		this._endScope();
+		this._endFunction();
 	}
 	
 	// Resolve an if statement node.
@@ -180,7 +193,7 @@ class ResolverWalker < Walker {
 	// Resolve a var statement node.
 	visitVarStmt(node) {
 		var name = node.getName();
-		this._declare(name, node.getSpan());
+		this._declare(name, node);
 		var initializer = node.getInitializer();
 		
 		if (initializer) {
@@ -256,20 +269,28 @@ class ResolverWalker < Walker {
 		}
 	}
 	
-	// Get the current scope's class type.
+	// Get the current class type.
 	_getClassType() {
-		return this._scopes.peekBack().getClassType();
+		if (this._classTypes.isEmpty()) {
+			return ClassType.NONE;
+		} else {
+			return this._classTypes.peekBack();
+		}
 	}
 	
 	// Get the current scope's function type.
 	_getFunctionType() {
-		return this._scopes.peekBack().getFunctionType();
+		if (this._functionTypes.isEmpty()) {
+			return FunctionType.NONE;
+		} else {
+			return this._functionTypes.peekBack();
+		}
 	}
 	
 	// Get an optional symbol from the scope stack from its name.
 	_getSymbol(name) {
 		for (var i = this._scopes.getLength() - 1; i >= 0; i = i - 1) {
-			var symbol = this._scopes.get(i).getSymbol(name);
+			var symbol = this._scopes.get(i).get(name);
 			
 			if (symbol) {
 				return symbol;
@@ -284,24 +305,21 @@ class ResolverWalker < Walker {
 		var symbols = List();
 		
 		for (var iter = this._scopes.iter(); iter.hasNext();) {
-			var scopeSymbols = iter.getNext().getUndefinedSymbols();
+			var scope = iter.getNext();
 			
-			for (var iter = scopeSymbols.iter(); iter.hasNext();) {
-				symbols.pushBack(iter.getNext());
+			for (var iter = scope.iter(); iter.hasNext();) {
+				var symbol = scope.get(iter.getNext());
+				
+				if (!symbol.isDefined) {
+					symbols.pushBack(symbol);
+				}
 			}
 		}
 		
 		return symbols;
 	}
 	
-	// Undefine a list of symbols.
-	_undefineSymbols(symbols) {
-		for (var iter = symbols.iter(); iter.hasNext();) {
-			iter.getNext().isDefined = false;
-		}
-	}
-	
-	// Resolve a list of statements.
+	// Resolve a list of statement nodes.
 	_resolveStatements(statements) {
 		for (var iter = statements.iter(); iter.hasNext();) {
 			var node = iter.getNext();
@@ -316,11 +334,9 @@ class ResolverWalker < Walker {
 	
 	// Resolve a function statement node in the current scope.
 	_resolveFunction(node) {
-		var span = node.getSpan();
-		
 		for (var iter = node.getParams().iter(); iter.hasNext();) {
 			var name = iter.getNext();
-			this._declare(name, span);
+			this._declare(name, node);
 			this._define(name);
 		}
 		
@@ -329,19 +345,9 @@ class ResolverWalker < Walker {
 		this._branchReturned = false;
 	}
 	
-	// Begin a new scope from its class type and function type.
-	_beginScope(classType, functionType) {
-		this._scopes.pushBack(Scope(classType, functionType));
-	}
-	
-	// Begin a new class scope from its class type.
-	_beginClassScope(classType) {
-		this._beginScope(classType, this._getFunctionType());
-	}
-	
-	// Begin a new function scope from its function type.
-	_beginFunctionScope(functionType) {
-		this._beginScope(this._getClassType(), functionType);
+	// Begin a new scope.
+	_beginScope() {
+		this._scopes.pushBack(Map());
 	}
 	
 	// End the current scope.
@@ -349,16 +355,40 @@ class ResolverWalker < Walker {
 		this._scopes.popBack();
 	}
 	
-	// Declare a name in the current scope at a span.
-	_declare(name, span) {
+	// Begin a new class from its class type.
+	_beginClass(type) {
+		this._beginScope();
+		this._classTypes.pushBack(type);
+	}
+	
+	// End the current class.
+	_endClass() {
+		this._classTypes.popBack();
+		this._endScope();
+	}
+	
+	// Begin a new function from its function type.
+	_beginFunction(type) {
+		this._beginScope();
+		this._functionTypes.pushBack(type);
+	}
+	
+	// End the current function.
+	_endFunction() {
+		this._functionTypes.popBack();
+		this._endScope();
+	}
+	
+	// Declare a name in the current scope at a node.
+	_declare(name, node) {
 		var scope = this._scopes.peekBack();
 		
-		if (scope.getSymbol(name)) {
-			this._log.logErrorAt(
-					"Variable '" + name + "' is already declared in the current scope.", span);
+		if (scope.has(name)) {
+			this._logError(
+					"Variable '" + name + "' is already declared in the current scope.", node);
 		}
 		
-		scope.declare(name);
+		scope.set(name, Symbol());
 	}
 	
 	// Define a name in the scope stack.
@@ -366,10 +396,11 @@ class ResolverWalker < Walker {
 		this._getSymbol(name).isDefined = true;
 	}
 	
-	// Define a native function in the current scope.
-	_defineNative(name) {
-		this._declare(name, nil);
-		this._define(name);
+	// Undefine a list of symbols.
+	_undefineSymbols(symbols) {
+		for (var iter = symbols.iter(); iter.hasNext();) {
+			iter.getNext().isDefined = false;
+		}
 	}
 	
 	// Log an error message at a node's span.
