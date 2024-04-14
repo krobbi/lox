@@ -17,6 +17,7 @@
 // #import "/ast/nodes/stmts/block_stmt_node.lox"
 // #import "/ast/nodes/stmts/class_stmt_node.lox"
 // #import "/ast/nodes/stmts/expr_stmt_node.lox"
+// #import "/ast/nodes/stmts/for_stmt_node.lox"
 // #import "/ast/nodes/stmts/function_stmt_node.lox"
 // #import "/ast/nodes/stmts/if_stmt_node.lox"
 // #import "/ast/nodes/stmts/print_stmt_node.lox"
@@ -309,7 +310,7 @@ class Parser {
 		} else if (this._accept(TokenType.LEFT_BRACE)) {
 			return this._parseBlockStmt();
 		} else {
-			return this._parseExprStmt();	
+			return this._parseExprStmt();
 		}
 	}
 	
@@ -323,27 +324,21 @@ class Parser {
 		
 		var initializer = nil;
 		
-		if (this._accept(TokenType.VAR)) {
-			initializer = this._parseVarDecl();
-			
-			if (!initializer) {
-				return this._dropSpan();
+		if (!this._accept(TokenType.SEMICOLON)) {
+			if (this._accept(TokenType.VAR)) {
+				initializer = this._parseVarDecl();
+			} else {
+				initializer = this._parseExprStmt();
 			}
-		} else if (!this._accept(TokenType.SEMICOLON)) {
-			initializer = this._parseExprStmt();
 			
 			if (!initializer) {
 				return this._dropSpan();
 			}
 		}
 		
-		// TODO: Conditions should be optional if for statement nodes are added.
-		var condition;
+		var condition = nil;
 		
-		if (this._accept(TokenType.SEMICOLON)) {
-			this._pushSpan();
-			condition = LiteralExprNode(Literal(LiteralType.BOOL, true), this._popSpan());
-		} else {
+		if (!this._accept(TokenType.SEMICOLON)) {
 			condition = this._parseExpression();
 			
 			if (!condition) {
@@ -375,25 +370,7 @@ class Parser {
 			return this._dropSpan();
 		}
 		
-		// TODO: Consider adding for statement nodes instead of desugaring.
-		if (increment) {
-			var incrementSpan = increment.getSpan().clone();
-			var bodySpan = body.getSpan().clone();
-			bodySpan.include(incrementSpan);
-			body = BlockStmtNode(List()
-				.pushBack(body)
-				.pushBack(ExprStmtNode(increment, incrementSpan)), bodySpan);
-		}
-		
-		body = WhileStmtNode(condition, body, this._popSpan());
-		
-		if (initializer) {
-			body = BlockStmtNode(List()
-				.pushBack(initializer)
-				.pushBack(body), body.getSpan().clone());
-		}
-		
-		return body;
+		return ForStmtNode(initializer, condition, increment, body, this._popSpan());
 	}
 	
 	// Parse an if statement.

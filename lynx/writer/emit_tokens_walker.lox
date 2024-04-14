@@ -50,6 +50,35 @@ class EmitTokensWalker < Walker {
 		this._emit(TokenType.SEMICOLON);
 	}
 	
+	// Emit a for statement node's tokens.
+	visitForStmt(node) {
+		this._emit(TokenType.FOR);
+		this._emit(TokenType.LEFT_PAREN);
+		var initializer = node.getInitializer();
+		
+		if (initializer) {
+			this.visit(initializer);
+		} else {
+			this._emit(TokenType.SEMICOLON);
+		}
+		
+		var condition = node.getCondition();
+		
+		if (condition) {
+			this.visit(condition);
+		}
+		
+		this._emit(TokenType.SEMICOLON);
+		var increment = node.getIncrement();
+		
+		if (increment) {
+			this.visit(increment);
+		}
+		
+		this._emit(TokenType.RIGHT_PAREN);
+		this.visit(node.getBody());
+	}
+	
 	// Emit a function statement node's tokens.
 	visitFunctionStmt(node) {
 		if (this._isMethod) {

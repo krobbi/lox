@@ -53,6 +53,28 @@ class Walker < Visitor {
 		this.visit(node.getExpression());
 	}
 	
+	// Walk a for statement node.
+	visitForStmt(node) {
+		var initializer = node.getInitializer();
+		
+		if (initializer) {
+			this.visit(node.getInitializer());
+		}
+		
+		var condition = node.getCondition();
+		
+		if (condition) {
+			this.visit(node.getCondition());
+		}
+		
+		this.visit(node.getBody());
+		var increment = node.getIncrement();
+		
+		if (increment) {
+			this.visit(node.getIncrement());
+		}
+	}
+	
 	// Walk a function statement node.
 	visitFunctionStmt(node) {
 		for (var iter = node.getBody().iter(); iter.hasNext();) {

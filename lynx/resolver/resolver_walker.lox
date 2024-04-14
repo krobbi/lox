@@ -61,10 +61,18 @@ class ResolverWalker < Walker {
 		this._endScope();
 	}
 	
+	// Resolve a module node.
+	visitModule(node) {
+		this._resolveStatements(node.getStatements());
+	}
+	
 	// Resolve a block statement node.
 	visitBlockStmt(node) {
 		this._beginScope();
+		var hasBranchTerminated = this._branchReturned;
+		this._branchReturned = false;
 		this._resolveStatements(node.getStatements());
+		this._branchReturned = hasBranchTerminated or this._branchReturned;
 		this._endScope();
 	}
 	
@@ -100,6 +108,35 @@ class ResolverWalker < Walker {
 		}
 		
 		this._endClass();
+	}
+	
+	// Resolve a for statement node.
+	visitForStmt(node) {
+		this._beginScope();
+		var initializer = node.getInitializer();
+		
+		if (initializer) {
+			this.visit(initializer);
+		}
+		
+		var condition = node.getCondition();
+		
+		if (condition) {
+			this.visit(condition);
+		}
+		
+		var undefinedSymbols = this._getUndefinedSymbols();
+		this._branchReturned = false;
+		this.visit(node.getBody());
+		var increment = node.getIncrement();
+		
+		if (increment) {
+			this.visit(increment);
+		}
+		
+		this._branchReturned = !condition;
+		this._undefineSymbols(undefinedSymbols);
+		this._endScope();
 	}
 	
 	// Resolve a function statement node.

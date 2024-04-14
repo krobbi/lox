@@ -43,6 +43,11 @@ class Visitor {
 		return this.visitDefault(node);
 	}
 	
+	// Visit a for statement node.
+	visitForStmt(node) {
+		return this.visitDefault(node);
+	}
+	
 	// Visit a function statement node.
 	visitFunctionStmt(node) {
 		return this.visitDefault(node);

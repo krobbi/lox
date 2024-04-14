@@ -1,0 +1,48 @@
+// #import "/ast/node.lox"
+
+// A for statement node of an AST.
+class ForStmtNode < Node {
+	// Initialize the for statement node from its optional initializer
+	// statement, optional condition expression, optional increment expression,
+	// body statement, and span.
+	init(initializer, condition, increment, body, span) {
+		super.init(span);
+		
+		// The for statement node's optional initializer statement.
+		this._initializer = initializer;
+		
+		// The for statement node's optional condition expression.
+		this._condition = condition;
+		
+		// The for statement node's optional increment expression.
+		this._increment = increment;
+		
+		// The for statement node's body statement.
+		this._body = body;
+	}
+	
+	// Get the for statement node's optional initializer statement.
+	getInitializer() {
+		return this._initializer;
+	}
+	
+	// Get the for statement node's optional condition expression.
+	getCondition() {
+		return this._condition;
+	}
+	
+	// Get the for statement node's optional increment expression.
+	getIncrement() {
+		return this._increment;
+	}
+	
+	// Get the for statement node's body statement.
+	getBody() {
+		return this._body;
+	}
+	
+	// Visit the for statement node with a visitor.
+	visit(visitor) {
+		return visitor.visitForStmt(this);
+	}
+}
