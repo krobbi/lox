@@ -2,8 +2,8 @@
 
 // A grouping expression node of an AST.
 class GroupingExprNode < Node {
-	// Initialize the grouping expression node from its span and expression.
-	init(span, expression) {
+	// Initialize the grouping expression node from its expression and span.
+	init(expression, span) {
 		super.init(span);
 		
 		// The grouping expression node's expression.

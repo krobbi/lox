@@ -2,9 +2,9 @@
 
 // A return statement node of an AST.
 class ReturnStmtNode < Node {
-	// Initialize the return statement node from its span and optional value
-	// expression.
-	init(span, value) {
+	// Initialize the return statement node from its optional value expression
+	// and span.
+	init(value, span) {
 		super.init(span);
 		
 		// The return statement node's optional value expression.

@@ -2,8 +2,8 @@
 
 // A super expression node of an AST.
 class SuperExprNode < Node {
-	// Initialize the super expression node from its span and method.
-	init(span, method) {
+	// Initialize the super expression node from its method and span.
+	init(method, span) {
 		super.init(span);
 		
 		// The super expression node's method.

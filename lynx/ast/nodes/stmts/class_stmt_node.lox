@@ -2,9 +2,9 @@
 
 // A class statement node of an AST.
 class ClassStmtNode < Node {
-	// Initialize the class statement node from its span, name, optional
-	// superclass variable expression, and method function statements.
-	init(span, name, superclass, methods) {
+	// Initialize the class statement node from its name, optional superclass
+	// variable expression, method function statements, and span.
+	init(name, superclass, methods, span) {
 		super.init(span);
 		
 		// The class statement node's name.

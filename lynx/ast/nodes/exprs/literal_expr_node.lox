@@ -2,8 +2,8 @@
 
 // A literal expression node of an AST.
 class LiteralExprNode < Node {
-	// Initialize the literal expression node from its span and literal.
-	init(span, literal) {
+	// Initialize the literal expression node from its literal and span.
+	init(literal, span) {
 		super.init(span);
 		
 		// The literal expression node's literal.

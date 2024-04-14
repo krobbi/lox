@@ -2,9 +2,9 @@
 
 // An assign expression node of an AST.
 class AssignExprNode < Node {
-	// Initialize the assign expression node from its span, name, and value
-	// expression.
-	init(span, name, value) {
+	// Initialize the assign expression node from its name, value expression,
+	// and span.
+	init(name, value, span) {
 		super.init(span);
 		
 		// The assign expression node's name.

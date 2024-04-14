@@ -2,9 +2,9 @@
 
 // A while statement node of an AST.
 class WhileStmtNode < Node {
-	// Initialize the while statement node from its span, condition expression,
-	// and body statement.
-	init(span, condition, body) {
+	// Initialize the while statement node from its condition expression, body
+	// statement, and span.
+	init(condition, body, span) {
 		super.init(span);
 		
 		// The while statement node's condition expression.

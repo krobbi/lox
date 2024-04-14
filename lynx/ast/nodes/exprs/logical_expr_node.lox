@@ -2,12 +2,12 @@
 
 // A logical expression node of an AST.
 class LogicalExprNode < Node {
-	// Initialize the logical expression node from its span, left-hand
-	// expression, operator, and right-hand expression.
-	init(span, left, operator, right) {
+	// Initialize the logical expression node from its left-hand expression,
+	// operator, right-hand expression, and span.
+	init(left, operator, right, span) {
 		super.init(span);
 		
-		// The logicl expression node's left-hand expression.
+		// The logical expression node's left-hand expression.
 		this._left = left;
 		
 		// The logical expression node's operator.

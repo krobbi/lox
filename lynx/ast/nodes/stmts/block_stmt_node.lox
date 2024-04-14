@@ -2,8 +2,8 @@
 
 // A block statement node of an AST.
 class BlockStmtNode < Node {
-	// Initialize the block statement node from its span and statements.
-	init(span, statements) {
+	// Initialize the block statement node from its statements and span.
+	init(statements, span) {
 		super.init(span);
 		
 		// The block statement node's statements.

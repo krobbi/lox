@@ -2,8 +2,8 @@
 
 // An expression statement node of an AST.
 class ExprStmtNode < Node {
-	// Initialize the expression statement node from its span and expression.
-	init(span, expression) {
+	// Initialize the expression statement node from its expression and span.
+	init(expression, span) {
 		super.init(span);
 		
 		// The expression statement node's expression.

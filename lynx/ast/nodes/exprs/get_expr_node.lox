@@ -2,9 +2,9 @@
 
 // A get expression node of an AST.
 class GetExprNode < Node {
-	// Initialize the get expression node from its span, object expression, and
-	// name.
-	init(span, object, name) {
+	// Initialize the get expression node from its object expression, name, and
+	// span.
+	init(object, name, span) {
 		super.init(span);
 		
 		// The get expression node's object expression.

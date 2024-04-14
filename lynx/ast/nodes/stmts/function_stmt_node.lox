@@ -2,9 +2,9 @@
 
 // A function statement node of an AST.
 class FunctionStmtNode < Node {
-	// Initialize the function statement node from its span, name, parameter
-	// names, and body statements.
-	init(span, name, params, body) {
+	// Initialize the function statement node from its name, parameter names,
+	// body statements, and span.
+	init(name, params, body, span) {
 		super.init(span);
 		
 		// The function statement node's name.

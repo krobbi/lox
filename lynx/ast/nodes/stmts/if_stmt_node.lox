@@ -2,9 +2,9 @@
 
 // An if statement node of an AST.
 class IfStmtNode < Node {
-	// Initialize the if statement node from its span, condition expression,
-	// then branch statement, and optional else branch statement.
-	init(span, condition, thenBranch, elseBranch) {
+	// Initialize the if statement node from its condition expression, then
+	// branch statement, optional else branch statement, and span.
+	init(condition, thenBranch, elseBranch, span) {
 		super.init(span);
 		
 		// The if statement node's condition expression.

@@ -2,9 +2,9 @@
 
 // A unary expression node of an AST.
 class UnaryExprNode < Node {
-	// Initialize the unary expression node from its span, operator, and
-	// right-hand expression.
-	init(span, operator, right) {
+	// Initialize the unary expression node from its operator, right-hand
+	// expression, and span.
+	init(operator, right, span) {
 		super.init(span);
 		
 		// The unary expression node's operator.

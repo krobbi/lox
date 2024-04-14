@@ -2,9 +2,9 @@
 
 // A call expression node of an AST.
 class CallExprNode < Node {
-	// Initialize the call expression node from its span, callee expression, and
-	// argument expressions.
-	init(span, callee, arguments) {
+	// Initialize the call expression node from its callee expression, argument
+	// expressions, and span.
+	init(callee, arguments, span) {
 		super.init(span);
 		
 		// The call expression node's callee.

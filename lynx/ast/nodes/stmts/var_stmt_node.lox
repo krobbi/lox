@@ -2,9 +2,9 @@
 
 // A var statement node of an AST.
 class VarStmtNode < Node {
-	// Initialize the var statement node from its span, name, and optional
-	// initializer expression.
-	init(span, name, initializer) {
+	// Initialize the var statement node from its name, optional initializer
+	// expression, and span.
+	init(name, initializer, span) {
 		super.init(span);
 		
 		// The var statement node's name.

@@ -93,7 +93,7 @@ class Parser {
 			}
 		}
 		
-		return ModuleNode(this._popSpan(), this._imports, statements);
+		return ModuleNode(this._imports, statements, this._popSpan());
 	}
 	
 	// Parse an import.
@@ -132,7 +132,7 @@ class Parser {
 			return this._dropSpan();
 		}
 		
-		return ImportNode(this._popSpan(), path);
+		return ImportNode(path, this._popSpan());
 	}
 	
 	// Parse an optional declaration.
@@ -180,7 +180,7 @@ class Parser {
 				return this._dropSpan();
 			}
 			
-			superclass = VariableExprNode(superclass.getSpan().clone(), superclass.getValue());
+			superclass = VariableExprNode(superclass.getValue(), superclass.getSpan().clone());
 		}
 		
 		if (!this._expect(TokenType.LEFT_BRACE, "before class body")) {
@@ -203,7 +203,7 @@ class Parser {
 			return this._dropSpan();
 		}
 		
-		return ClassStmtNode(this._popSpan(), name.getValue(), superclass, methods);
+		return ClassStmtNode(name.getValue(), superclass, methods, this._popSpan());
 	}
 	
 	// Parse a function declaration.
@@ -265,7 +265,7 @@ class Parser {
 			return this._dropSpan();
 		}
 		
-		return FunctionStmtNode(this._popSpan(), name.getValue(), params, body.getStatements());
+		return FunctionStmtNode(name.getValue(), params, body.getStatements(), this._popSpan());
 	}
 	
 	// Parse a var declaration.
@@ -291,7 +291,7 @@ class Parser {
 			return this._dropSpan();
 		}
 		
-		return VarStmtNode(this._popSpan(), name.getValue(), initializer);
+		return VarStmtNode(name.getValue(), initializer, this._popSpan());
 	}
 	
 	// Parse a statement.
@@ -342,7 +342,7 @@ class Parser {
 		
 		if (this._accept(TokenType.SEMICOLON)) {
 			this._pushSpan();
-			condition = LiteralExprNode(this._popSpan(), Literal(LiteralType.BOOL, true));
+			condition = LiteralExprNode(Literal(LiteralType.BOOL, true), this._popSpan());
 		} else {
 			condition = this._parseExpression();
 			
@@ -377,20 +377,20 @@ class Parser {
 		
 		// TODO: Consider adding for statement nodes instead of desugaring.
 		if (increment) {
-			var bodySpan = body.getSpan().clone();
 			var incrementSpan = increment.getSpan().clone();
+			var bodySpan = body.getSpan().clone();
 			bodySpan.include(incrementSpan);
-			body = BlockStmtNode(bodySpan, List()
+			body = BlockStmtNode(List()
 				.pushBack(body)
-				.pushBack(ExprStmtNode(incrementSpan, increment)));
+				.pushBack(ExprStmtNode(increment, incrementSpan)), bodySpan);
 		}
 		
-		body = WhileStmtNode(this._popSpan(), condition, body);
+		body = WhileStmtNode(condition, body, this._popSpan());
 		
 		if (initializer) {
-			body = BlockStmtNode(body.getSpan().clone(), List()
+			body = BlockStmtNode(List()
 				.pushBack(initializer)
-				.pushBack(body));
+				.pushBack(body), body.getSpan().clone());
 		}
 		
 		return body;
@@ -430,7 +430,7 @@ class Parser {
 			}
 		}
 		
-		return IfStmtNode(this._popSpan(), condition, thenBranch, elseBranch);
+		return IfStmtNode(condition, thenBranch, elseBranch, this._popSpan());
 	}
 	
 	// Parse a print statement.
@@ -446,7 +446,7 @@ class Parser {
 			return this._dropSpan();
 		}
 		
-		return PrintStmtNode(this._popSpan(), expression);
+		return PrintStmtNode(expression, this._popSpan());
 	}
 	
 	// Parse a return statement.
@@ -466,7 +466,7 @@ class Parser {
 			return this._dropSpan();
 		}
 		
-		return ReturnStmtNode(this._popSpan(), value);
+		return ReturnStmtNode(value, this._popSpan());
 	}
 	
 	// Parse a while statement.
@@ -493,7 +493,7 @@ class Parser {
 			return this._dropSpan();
 		}
 		
-		return WhileStmtNode(this._popSpan(), condition, body);
+		return WhileStmtNode(condition, body, this._popSpan());
 	}
 	
 	// Parse a block statement.
@@ -513,7 +513,7 @@ class Parser {
 			return this._dropSpan();
 		}
 		
-		return BlockStmtNode(this._popSpan(), statements);
+		return BlockStmtNode(statements, this._popSpan());
 	}
 	
 	// Parse an expression statement.
@@ -529,7 +529,7 @@ class Parser {
 			return this._dropSpan();
 		}
 		
-		return ExprStmtNode(this._popSpan(), expression);
+		return ExprStmtNode(expression, this._popSpan());
 	}
 	
 	// Parse an expression.
@@ -556,9 +556,9 @@ class Parser {
 			var target = GetAssignmentTargetVisitor().visit(expr);
 			
 			if (target == AssignmentTarget.GET) {
-				return SetExprNode(this._popSpan(), expr.getObject(), expr.getName(), value);
+				return SetExprNode(expr.getObject(), expr.getName(), value, this._popSpan());
 			} else if (target == AssignmentTarget.VARIABLE) {
-				return AssignExprNode(this._popSpan(), expr.getName(), value);
+				return AssignExprNode(expr.getName(), value, this._popSpan());
 			}
 			
 			this._logError("Invalid assignment target.", expr.getSpan());
@@ -585,7 +585,7 @@ class Parser {
 				return this._dropSpan();
 			}
 			
-			expr = constructor(this._peekSpan(), expr, operator, right);
+			expr = constructor(expr, operator, right, this._peekSpan());
 		}
 		
 		this._dropSpan();
@@ -634,7 +634,7 @@ class Parser {
 				return this._dropSpan();
 			}
 			
-			return UnaryExprNode(this._popSpan(), operator, right);
+			return UnaryExprNode(operator, right, this._popSpan());
 		}
 		
 		this._dropSpan();
@@ -679,7 +679,7 @@ class Parser {
 					return this._dropSpan();
 				}
 				
-				expr = CallExprNode(this._peekSpan(), expr, arguments);
+				expr = CallExprNode(expr, arguments, this._peekSpan());
 			} else if (this._accept(TokenType.DOT)) {
 				var name = this._expect(TokenType.IDENTIFIER, "for property name");
 				
@@ -687,7 +687,7 @@ class Parser {
 					return this._dropSpan();
 				}
 				
-				expr = GetExprNode(this._peekSpan(), expr, name.getValue());
+				expr = GetExprNode(expr, name.getValue(), this._peekSpan());
 			} else {
 				isLooping = false;
 			}
@@ -702,17 +702,17 @@ class Parser {
 		this._pushSpanNext();
 		
 		if (this._accept(TokenType.NIL)) {
-			return LiteralExprNode(this._popSpan(), Literal(LiteralType.NIL, nil));
+			return LiteralExprNode(Literal(LiteralType.NIL, nil), this._popSpan());
 		} else if (this._accept(TokenType.TRUE)) {
-			return LiteralExprNode(this._popSpan(), Literal(LiteralType.BOOL, true));
+			return LiteralExprNode(Literal(LiteralType.BOOL, true), this._popSpan());
 		} else if (this._accept(TokenType.FALSE)) {
-			return LiteralExprNode(this._popSpan(), Literal(LiteralType.BOOL, false));
+			return LiteralExprNode(Literal(LiteralType.BOOL, false), this._popSpan());
 		} else if (this._is(TokenType.NUMBER)) {
 			var value = this._advance();
-			return LiteralExprNode(this._popSpan(), Literal(LiteralType.NUMBER, value.getValue()));
+			return LiteralExprNode(Literal(LiteralType.NUMBER, value.getValue()), this._popSpan());
 		} else if (this._is(TokenType.STRING)) {
 			var value = this._advance();
-			return LiteralExprNode(this._popSpan(), Literal(LiteralType.STRING, value.getValue()));
+			return LiteralExprNode(Literal(LiteralType.STRING, value.getValue()), this._popSpan());
 		} else if (this._accept(TokenType.SUPER)) {
 			if (!this._expect(TokenType.DOT, "after 'super'")) {
 				return this._dropSpan();
@@ -724,12 +724,12 @@ class Parser {
 				return this._dropSpan();
 			}
 			
-			return SuperExprNode(this._popSpan(), method.getValue());
+			return SuperExprNode(method.getValue(), this._popSpan());
 		} else if (this._accept(TokenType.THIS)) {
 			return ThisExprNode(this._popSpan());
 		} else if (this._is(TokenType.IDENTIFIER)) {
 			var name = this._advance();
-			return VariableExprNode(this._popSpan(), name.getValue());
+			return VariableExprNode(name.getValue(), this._popSpan());
 		} else if (this._accept(TokenType.LEFT_PAREN)) {
 			var expression = this._parseExpression();
 			
@@ -741,7 +741,7 @@ class Parser {
 				return this._dropSpan();
 			}
 			
-			return GroupingExprNode(this._popSpan(), expression);
+			return GroupingExprNode(expression, this._popSpan());
 		} else {
 			this._expected("an expression");
 			return this._dropSpan();
