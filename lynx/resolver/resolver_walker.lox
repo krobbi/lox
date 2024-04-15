@@ -69,10 +69,10 @@ class ResolverWalker < Walker {
 	// Resolve a block statement node.
 	visitBlockStmt(node) {
 		this._beginScope();
-		var hasBranchTerminated = this._branchReturned;
+		var enclosingBranchReturned = this._branchReturned;
 		this._branchReturned = false;
 		this._resolveStatements(node.getStatements());
-		this._branchReturned = hasBranchTerminated or this._branchReturned;
+		this._branchReturned = enclosingBranchReturned or this._branchReturned;
 		this._endScope();
 	}
 	
