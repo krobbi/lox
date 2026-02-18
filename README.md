@@ -120,9 +120,6 @@ is less than `1` or greater than `255`.
 Return the number `number` with the fractional part truncated.
 
 # License
-This implementation of Lox is released under the MIT License:  
-https://krobbi.github.io/license/2024/mit.txt
-
-See [LICENSE.txt](/LICENSE.txt) for a full copy of the license text.
+See [LICENSE.txt](LICENSE.txt) for a full copy of the license text.
 
 _Crafting Interpreters is copyright of Bob Nystrom._
